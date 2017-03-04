@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <include layout="@layout/toolbar" 
+             android:id="@id/toolbar"/>
+  <!--<android.support.v7.widget.Toolbar
+     android:id="@id/toolbar"
+     android:minHeight="?attr/actionBarSize"
+     android:background="?attr/colorPrimary"
+     android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+     android:layout_width="match_parent"
+     android:layout_height="wrap_content" />-->
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/SPScrollViewL"
+        android:layout_below="@id/toolbar">
+        <LinearLayout
+            android:orientation="vertical"
+            android:minWidth="25px"
+            android:minHeight="25px"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/SPMainLayoutL"
+            android:layout_below="@id/toolbar">
+            <TextView
+                android:text="Can Distribute"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@id/SPCanDistributeText"
+                android:gravity="center"
+                android:paddingTop="10dp" />
+            <FrameLayout
+                android:minWidth="25px"
+                android:minHeight="25px"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/SPCanDistributeFrameLayoutL"
+                android:backgroundTint="#00000000"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp">
+                <ImageView
+                    android:layout_width="80dp"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/blueRect_style"
+                    android:id="@id/SPCDblueSquare"
+                    android:backgroundTint="#ffadd8e6"
+                    android:backgroundTintMode="src_in"
+                    android:layout_gravity="center" />
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:minWidth="25px"
+                    android:minHeight="25px"
+                    android:layout_height="match_parent"
+                    android:id="@+id/SPCDlinearLayoutL"
+                    android:layout_width="match_parent"
+                    android:layout_gravity="center">
+                    <TextView
+                        android:text="0"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@drawable/button_text_style"
+                        android:id="@id/SPCDpoints"
+                        android:gravity="center_horizontal"
+                        android:layout_marginTop="10dp"
+                        android:layout_gravity="center" />
+                    <TextView
+                        android:text="points"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@drawable/button_text_style"
+                        android:id="@id/SPCDpointsText"
+                        android:gravity="center_horizontal"
+                        android:layout_marginBottom="10dp"
+                        android:layout_gravity="center" />
+                </LinearLayout>
+            </FrameLayout>
+            <TextView
+                android:text="I want to say thanks to"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@id/SPSayThanksText"
+                android:paddingLeft="10dp"
+                android:paddingBottom="10dp"
+                android:gravity="left"
+                android:paddingTop="10dp"
+                android:layout_marginLeft="0dp" />
+            <AutoCompleteTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@id/SPSelectPerson"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginBottom="10dp"
+                android:maxLines="1"
+                android:hint="select person" />
+            <TextView
+                android:text="and send him/her"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@id/SPSendText"
+                android:paddingLeft="10dp"
+                android:paddingBottom="10dp" />
+            <LinearLayout
+                android:orientation="horizontal"
+                android:minWidth="25px"
+                android:minHeight="25px"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/SPPointsLayoutL"
+                android:paddingLeft="10dp">
+                <EditText
+                    android:id="@id/SPNumOfPointsEditText"
+                    android:inputType="number"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="3"
+                    android:hint="# of points" />
+                <TextView
+                    android:text="point(s)"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:id="@id/SPPointsText"
+                    android:layout_height="match_parent"
+                    android:layout_width="wrap_content"
+                    android:layout_weight="1"
+                    android:paddingLeft="10dp"
+                    android:gravity="left" />
+            </LinearLayout>
+            <EditText
+                android:id="@+id/SPNotesEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:layout_marginRight="10dp"
+                android:maxLines="1"
+                android:hint="Notes" />
+            <FrameLayout
+                android:minWidth="25px"
+                android:minHeight="25px"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/SPButtonFrameLayoutL"
+                android:layout_gravity="center">
+                <Button
+                    android:text="Send Points"
+                    android:textColor="@drawable/button_text_style"
+                    android:id="@id/SPSendButton"
+                    android:background="@drawable/button_ripple"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="10dp"
+                    android:gravity="center"
+                    android:textSize="18sp"
+                    android:textAllCaps="false" />
+            </FrameLayout>
+        </LinearLayout>
+    </ScrollView>
+</RelativeLayout>

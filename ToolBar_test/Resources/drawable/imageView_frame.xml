@@ -1,0 +1,28 @@
+﻿
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android"> 
+    <item>
+        <shape android:shape="oval">
+              <solid android:color="?android:attr/colorPrimary"/>
+                <!--shadow Color-->
+        </shape>
+    </item>
+
+    <item
+        android:left="0dp"
+        android:right="0dp"
+        android:top="0dp"
+        android:bottom="3dp">
+        <shape android:shape="oval">
+             <solid android:color="#CCADD8e5"/>//Background Color
+        </shape>
+    </item>
+    <item
+        android:left="3dp"
+        android:right="3dp"
+        android:top="3dp"
+        android:bottom="3dp">
+        <shape android:shape="oval">
+             <solid android:color="#8e8e93"/>//Background Color
+        </shape>
+      </item>
+</layer-list>
