@@ -1,10 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-    <include layout="@layout/toolbar"
-             android:id="@+id/toolbar" />
+    android:layout_height="match_parent"
+    android:descendantFocusability="beforeDescendants"
+    android:windowSoftInputMode="adjustNothing"
+    android:focusableInTouchMode="true">
+    <include
+        layout="@layout/toolbar"
+        android:id="@+id/toolbar" />
     <LinearLayout
         android:orientation="vertical"
         android:minWidth="25px"
@@ -14,7 +19,8 @@
         android:id="@+id/SPMainLayout"
         android:layout_below="@id/toolbar">
         <TextView
-            android:text="Can Distribute"
+            android:text="@string/DistributeText"
+            android:textSize="22dp"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -35,7 +41,7 @@
                 android:layout_height="match_parent"
                 android:background="@drawable/blueRect_style"
                 android:id="@+id/SPCDblueSquare"
-                android:backgroundTint="#80039be5"
+                app:backgroundTint="#80039be5"
                 android:backgroundTintMode="src_in"
                 android:layout_gravity="center" />
             <LinearLayout
@@ -48,6 +54,7 @@
                 android:layout_gravity="center">
                 <TextView
                     android:text="0"
+                    android:textSize="22dp"
                     android:textAppearance="?android:attr/textAppearanceLarge"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -58,6 +65,7 @@
                     android:layout_gravity="center" />
                 <TextView
                     android:text="points"
+                    android:textSize="22dp"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -70,32 +78,37 @@
         </FrameLayout>
         <TextView
             android:text="I want to say thanks to"
+            android:textSize="22dp"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/SPSayThanksText"
             android:paddingLeft="10dp"
-            android:paddingBottom="10dp"
             android:gravity="left"
-            android:paddingTop="10dp"
             android:layout_marginLeft="0dp" />
-        <AutoCompleteTextView
+        <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/SPSelectPerson"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginBottom="10dp"
-            android:maxLines="1"
-            android:hint="select person" />
+            android:layout_height="wrap_content">
+            <android.support.design.widget.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/SPSelectPerson"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:cursorVisible="false"
+                android:focusableInTouchMode="false"
+                android:layout_marginBottom="10dp"
+                android:maxLines="1"
+                android:hint="select person" />
+        </android.support.design.widget.TextInputLayout>
         <TextView
             android:text="and send him/her"
+            android:textSize="22dp"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/SPSendText"
-            android:paddingLeft="10dp"
-            android:paddingBottom="10dp" />
+            android:paddingLeft="10dp" />
         <LinearLayout
             android:orientation="horizontal"
             android:minWidth="25px"
@@ -104,15 +117,22 @@
             android:layout_height="wrap_content"
             android:id="@+id/SPPointsLayout"
             android:paddingLeft="10dp">
-            <EditText
-                android:id="@+id/SPNumOfPointsEditText"
-                android:inputType="number"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_weight="3"
-                android:hint="# of points" />
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="3">
+                <android.support.design.widget.TextInputEditText
+                    android:id="@+id/SPNumOfPointsEditText"
+                    android:inputType="number"
+                    android:layout_weight="3"
+                    android:layout_gravity="center"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:hint="# of points" />
+            </android.support.design.widget.TextInputLayout>
             <TextView
                 android:text="point(s)"
+                android:textSize="22dp"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:id="@+id/SPPointsText"
                 android:layout_height="match_parent"
@@ -121,16 +141,20 @@
                 android:paddingLeft="10dp"
                 android:gravity="left" />
         </LinearLayout>
-        <EditText
-            android:id="@+id/SPNotesEditText"
+        <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
-            android:layout_marginRight="10dp"
-            android:maxLines="1"
-            android:hint="Notes" />
+            android:layout_height="wrap_content">
+            <android.support.design.widget.TextInputEditText
+                android:id="@+id/SPNotesEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:layout_marginRight="10dp"
+                android:maxLines="1"
+                android:hint="Notes" />
+        </android.support.design.widget.TextInputLayout>
         <FrameLayout
             android:minWidth="25px"
             android:minHeight="25px"
@@ -139,17 +163,18 @@
             android:id="@+id/SPButtonFrameLayout"
             android:layout_gravity="center">
             <Button
-                android:text="Send Points"
+                android:text="@string/SendPoints"
+                android:textSize="18dp"
                 android:textColor="@drawable/button_text_style"
                 android:id="@+id/SPSendButton"
-                android:background="@drawable/button_ripple"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:theme="@style/BlueButton"
                 android:layout_gravity="center"
                 android:gravity="center"
                 android:onClick="SelectPerson_Clicked"
-                android:textSize="18sp"
-                android:textAllCaps="false" />
+                android:textAllCaps="false"
+                android:layout_marginBottom="10dp" />
         </FrameLayout>
     </LinearLayout>
 </RelativeLayout>

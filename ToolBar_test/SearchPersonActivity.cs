@@ -19,7 +19,6 @@ namespace ToolBar_test
     {
         SupportToolBar ToolBar;
         EditText ToolBarSearchView;
-        ImageView SearchClearButton;
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
@@ -35,27 +34,32 @@ namespace ToolBar_test
 
             var sc = FindViewById(Resource.Id.search_container);
             ToolBarSearchView = FindViewById<EditText>(Resource.Id.search_view);
-            SearchClearButton = FindViewById<ImageView>(Resource.Id.search_clear);
 
-            IntPtr IntPtrTextViewClass = JNIEnv.FindClass(typeof(TextView));
-            IntPtr mCursorDrawableResProperty = JNIEnv.GetFieldID(IntPtrTextViewClass, "mCursorDrawableRes", "I");
-            JNIEnv.SetField(Control.Handle, mCursorDrawableResProperty, 0);
+            ToolBar.MenuItemClick += Toolbar_MenuItemClick;
         }
 
-        //public override bool OnCreateOptionsMenu(IMenu menu)
-        //{
-        //    MenuInflater.Inflate(Resource.Menu.search_menu, menu);
-        //    SupportSearchView searchView = FindViewById<SupportSearchView>(Resource.Id.action_search);
-        //    SearchManager searchManager = (SearchManager)GetSystemService(SearchService);
-        //    searchView.SetSearchableInfo(searchManager.GetSearchableInfo(ComponentName));
-        //    return true;
-        //}
+        public override bool OnCreateOptionsMenu(IMenu menu)
+        {
+            MenuInflater.Inflate(Resource.Menu.search_top_menu, menu);
+            return base.OnCreateOptionsMenu(menu);
+        }
+
+        private void Toolbar_MenuItemClick(object sender, SupportToolBar.MenuItemClickEventArgs e)
+        {
+            switch (e.Item.ItemId)
+            {
+                case Resource.Id.search_exit_menu:
+                    ToolBarSearchView.Text = "";
+                    break;
+            }
+        }
 
         public override bool OnOptionsItemSelected(IMenuItem item)
         {
             switch (item.ItemId)
             {
                 case Android.Resource.Id.Home:
+                    ToolBarSearchView.Text = "";
                     Finish();
                     return true;
                 default:

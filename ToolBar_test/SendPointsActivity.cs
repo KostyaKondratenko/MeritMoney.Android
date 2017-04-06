@@ -9,32 +9,42 @@ using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 using Android.Support.V7.App;
+using System.Text.RegularExpressions;
 using SupportToolBar = Android.Support.V7.Widget.Toolbar;
+using SupportEditText = Android.Support.Design.Widget.TextInputEditText;
 
 namespace ToolBar_test
 {
     [Activity(Label = "SendPointsActivity")]
-    public class SendPointsActivity : AppCompatActivity
+    public class SendPointsActivity : BaseBottomBarActivity
     {
         private Button SendPointsButton;
         private SupportToolBar ToolBar;
-        private AutoCompleteTextView peopleList;
-        private EditText NumberOfPoints;
-
-        static string[] TEST = new string[] { "ONE", "TWO", "THREE", "FOUR", "FIVE" };
+        private SupportEditText peopleList;
+        private SupportEditText NumberOfPoints;
+        private TextView CanDistributePoints;
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
 
-            SetContentView(Resource.Layout.SendPoints);
+            FrameLayout SendPointsLayout = new FrameLayout(this);
+            SetContentView(SendPointsLayout);
+            base.CombineWith(SendPointsLayout, Resource.Layout.SendPoints, ActivityIs.Home);
 
             SendPointsButton = FindViewById<Button>(Resource.Id.SPSendButton);
             ToolBar = FindViewById<SupportToolBar>(Resource.Id.toolbar);
-            peopleList = FindViewById<AutoCompleteTextView>(Resource.Id.SPSelectPerson);
-            NumberOfPoints = FindViewById<EditText>(Resource.Id.SPNumOfPointsEditText);
-
+            peopleList = FindViewById<SupportEditText>(Resource.Id.SPSelectPerson);
+            NumberOfPoints = FindViewById<SupportEditText>(Resource.Id.SPNumOfPointsEditText);
+            CanDistributePoints = FindViewById<TextView>(Resource.Id.SPCDpoints);
             //SendPointsButton.Enabled = false;
+
+            InitializeProfile();
+
+            if (Android.OS.Build.VERSION.SdkInt >= BuildVersionCodes.Lollipop)
+            {
+                SendPointsButton.SetBackgroundResource(Resource.Color.button_ripple);
+            }
 
             SetSupportActionBar(ToolBar);
             SupportActionBar.Title = "Send Points";
@@ -42,19 +52,29 @@ namespace ToolBar_test
             SupportActionBar.SetHomeButtonEnabled(true);
             SupportActionBar.SetDisplayHomeAsUpEnabled(true);
 
-            //T = User Class
-            var AdapterOfPeople = new ArrayAdapter<String>(this, Resource.Layout.list_item, TEST);
-
-            peopleList.Adapter = AdapterOfPeople;
             SendPointsButton.Click += SendPointsButton_Clicked;
+            peopleList.Click += SelectPerson_Clicked;
+            NumberOfPoints.FocusChange += NumberOfPoints_FocusChanged;
         }
 
-        //XML: android:onClick="SelectPerson_Clicked"
-        
+        private void InitializeProfile()
+        {
+            ISharedPreferences info = Application.Context.GetSharedPreferences(GetString(Resource.String.ApplicationInfo), FileCreationMode.Private);
+            CanDistributePoints.Text = info.GetInt(GetString(Resource.String.DistributePoints), -1).ToString();
+        }
+
+        private void NumberOfPoints_FocusChanged(object sender, View.FocusChangeEventArgs e)
+        {
+            if (NumberOfPoints.Text != String.Empty && NumberOfPoints.Text[0] == '0' )
+            {
+                NumberOfPoints.Text = Regex.Replace(NumberOfPoints.Text, @"^0+", "");
+            }
+        }
+
         private void SelectPerson_Clicked(object sender, EventArgs e)
         {
-            //Intent intent = new Intent(this, typeof(SearchPersonActivity));
-            //this.StartActivity(intent);
+            Intent intent = new Intent(this, typeof(SearchPersonActivity));
+            this.StartActivity(intent);
         }
 
         private void SendPointsButton_Clicked(object sender, EventArgs e)
@@ -76,8 +96,6 @@ namespace ToolBar_test
             {
                 Toast.MakeText(this, "Please, fill in \"Select person\" field.", ToastLength.Short).Show();
             }
-            Intent intent = new Intent(this, typeof(SearchPersonActivity));
-            this.StartActivity(intent);
         }
 
         public override bool OnOptionsItemSelected(IMenuItem item)

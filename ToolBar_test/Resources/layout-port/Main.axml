@@ -1,288 +1,317 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
-    <include layout="@layout/toolbar" 
-             android:id="@+id/toolbar"/>
-    <LinearLayout
-        android:orientation="vertical"
-        android:minWidth="25px"
-        android:minHeight="25px"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+    <include
+        layout="@layout/toolbar"
+        android:id="@+id/toolbar" />
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/activity_main_swipe_refresh_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/toolbar"
-        android:id="@+id/MainLayout">
+        android:layout_below="@id/toolbar">
         <LinearLayout
-            android:orientation="horizontal"
+            android:orientation="vertical"
             android:minWidth="25px"
             android:minHeight="25px"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/TopHorizontalLayout">
-            <ToolBar_test.CircularImageView
-                android:id="@+id/UserAvatar"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:background="@drawable/imageView_frame"
-                android:layout_marginLeft="20dp"
-                android:layout_marginTop="20dp"
-                android:layout_marginBottom="10dp" />
+            android:layout_below="@id/toolbar"
+            android:id="@+id/MainLayout">
             <LinearLayout
-                android:orientation="vertical"
+                android:orientation="horizontal"
                 android:minWidth="25px"
                 android:minHeight="25px"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/LayoutForUserName">
-                <TextView
-                    android:text="User Name"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/UserName"
-                    android:paddingLeft="20dp"
-                    android:paddingTop="20dp" />
-                <TextView
-                    android:text="User e-mail"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:id="@+id/UserEmail"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingLeft="22dp"
-                    android:paddingTop="0dp" />
-            </LinearLayout>
-        </LinearLayout>
-        <LinearLayout
-            android:orientation="horizontal"
-            android:minWidth="25px"
-            android:minHeight="25px"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/HorizontalLayoutForRewards">
-            <LinearLayout
-                android:orientation="vertical"
-                android:minWidth="25px"
-                android:minHeight="25px"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:id="@+id/AvailableBalanceLayout"
-                android:layout_weight="1">
-                <TextView
-                    android:text="Available Balance"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/AvailableBalanceText"
-                    android:gravity="center"
-                    android:layout_marginBottom="10dp"
-                    android:layout_weight="1" />
-                <FrameLayout
-                    android:minWidth="25px"
-                    android:minHeight="25px"
-                    android:layout_width="match_parent"
-                    android:id="@+id/AvailableBalanceFrameLayout"
-                    android:backgroundTint="#00000000"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1">
-                    <ImageView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="@drawable/blueRect_style"
-                        android:id="@+id/ABblueSquare"
-                        android:layout_marginLeft="20dp"
-                        android:layout_marginRight="20dp" />
-                    <LinearLayout
-                        android:orientation="vertical"
-                        android:minWidth="25px"
-                        android:minHeight="25px"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:id="@+id/ABlinearLayout">
-                        <TextView
-                            android:text="0"
-                            android:textAppearance="?android:attr/textAppearanceLarge"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:textColor="@drawable/pointsText_style"
-                            android:id="@+id/ABpoints"
-                            android:gravity="center_horizontal"
-                            android:layout_marginTop="10dp" />
-                        <TextView
-                            android:text="points"
-                            android:textAppearance="?android:attr/textAppearanceMedium"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:textColor="@drawable/pointsText_style"
-                            android:id="@+id/ABpointsText"
-                            android:gravity="center_horizontal"
-                            android:layout_marginBottom="10dp" />
-                    </LinearLayout>
-                </FrameLayout>
-            </LinearLayout>
-            <LinearLayout
-                android:orientation="vertical"
-                android:minWidth="25px"
-                android:minHeight="25px"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:id="@+id/RewardsLayout"
-                android:layout_weight="1">
-                <TextView
-                    android:text="Rewards"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/RewardsText"
-                    android:gravity="center"
-                    android:layout_marginBottom="10dp"
-                    android:layout_weight="1" />
-                <FrameLayout
-                    android:minWidth="25px"
-                    android:minHeight="25px"
-                    android:layout_width="match_parent"
-                    android:id="@+id/RewardsFrameLayout"
-                    android:layout_height="wrap_content">
-                    <ImageView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="@drawable/blueRect_style"
-                        android:id="@+id/RblueSquare"
-                        android:layout_marginLeft="20dp"
-                        android:layout_marginRight="20dp" />
-                    <LinearLayout
-                        android:orientation="vertical"
-                        android:minWidth="25px"
-                        android:minHeight="25px"
-                        android:layout_width="match_parent"
-                        android:id="@+id/RlinearLayout"
-                        android:layout_height="wrap_content">
-                        <TextView
-                            android:text="0"
-                            android:textAppearance="?android:attr/textAppearanceLarge"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:id="@+id/Rpoints"
-                            android:textColor="@drawable/pointsText_style"
-                            android:gravity="center_horizontal"
-                            android:layout_marginTop="10dp" />
-                        <TextView
-                            android:text="points"
-                            android:textAppearance="?android:attr/textAppearanceMedium"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:textColor="@drawable/pointsText_style"
-                            android:id="@+id/RpointsText"
-                            android:gravity="center_horizontal"
-                            android:layout_marginBottom="10dp" />
-                    </LinearLayout>
-                </FrameLayout>
-            </LinearLayout>
-            <LinearLayout
-                android:orientation="vertical"
-                android:minWidth="25px"
-                android:minHeight="25px"
-                android:layout_width="1dp"
-                android:layout_height="match_parent"
-                android:id="@+id/LineLayout">
-                <Space
-                    android:id="@+id/LineSpace"
-                    android:layout_width="1dp"
-                    android:layout_height="0dp"
-                    android:layout_weight="1" />
-                <View
-                    android:layout_width="1dp"
-                    android:layout_height="0dp"
-                    android:background="#FFc8c7cc"
-                    android:layout_weight="1" />
-            </LinearLayout>
-            <LinearLayout
-                android:orientation="vertical"
-                android:minWidth="25px"
-                android:minHeight="25px"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:id="@+id/CanDistributeLayout"
-                android:layout_weight="1">
-                <TextView
-                    android:text="Can Distribute"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/CanDistributeText"
-                    android:gravity="center"
-                    android:layout_weight="1"
+                android:id="@+id/TopHorizontalLayout">
+                <ToolBar_test.CircularImageView
+                    android:id="@+id/UserAvatar"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:background="@drawable/imageView_frame"
+                    android:src="@drawable/ic_noavatar"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginTop="20dp"
                     android:layout_marginBottom="10dp" />
-                <FrameLayout
+                <LinearLayout
+                    android:orientation="vertical"
                     android:minWidth="25px"
                     android:minHeight="25px"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/CanDistributeFrameLayout"
-                    android:layout_weight="1"
-                    android:backgroundTint="#00000000">
-                    <ImageView
+                    android:id="@+id/LayoutForUserName">
+                    <TextView
+                        android:text="null"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="@drawable/blueRect_style"
-                        android:id="@+id/CDblueSquare"
-                        android:backgroundTint="#80059be5"
-                        android:layout_marginLeft="20dp"
-                        android:layout_marginRight="20dp" />
-                    <LinearLayout
-                        android:orientation="vertical"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/UserName"
+                        android:textSize="22dp"
+                        android:paddingLeft="20dp"
+                        android:paddingTop="20dp"
+                        android:paddingRight="5dp"
+                        android:maxLines="1"
+                        android:scrollHorizontally="true"
+                        android:ellipsize="end" />
+                    <TextView
+                        android:text="null"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:id="@+id/UserEmail"
+                        android:layout_width="match_parent"
+                        android:textSize="18dp"
+                        android:layout_height="wrap_content"
+                        android:paddingLeft="22dp"
+                        android:paddingRight="5dp"
+                        android:maxLines="1"
+                        android:scrollHorizontally="true"
+                        android:ellipsize="end" />
+                </LinearLayout>
+            </LinearLayout>
+            <LinearLayout
+                android:orientation="horizontal"
+                android:minWidth="25px"
+                android:minHeight="25px"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/HorizontalLayoutForRewards">
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:minWidth="25px"
+                    android:minHeight="25px"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/AvailableBalanceLayout"
+                    android:layout_weight="1">
+                    <TextView
+                        android:text="@string/BalanceText"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/AvailableBalanceText"
+                        android:gravity="center"
+                        android:layout_marginBottom="10dp"
+                        android:layout_weight="1"
+                        android:maxLines="2"
+                        android:textSize="22dp" />
+                    <FrameLayout
+                        android:minWidth="25px"
+                        android:minHeight="25px"
+                        android:layout_width="match_parent"
+                        android:id="@+id/AvailableBalanceFrameLayout"
+                        android:backgroundTint="#00000000"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1">
+                        <ImageView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@drawable/blueRect_style"
+                            android:id="@+id/ABblueSquare"
+                            android:layout_marginLeft="20dp"
+                            android:layout_marginRight="20dp" />
+                        <LinearLayout
+                            android:orientation="vertical"
+                            android:minWidth="25px"
+                            android:minHeight="25px"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:id="@+id/ABlinearLayout">
+                            <TextView
+                                android:text="0"
+                                android:textAppearance="?android:attr/textAppearanceLarge"
+                                android:layout_width="match_parent"
+                                android:textSize="22dp"
+                                android:layout_height="wrap_content"
+                                android:textColor="@drawable/pointsText_style"
+                                android:id="@+id/ABpoints"
+                                android:gravity="center_horizontal"
+                                android:layout_marginTop="10dp" />
+                            <TextView
+                                android:text="points"
+                                android:textAppearance="?android:attr/textAppearanceMedium"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:textSize="22dp"
+                                android:textColor="@drawable/pointsText_style"
+                                android:id="@+id/ABpointsText"
+                                android:gravity="center_horizontal"
+                                android:layout_marginBottom="10dp" />
+                        </LinearLayout>
+                    </FrameLayout>
+                </LinearLayout>
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:minWidth="25px"
+                    android:minHeight="25px"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:id="@+id/RewardsLayout"
+                    android:layout_weight="1">
+                    <TextView
+                        android:text="@string/RewardsText"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/RewardsText"
+                        android:gravity="center"
+                        android:layout_marginBottom="10dp"
+                        android:layout_weight="1"
+                        android:maxLines="1"
+                        android:textSize="22dp" />
+                    <FrameLayout
+                        android:minWidth="25px"
+                        android:minHeight="25px"
+                        android:layout_width="match_parent"
+                        android:id="@+id/RewardsFrameLayout"
+                        android:layout_height="wrap_content">
+                        <ImageView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@drawable/blueRect_style"
+                            android:id="@+id/RblueSquare"
+                            android:layout_marginLeft="20dp"
+                            android:layout_marginRight="20dp" />
+                        <LinearLayout
+                            android:orientation="vertical"
+                            android:minWidth="25px"
+                            android:minHeight="25px"
+                            android:layout_width="match_parent"
+                            android:id="@+id/RlinearLayout"
+                            android:layout_height="wrap_content">
+                            <TextView
+                                android:text="0"
+                                android:textSize="22dp"
+                                android:textAppearance="?android:attr/textAppearanceLarge"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/Rpoints"
+                                android:textColor="@drawable/pointsText_style"
+                                android:gravity="center_horizontal"
+                                android:layout_marginTop="10dp" />
+                            <TextView
+                                android:text="points"
+                                android:textSize="22dp"
+                                android:textAppearance="?android:attr/textAppearanceMedium"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:textColor="@drawable/pointsText_style"
+                                android:id="@+id/RpointsText"
+                                android:gravity="center_horizontal"
+                                android:layout_marginBottom="10dp" />
+                        </LinearLayout>
+                    </FrameLayout>
+                </LinearLayout>
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:minWidth="25px"
+                    android:minHeight="25px"
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:id="@+id/LineLayout">
+                    <Space
+                        android:id="@+id/LineSpace"
+                        android:layout_width="1dp"
+                        android:layout_height="0dp"
+                        android:layout_weight="1" />
+                    <View
+                        android:layout_width="1dp"
+                        android:layout_height="0dp"
+                        android:background="#FFc8c7cc"
+                        android:layout_weight="1" />
+                </LinearLayout>
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:minWidth="25px"
+                    android:minHeight="25px"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:id="@+id/CanDistributeLayout"
+                    android:layout_weight="1">
+                    <TextView
+                        android:text="@string/DistributeText"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/CanDistributeText"
+                        android:gravity="center"
+                        android:layout_weight="1"
+                        android:layout_marginBottom="10dp"
+                        android:maxLines="2"
+                        android:textSize="22dp" />
+                    <FrameLayout
                         android:minWidth="25px"
                         android:minHeight="25px"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:id="@+id/CDlinearLayout">
-                        <TextView
-                            android:text="0"
-                            android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:id="@+id/CanDistributeFrameLayout"
+                        android:layout_weight="1"
+                        android:backgroundTint="#00000000">
+                        <ImageView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@drawable/blueRect_style"
+                            android:id="@+id/CDblueSquare"
+                            app:backgroundTint="#80059be5"
+                            android:layout_marginLeft="20dp"
+                            android:layout_marginRight="20dp" />
+                        <LinearLayout
+                            android:orientation="vertical"
+                            android:minWidth="25px"
+                            android:minHeight="25px"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:textColor="@drawable/button_text_style"
-                            android:id="@+id/CDpoints"
-                            android:gravity="center_horizontal"
-                            android:layout_marginTop="10dp" />
-                        <TextView
-                            android:text="points"
-                            android:textAppearance="?android:attr/textAppearanceMedium"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:textColor="@drawable/button_text_style"
-                            android:id="@+id/CDpointsText"
-                            android:gravity="center_horizontal"
-                            android:layout_marginBottom="10dp" />
-                    </LinearLayout>
-                </FrameLayout>
+                            android:id="@+id/CDlinearLayout">
+                            <TextView
+                                android:text="0"
+                                android:textSize="22dp"
+                                android:textAppearance="?android:attr/textAppearanceLarge"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:textColor="@drawable/button_text_style"
+                                android:id="@+id/CDpoints"
+                                android:gravity="center_horizontal"
+                                android:layout_marginTop="10dp" />
+                            <TextView
+                                android:text="points"
+                                android:textSize="22dp"
+                                android:textAppearance="?android:attr/textAppearanceMedium"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:textColor="@drawable/button_text_style"
+                                android:id="@+id/CDpointsText"
+                                android:gravity="center_horizontal"
+                                android:layout_marginBottom="10dp" />
+                        </LinearLayout>
+                    </FrameLayout>
+                </LinearLayout>
             </LinearLayout>
+            <FrameLayout
+                android:minWidth="25px"
+                android:minHeight="25px"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/ButtonFrameLayout">
+                <Button
+                    android:text="@string/ThanksButton"
+                    android:textColor="@drawable/button_text_style"
+                    android:textSize="30dp"
+                    android:textAllCaps="false"
+                    android:theme="@style/BlueButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/thanksButton"
+                    android:layout_gravity="center"
+                    android:fadingEdge="horizontal"
+                    android:fadingEdgeLength="4dp"
+                    android:gravity="center"
+                    android:paddingLeft="15dp"
+                    android:paddingRight="15dp"
+                    android:paddingBottom="25dp"
+                    android:paddingTop="25dp" />
+            </FrameLayout>
+        <!--app:backgroundTint="@color/button_ripple"-->
         </LinearLayout>
-        <FrameLayout
-            android:minWidth="25px"
-            android:minHeight="25px"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/ButtonFrameLayout">
-            <Button
-                android:text="Say Thanks!"
-                android:textColor="@drawable/button_text_style"
-                android:textSize="30sp"
-                android:textAllCaps="false"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/thanksButton"
-                android:background="@drawable/button_ripple"
-                android:layout_gravity="center"
-                android:fadingEdge="horizontal"
-                android:fadingEdgeLength="4dp"
-                android:gravity="center"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp"
-                android:paddingLeft="20dp"
-                android:paddingRight="20dp"
-                android:paddingBottom="30dp"
-                android:paddingTop="30dp" />
-        </FrameLayout>
-    </LinearLayout>
+    </android.support.v4.widget.SwipeRefreshLayout>
 </RelativeLayout>
