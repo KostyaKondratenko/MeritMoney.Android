@@ -11,7 +11,7 @@
 
 [assembly: global::Android.Runtime.ResourceDesignerAttribute("ToolBar_test.Resource", IsApplication=true)]
 
-namespace ToolBar_test
+namespace Merit_Money
 {
 	
 	

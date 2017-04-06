@@ -12,7 +12,7 @@ using Android.Widget;
 using Android.Support.V7.App;
 using SupportBottomBar = Android.Support.Design.Widget.BottomNavigationView;
 
-namespace ToolBar_test
+namespace Merit_Money
 {
     [Activity(Label = "BaseBottomBarActivity")]
     public class BaseBottomBarActivity : AppCompatActivity

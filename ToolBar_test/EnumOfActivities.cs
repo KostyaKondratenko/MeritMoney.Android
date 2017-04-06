@@ -1,4 +1,4 @@
-namespace ToolBar_test
+namespace Merit_Money
 {
     public enum ActivityIs
     {

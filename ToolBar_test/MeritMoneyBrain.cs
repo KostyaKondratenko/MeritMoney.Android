@@ -14,7 +14,7 @@ using System.Net;
 using System.IO;
 using System.Threading.Tasks;
 
-namespace ToolBar_test
+namespace Merit_Money
 {
     public static class MeritMoneyBrain
     {

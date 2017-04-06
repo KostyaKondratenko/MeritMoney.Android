@@ -13,7 +13,7 @@ using System.Text.RegularExpressions;
 using SupportToolBar = Android.Support.V7.Widget.Toolbar;
 using SupportEditText = Android.Support.Design.Widget.TextInputEditText;
 
-namespace ToolBar_test
+namespace Merit_Money
 {
     [Activity(Label = "SendPointsActivity")]
     public class SendPointsActivity : BaseBottomBarActivity

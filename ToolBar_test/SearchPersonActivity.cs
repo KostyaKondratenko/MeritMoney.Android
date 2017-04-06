@@ -12,7 +12,7 @@ using Android.Support.V7.App;
 using SupportSearchView = Android.Support.V7.Widget.SearchView;
 using SupportToolBar = Android.Support.V7.Widget.Toolbar;
 
-namespace ToolBar_test
+namespace Merit_Money
 {
     [Activity(Label = "SearchPersonActivity")]
     public class SearchPersonActivity : AppCompatActivity
