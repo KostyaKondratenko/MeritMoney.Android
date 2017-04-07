@@ -37,7 +37,7 @@
             p1:layout_height="match_parent"
             p1:id="@+id/linearLayout4"
             p1:gravity="center">
-          <ToolBar_test.CircularImageView
+          <Merit_Money.CircularImageView
               p1:id="@id/UserAvatar"
               p1:background="@drawable/imageView_frame"
               p1:layout_width="120dp"

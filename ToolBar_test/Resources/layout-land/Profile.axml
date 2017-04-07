@@ -21,8 +21,8 @@
             android:id="@+id/UserInfoLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-            <ToolBar_test.CircularImageView
-                android:layout_width="120dp"
+          <Merit_Money.CircularImageView
+              android:layout_width="120dp"
                 android:layout_height="120dp"
                 android:background="@drawable/imageView_frame"
                 android:src="@drawable/ic_noavatar"
