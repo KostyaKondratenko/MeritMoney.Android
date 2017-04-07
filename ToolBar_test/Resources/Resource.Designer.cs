@@ -3291,6 +3291,9 @@ namespace Merit_Money
 			// aapt resource value: 0x7f080031
 			public const int ID = 2131230769;
 			
+			// aapt resource value: 0x7f08003b
+			public const int LogIn = 2131230779;
+			
 			// aapt resource value: 0x7f080036
 			public const int RewardsPoints = 2131230774;
 			

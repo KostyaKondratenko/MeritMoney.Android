@@ -22,5 +22,6 @@
   <string name="EmailNotification">emailNotification</string>
   <string name="WebHookNotification">webhookNotification</string>
   <string name="CurrentAccessToken">AccessToken</string>
+  <string name="LogIn">LOG_IN</string>
 </resources>
 

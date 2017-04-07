@@ -12,6 +12,7 @@ using Android.Widget;
 using Android.Support.V7.App;
 using SupportToolBar = Android.Support.V7.Widget.Toolbar;
 using Android.Views.InputMethods;
+using System.Threading;
 
 namespace Merit_Money
 {
@@ -27,6 +28,7 @@ namespace Merit_Money
         private CircularImageView UserAvatar;
         private TextView UserEmail;
         private Switch NotificationSwitch;
+        private String avatarUrl;
 
         public static readonly int PickImageId = 1000;
 
@@ -47,7 +49,12 @@ namespace Merit_Money
             UserName = FindViewById<TextView>(Resource.Id.ProfileUserName);
             UserEmail = FindViewById<TextView>(Resource.Id.ProfileUserEmail);
 
-            InitializeProfile();
+            Thread thread = new Thread(() =>
+            {
+                InitializeProfile();
+            });
+            thread.Start();
+            //SetAvatar();
 
             MainToolbar.InflateMenu(Resource.Menu.profile_top_menu);
             MainToolbar.Title = "Profile";
@@ -84,8 +91,12 @@ namespace Merit_Money
             UserName.Text = info.GetString(GetString(Resource.String.UserName), String.Empty);
             UserEmail.Text = info.GetString(GetString(Resource.String.UserEmail), String.Empty);
             NotificationSwitch.Checked = info.GetBoolean(GetString(Resource.String.EmailNotification), false);
+            avatarUrl = info.GetString(GetString(Resource.String.UserAvatar), String.Empty);
+        }
 
-            var imageBitmap = base.GetImageBitmapFromUrl(info.GetString(GetString(Resource.String.UserAvatar), String.Empty));
+        void SetAvatar()
+        {
+            var imageBitmap = base.GetImageBitmapFromUrl(avatarUrl);
             if (imageBitmap != null)
             {
                 UserAvatar.SetImageBitmap(imageBitmap);

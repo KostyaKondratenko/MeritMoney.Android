@@ -42,7 +42,7 @@ namespace Merit_Money
                 await MeritMoneyBrain.AccessToken(Email.Text);
                 ProfileClass profile = await MeritMoneyBrain.SetProfileStaff();
                 Intent returnIntent = new Intent();
-                //returnIntent.PutExtra("LOG_IN", true);
+                returnIntent.PutExtra(GetString(Resource.String.LogIn), true);
                 SetResult(Result.Ok, returnIntent);
                 SaveData(profile);
                 Finish();
