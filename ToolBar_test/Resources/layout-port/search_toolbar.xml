@@ -12,8 +12,8 @@
     app:contentInsetLeft="72dp"
     app:contentInsetStart="72dp"
     android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
-    android:popupTheme="@style/ActionBarPopupThemeOverlay"
-    android:theme="@style/ActionBarThemeOverlay">
+  <!--android:popupTheme="@style/ActionBarPopupThemeOverlay"
+    android:theme="@style/ActionBarThemeOverlay"-->
   
   <LinearLayout
       android:id="@+id/search_container"

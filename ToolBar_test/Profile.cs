@@ -12,7 +12,7 @@ using Android.Widget;
 
 namespace Merit_Money
 {
-    public class ProfileClass
+    public class Profile
     {
         public String ID;
         public String name;
@@ -24,7 +24,7 @@ namespace Merit_Money
         public bool emailNotificaion;
         public bool webhookNotification;
 
-        public ProfileClass()
+        public Profile()
         {
             ID = String.Empty;
             name = "Igor Cubilya";
@@ -37,7 +37,7 @@ namespace Merit_Money
             webhookNotification = false;
         }
 
-        public ProfileClass(string id, string name, string email, string url, int b, int r, int d, bool emailNot, bool webNot)
+        public Profile(string id, string name, string email, string url, int b, int r, int d, bool emailNot, bool webNot)
         {
             ID = id;
             this.name = name;
@@ -48,6 +48,22 @@ namespace Merit_Money
             distribute = d;
             emailNotificaion = emailNot;
             webhookNotification = webNot;
+        }
+    }
+
+    public class SingleUser
+    {
+        public String ID { get; set; }
+        public String name { get; set; }
+        public String email { get; set; }
+        public String imageUrl { get; set; }
+
+        public SingleUser(String ID, String name, String email, String imageUrl)
+        {
+            this.ID = ID;
+            this.name = name;
+            this.email = email;
+            this.imageUrl = imageUrl;
         }
     }
 }

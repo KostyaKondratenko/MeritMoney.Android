@@ -14,6 +14,7 @@ using System.Net;
 using System.IO;
 using System.Threading.Tasks;
 using Android.Support.V7.App;
+using ToolBar_test;
 
 namespace Merit_Money
 {
@@ -40,7 +41,7 @@ namespace Merit_Money
             if (Email.Text != String.Empty)
             {
                 await MeritMoneyBrain.AccessToken(Email.Text);
-                ProfileClass profile = await MeritMoneyBrain.SetProfileStaff();
+                Profile profile = await MeritMoneyBrain.GetProfile();
                 Intent returnIntent = new Intent();
                 returnIntent.PutExtra(GetString(Resource.String.LogIn), true);
                 SetResult(Result.Ok, returnIntent);
@@ -49,7 +50,7 @@ namespace Merit_Money
             }
         }
 
-        private void SaveData(ProfileClass profile)
+        private void SaveData(Profile profile)
         {
             ISharedPreferences info = Application.Context.GetSharedPreferences(GetString(Resource.String.ApplicationInfo), FileCreationMode.Private);
             ISharedPreferencesEditor edit = info.Edit();

@@ -3,6 +3,7 @@ using Android.Widget;
 using Android.OS;
 using Android.Views;
 using System;
+using System.Threading;
 using Android.Content;
 using Android.Runtime;
 using Android.Support.V7.App;
@@ -11,9 +12,9 @@ using System.Net;
 using System.IO;
 using System.Threading.Tasks;
 using Android.Graphics;
+using ToolBar_test;
 using Android.Support.V4.Widget;
 using SupportToolBar = Android.Support.V7.Widget.Toolbar;
-using System.Threading;
 
 namespace Merit_Money
 {
@@ -32,7 +33,6 @@ namespace Merit_Money
         private TextView Rewards;
         private TextView Distribute;
         private CircularImageView UserAvatar;
-        private String avatarUrl;
 
         private static readonly int LOG_IN_REQUEST = 1;
 
@@ -70,7 +70,6 @@ namespace Merit_Money
                 });
                 thread.Start();
             }
-            //SetAvatar();
 
             //Correct "point(s)" textView
 
@@ -109,7 +108,7 @@ namespace Merit_Money
 
         private async void Profile_Refresh(object sender, EventArgs e)
         {
-            ProfileClass profile = await MeritMoneyBrain.SetProfileStaff();
+            Profile profile = await MeritMoneyBrain.GetProfile();
             ISharedPreferences info = Application.Context.GetSharedPreferences(GetString(Resource.String.ApplicationInfo), FileCreationMode.Private);
             ISharedPreferencesEditor edit = info.Edit();
             edit.PutString(GetString(Resource.String.UserName), profile.name);
@@ -146,7 +145,7 @@ namespace Merit_Money
             }
         }
 
-        private bool InitializeProfile()
+        private void InitializeProfile()
         {
             ISharedPreferences info = Application.Context.GetSharedPreferences(GetString(Resource.String.ApplicationInfo), FileCreationMode.Private);
             UserName.Text = info.GetString(GetString(Resource.String.UserName), String.Empty);
@@ -155,15 +154,26 @@ namespace Merit_Money
             Rewards.Text = info.GetInt(GetString(Resource.String.RewardsPoints), -1).ToString();
             Distribute.Text = info.GetInt(GetString(Resource.String.DistributePoints), -1).ToString();
             MeritMoneyBrain.CurrentAccessToken = info.GetString(GetString(Resource.String.CurrentAccessToken), String.Empty);
-            avatarUrl = info.GetString(GetString(Resource.String.UserAvatar), String.Empty);
 
-            if (UserName.Text == String.Empty || UserEmail.Text == String.Empty ||
-                Balance.Text == "-1" || Rewards.Text == "-1" || Distribute.Text == "-1")
-            {
-                return false;
-            }
+            //this.RunOnUiThread(() => {
+            //    var imageBitmap = base.GetImageBitmapFromUrl(info.GetString(GetString(Resource.String.UserAvatar), String.Empty));
+            //    if (imageBitmap != null)
+            //    {
+            //        UserAvatar.SetImageBitmap(imageBitmap);
+            //    }
+            //    else
+            //    {
+            //        UserAvatar.SetImageResource(Resource.Drawable.ic_noavatar);
+            //    }
+            //});
 
-            return true;
+            //if (UserName.Text == String.Empty || UserEmail.Text == String.Empty ||
+            //    Balance.Text == "-1" || Rewards.Text == "-1" || Distribute.Text == "-1")
+            //{
+            //    return false;
+            //}
+
+            //return true;
         }
 
         private async void MainToolbar_MenuItemClick(object sender, SupportToolBar.MenuItemClickEventArgs e)
@@ -188,19 +198,6 @@ namespace Merit_Money
         {
             MenuInflater.Inflate(Resource.Menu.top_menu, menu);
             return base.OnCreateOptionsMenu(menu);
-        }
-
-        private void SetAvatar()
-        {
-            var imageBitmap = base.GetImageBitmapFromUrl(avatarUrl);
-            if (imageBitmap != null)
-            {
-                UserAvatar.SetImageBitmap(imageBitmap);
-            }
-            else
-            {
-                UserAvatar.SetImageResource(Resource.Drawable.ic_noavatar);
-            }
         }
     }
 }

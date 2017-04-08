@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-
 using Android.App;
 using Android.Content;
 using Android.OS;
@@ -10,9 +9,10 @@ using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 using Android.Support.V7.App;
-using SupportToolBar = Android.Support.V7.Widget.Toolbar;
 using Android.Views.InputMethods;
 using System.Threading;
+using ToolBar_test;
+using SupportToolBar = Android.Support.V7.Widget.Toolbar;
 
 namespace Merit_Money
 {
@@ -28,7 +28,6 @@ namespace Merit_Money
         private CircularImageView UserAvatar;
         private TextView UserEmail;
         private Switch NotificationSwitch;
-        private String avatarUrl;
 
         public static readonly int PickImageId = 1000;
 
@@ -54,7 +53,6 @@ namespace Merit_Money
                 InitializeProfile();
             });
             thread.Start();
-            //SetAvatar();
 
             MainToolbar.InflateMenu(Resource.Menu.profile_top_menu);
             MainToolbar.Title = "Profile";
@@ -91,20 +89,17 @@ namespace Merit_Money
             UserName.Text = info.GetString(GetString(Resource.String.UserName), String.Empty);
             UserEmail.Text = info.GetString(GetString(Resource.String.UserEmail), String.Empty);
             NotificationSwitch.Checked = info.GetBoolean(GetString(Resource.String.EmailNotification), false);
-            avatarUrl = info.GetString(GetString(Resource.String.UserAvatar), String.Empty);
-        }
-
-        void SetAvatar()
-        {
-            var imageBitmap = base.GetImageBitmapFromUrl(avatarUrl);
-            if (imageBitmap != null)
-            {
-                UserAvatar.SetImageBitmap(imageBitmap);
-            }
-            else
-            {
-                UserAvatar.SetImageResource(Resource.Drawable.ic_noavatar);
-            }
+            //this.RunOnUiThread(() => {
+            //    var imageBitmap = base.GetImageBitmapFromUrl(info.GetString(GetString(Resource.String.UserAvatar), String.Empty));
+            //    if (imageBitmap != null)
+            //    {
+            //        UserAvatar.SetImageBitmap(imageBitmap);
+            //    }
+            //    else
+            //    {
+            //        UserAvatar.SetImageResource(Resource.Drawable.ic_noavatar);
+            //    }
+            //});
         }
 
         private void SetSwitchState()
