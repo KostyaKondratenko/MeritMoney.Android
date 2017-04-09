@@ -27,33 +27,6 @@ namespace Merit_Money
             return (int)(padding_in_dp * scale + 0.5f);
         }
 
-        protected Android.Graphics.Bitmap GetImageBitmapFromUrl(string url)
-        {
-            Android.Graphics.Bitmap imageBitmap = null;
-
-            using (var webClient = new System.Net.WebClient())
-            {
-                if (url != String.Empty)
-                {
-                    try
-                    {
-                        var imageBytes = webClient.DownloadData(url);
-                        if (imageBytes != null && imageBytes.Length > 0)
-                        {
-                            imageBitmap = Android.Graphics.BitmapFactory.DecodeByteArray(imageBytes, 0, imageBytes.Length);
-                        }
-                    }
-                    catch(System.Net.WebException)
-                    {
-                           return null;   
-                    }
-                    
-                }
-            }
-
-            return imageBitmap;
-        }
-
         private int GetBottomHeightInPx()
         {
             return ConvertDpToPx(BottomHeightInDps);

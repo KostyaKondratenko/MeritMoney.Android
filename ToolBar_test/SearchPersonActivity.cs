@@ -45,7 +45,7 @@ namespace Merit_Money
             ToolBarSearchView = FindViewById<EditText>(Resource.Id.search_view);
 
             ProgressDialog progressDialog = ProgressDialog.Show(this, "", "Loading. Please wait...", true);
-            SearchUsersList = await MeritMoneyBrain.GetListOfUsers();
+            SearchUsersList = await MeritMoneyBrain.GetListOfUsers(Application.Context);
             progressDialog.Dismiss();
 
             RecyclerViewManager = new LinearLayoutManager(this);
@@ -71,7 +71,6 @@ namespace Merit_Money
                     newList.Add(user);
                 }
             }
-
             RecyclerViewAdapter = new Users(newList);
             SearchUserView.SetAdapter(RecyclerViewAdapter);
         }
@@ -138,7 +137,7 @@ namespace Merit_Money
             ListView Holder = holder as ListView;
             Holder.Name.Text = MeritMoneyUsers[position].name;
             Holder.Email.Text = MeritMoneyUsers[position].email;
-            //AVATAR
+            Holder.Avatar.SetImageBitmap(MeritMoneyUsers[position].image);
         }
 
         public override SupportRecyclerView.ViewHolder OnCreateViewHolder(ViewGroup parent, int viewType)

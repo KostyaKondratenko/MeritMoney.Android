@@ -14,6 +14,7 @@ using System.Net;
 using System.IO;
 using System.Threading.Tasks;
 using Org.Json;
+using ToolBar_test;
 
 namespace Merit_Money
 {
@@ -199,9 +200,11 @@ namespace Merit_Money
             }
         }
 
-        public static async Task<List<SingleUser>> GetListOfUsers()
+        public static async Task<List<SingleUser>> GetListOfUsers(Context context)
         {
             List<SingleUser> ListOfUsers = new List<SingleUser>();
+            ISharedPreferences info = context.GetSharedPreferences(context.GetString(Resource.String.ApplicationInfo), FileCreationMode.Private);
+            String profileEmail = info.GetString(context.GetString(Resource.String.UserEmail), String.Empty);
             try
             {
                 // Create an HTTP web request using the URL:
@@ -244,7 +247,13 @@ namespace Merit_Money
                     String ID = jsonobject.GetString("ID");
                     String email = jsonobject.GetString("email");
                     String imUrl = jsonobject.GetString("imageUrl");
-                    ListOfUsers.Add(new SingleUser(ID, name, email, imUrl));
+
+                    Android.Graphics.Bitmap image = GetImageBitmapFromUrl(imUrl);
+
+                    if (email != profileEmail && email!=String.Empty)
+                    {
+                        ListOfUsers.Add(new SingleUser(ID, name, email, image));
+                    }
                 }
             }
             catch (WebException exception)
@@ -261,6 +270,31 @@ namespace Merit_Money
                 Console.WriteLine(e.Message);
             }
             return ListOfUsers;
+        }
+
+        public static Android.Graphics.Bitmap GetImageBitmapFromUrl(string url)
+        {
+            Android.Graphics.Bitmap imageBitmap = null;
+
+            using (var webClient = new System.Net.WebClient())
+            {
+                if (url != String.Empty)
+                {
+                    try
+                    {
+                        var imageBytes = webClient.DownloadData(url);
+                        if (imageBytes != null && imageBytes.Length > 0)
+                        {
+                            imageBitmap = Android.Graphics.BitmapFactory.DecodeByteArray(imageBytes, 0, imageBytes.Length);
+                        }
+                    }
+                    catch (System.Net.WebException)
+                    {
+                        return null;
+                    }
+                }
+            }
+            return imageBitmap;
         }
     }
 }

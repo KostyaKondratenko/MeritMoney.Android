@@ -56,14 +56,14 @@ namespace Merit_Money
         public String ID { get; set; }
         public String name { get; set; }
         public String email { get; set; }
-        public String imageUrl { get; set; }
+        public Android.Graphics.Bitmap image { get; set; }
 
-        public SingleUser(String ID, String name, String email, String imageUrl)
+        public SingleUser(String ID, String name, String email, Android.Graphics.Bitmap image)
         {
             this.ID = ID;
             this.name = name;
             this.email = email;
-            this.imageUrl = imageUrl;
+            this.image = image;
         }
     }
 }
