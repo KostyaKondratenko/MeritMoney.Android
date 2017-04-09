@@ -21,9 +21,12 @@ namespace Merit_Money
     {
         private Button SendPointsButton;
         private SupportToolBar ToolBar;
-        private SupportEditText peopleList;
+        private SupportEditText userNameToDistribute;
         private SupportEditText NumberOfPoints;
+        private String userIDtoDistribute;
         private TextView CanDistributePoints;
+
+        private static readonly int SELECT_PERSON_REQUEST = 5;
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
@@ -35,7 +38,7 @@ namespace Merit_Money
 
             SendPointsButton = FindViewById<Button>(Resource.Id.SPSendButton);
             ToolBar = FindViewById<SupportToolBar>(Resource.Id.toolbar);
-            peopleList = FindViewById<SupportEditText>(Resource.Id.SPSelectPerson);
+            userNameToDistribute = FindViewById<SupportEditText>(Resource.Id.SPSelectPerson);
             NumberOfPoints = FindViewById<SupportEditText>(Resource.Id.SPNumOfPointsEditText);
             CanDistributePoints = FindViewById<TextView>(Resource.Id.SPCDpoints);
             //SendPointsButton.Enabled = false;
@@ -54,7 +57,7 @@ namespace Merit_Money
             SupportActionBar.SetDisplayHomeAsUpEnabled(true);
 
             SendPointsButton.Click += SendPointsButton_Clicked;
-            peopleList.Click += SelectPerson_Clicked;
+            userNameToDistribute.Click += SelectPerson_Clicked;
             NumberOfPoints.FocusChange += NumberOfPoints_FocusChanged;
         }
 
@@ -75,23 +78,36 @@ namespace Merit_Money
         private void SelectPerson_Clicked(object sender, EventArgs e)
         {
             Intent intent = new Intent(this, typeof(SearchPersonActivity));
-            this.StartActivity(intent);
+            this.StartActivityForResult(intent,SELECT_PERSON_REQUEST);
+        }
+
+        protected override void OnActivityResult(int requestCode, [GeneratedEnum] Result resultCode, Intent data)
+        {
+            if (requestCode == SELECT_PERSON_REQUEST)
+            {
+                // Make sure the request was successful
+                if (resultCode == Result.Ok)
+                {
+                    userIDtoDistribute = data.GetStringExtra(GetString(Resource.String.ID));
+                    userNameToDistribute.Text = data.GetStringExtra(GetString(Resource.String.UserName));
+                }
+            }
         }
 
         private void SendPointsButton_Clicked(object sender, EventArgs e)
         {
             //Add nuber of points, a person
-            if (NumberOfPoints.Text != String.Empty && peopleList.Text != String.Empty)
+            if (NumberOfPoints.Text != String.Empty && userNameToDistribute.Text != String.Empty)
             {
-                Toast.MakeText(this, NumberOfPoints.Text + " points were sent to "+ peopleList.Text, ToastLength.Short).Show();
+                Toast.MakeText(this, NumberOfPoints.Text + " points were sent to "+ userNameToDistribute.Text, ToastLength.Short).Show();
             }
-            else if(NumberOfPoints.Text == String.Empty && peopleList.Text == String.Empty)
+            else if(NumberOfPoints.Text == String.Empty && userNameToDistribute.Text == String.Empty)
             {
                 Toast.MakeText(this, "Please, fill in \"Select person\" and \"# of points\" fields.", ToastLength.Short).Show();
             }
             else if(NumberOfPoints.Text == String.Empty)
             {
-                Toast.MakeText(this, "Please, fill in \"# of points\" field." + peopleList.Text, ToastLength.Short).Show();
+                Toast.MakeText(this, "Please, fill in \"# of points\" field." + userNameToDistribute.Text, ToastLength.Short).Show();
             }
             else
             {

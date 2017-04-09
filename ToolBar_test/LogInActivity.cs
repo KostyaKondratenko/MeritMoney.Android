@@ -54,6 +54,7 @@ namespace Merit_Money
         {
             ISharedPreferences info = Application.Context.GetSharedPreferences(GetString(Resource.String.ApplicationInfo), FileCreationMode.Private);
             ISharedPreferencesEditor edit = info.Edit();
+            edit.PutString(GetString(Resource.String.ID), profile.ID);
             edit.PutString(GetString(Resource.String.UserName), profile.name);
             edit.PutString(GetString(Resource.String.UserEmail), profile.email);
             edit.PutString(GetString(Resource.String.UserAvatar), profile.imageUri);

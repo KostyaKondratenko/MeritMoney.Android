@@ -59,7 +59,7 @@ namespace Merit_Money
 
             RecyclerViewManager = new LinearLayoutManager(this);
             SearchUserView.SetLayoutManager(RecyclerViewManager);
-            RecyclerViewAdapter = new Users(SearchUsersList);
+            RecyclerViewAdapter = new UsersAdapter(SearchUsersList, this);
             SearchUserView.SetAdapter(RecyclerViewAdapter);
 
             ToolBarSearchView.TextChanged += ToolBarSearchView_TextChanged;
@@ -80,7 +80,7 @@ namespace Merit_Money
                     newList.Add(user);
                 }
             }
-            RecyclerViewAdapter = new Users(newList);
+            RecyclerViewAdapter = new UsersAdapter(newList, this);
             SearchUserView.SetAdapter(RecyclerViewAdapter);
         }
 
@@ -114,25 +114,43 @@ namespace Merit_Money
         }
     }
 
-    public class Users : RecyclerView.Adapter
+    public class UsersAdapter : RecyclerView.Adapter
     {
         private List<SingleUser> MeritMoneyUsers;
+        private SearchPersonActivity activity;
 
-        public Users(List<SingleUser> users)
+        public UsersAdapter(List<SingleUser> users, SearchPersonActivity activity)
         {
             MeritMoneyUsers = users;
+            this.activity = activity;
         }
 
-        public class ListView : RecyclerView.ViewHolder
+        public class ListViewHolder : RecyclerView.ViewHolder, View.IOnClickListener
         {
             public View MainView { get; set; }
             public TextView Name { get; set; }
             public TextView Email { get; set; }
             public CircularImageView Avatar { get; set; }
+            public List<SingleUser> users;// = new List<SingleUser>();
+            public SearchPersonActivity activity;
 
-            public ListView(View view) : base(view)
+            public ListViewHolder(View view, SearchPersonActivity activity, List<SingleUser> users) : base(view)
             {
                 MainView = view;
+                this.users = users;
+                this.activity = activity;
+                view.SetOnClickListener(this);
+            }
+
+            public void OnClick(View v)
+            {
+                int position = AdapterPosition;
+                SingleUser user = users[position];
+                Intent returnIntent = new Intent();
+                returnIntent.PutExtra(Application.Context.GetString(Resource.String.ID), user.ID);
+                returnIntent.PutExtra(Application.Context.GetString(Resource.String.UserName), user.name);
+                activity.SetResult(Result.Ok, returnIntent);
+                activity.Finish();
             }
         }
 
@@ -143,7 +161,7 @@ namespace Merit_Money
 
         public override void OnBindViewHolder(SupportRecyclerView.ViewHolder holder, int position)
         {
-            ListView Holder = holder as ListView;
+            ListViewHolder Holder = holder as ListViewHolder;
             Holder.Name.Text = MeritMoneyUsers[position].name;
             Holder.Email.Text = MeritMoneyUsers[position].email;
             Holder.Avatar.SetImageBitmap(MeritMoneyUsers[position].image);
@@ -157,7 +175,7 @@ namespace Merit_Money
             TextView itemEmail = item.FindViewById<TextView>(Resource.Id.searchEmail);
             CircularImageView itemAvatar = item.FindViewById<CircularImageView>(Resource.Id.searchAvatar);
 
-            ListView view = new ListView(item) { Name = itemName, Email = itemEmail, Avatar = itemAvatar };
+            ListViewHolder view = new ListViewHolder(item, activity, MeritMoneyUsers) { Name = itemName, Email = itemEmail, Avatar = itemAvatar };
             return view;
         }
 

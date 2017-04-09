@@ -181,8 +181,6 @@ namespace Merit_Money
 
                         stream.Flush();
                         stream.Close();
-                        // Return the JSON document:
-                        //return jsonDoc;
                     }
                 }
             }
@@ -205,7 +203,7 @@ namespace Merit_Money
         {
             List<SingleUser> ListOfUsers = new List<SingleUser>();
             ISharedPreferences info = Application.Context.GetSharedPreferences(Application.Context.GetString(Resource.String.ApplicationInfo), FileCreationMode.Private);
-            String profileEmail = info.GetString(Application.Context.GetString(Resource.String.UserEmail), String.Empty);
+            String currentID = info.GetString(Application.Context.GetString(Resource.String.ID), String.Empty);
             try
             {
                 // Create an HTTP web request using the URL:
@@ -234,6 +232,7 @@ namespace Merit_Money
                         {
                             Console.Out.WriteLine("Response Body: \r\n {0}", jsonDoc.ToString());
                             JSONArray array = new JSONArray(jsonDoc.ToString());
+                            Android.Graphics.Bitmap img = Android.Graphics.BitmapFactory.DecodeResource(Application.Context.Resources, Resource.Drawable.ic_noavatar);
                             for (int i = 0; i < array.Length(); i++)
                             {
                                 JSONObject jsonobject = array.GetJSONObject(i);
@@ -242,9 +241,8 @@ namespace Merit_Money
                                 String email = jsonobject.GetString("email");
                                 String imUrl = jsonobject.GetString("imageUrl");
 
-                                if (email != profileEmail && email != String.Empty)
+                                if (ID != currentID && ID != String.Empty)
                                 {
-                                    Android.Graphics.Bitmap img = Android.Graphics.BitmapFactory.DecodeResource(Application.Context.Resources, Resource.Drawable.ic_noavatar);
                                     ListOfUsers.Add(new SingleUser(ID, name, email, imUrl, img));
                                 }
                             }
@@ -285,6 +283,10 @@ namespace Merit_Money
                         }
                     }
                     catch (System.Net.WebException)
+                    {
+                        return null;
+                    }
+                    catch (Java.Lang.OutOfMemoryError)
                     {
                         return null;
                     }
