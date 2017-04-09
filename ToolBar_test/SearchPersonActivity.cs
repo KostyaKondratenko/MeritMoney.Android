@@ -48,6 +48,15 @@ namespace Merit_Money
             SearchUsersList = await MeritMoneyBrain.GetListOfUsers();
             progressDialog.Dismiss();
 
+            Thread thread = new Thread(() =>
+            {
+                foreach (SingleUser user in SearchUsersList)
+                {
+                    user.image = MeritMoneyBrain.GetImageBitmapFromUrl(user.url);
+                }
+            });
+            thread.Start();
+
             RecyclerViewManager = new LinearLayoutManager(this);
             SearchUserView.SetLayoutManager(RecyclerViewManager);
             RecyclerViewAdapter = new Users(SearchUsersList);

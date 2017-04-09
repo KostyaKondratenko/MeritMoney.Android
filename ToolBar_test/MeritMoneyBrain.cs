@@ -244,8 +244,8 @@ namespace Merit_Money
 
                                 if (email != profileEmail && email != String.Empty)
                                 {
-                                    //Android.Graphics.Bitmap img = GetImageBitmapFromUrl(imUrl);
-                                    ListOfUsers.Add(new SingleUser(ID, name, email, null));
+                                    Android.Graphics.Bitmap img = Android.Graphics.BitmapFactory.DecodeResource(Application.Context.Resources, Resource.Drawable.ic_noavatar);
+                                    ListOfUsers.Add(new SingleUser(ID, name, email, imUrl, img));
                                 }
                             }
                         }

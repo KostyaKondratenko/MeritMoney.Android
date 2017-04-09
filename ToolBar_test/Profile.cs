@@ -57,13 +57,15 @@ namespace Merit_Money
         public String name { get; set; }
         public String email { get; set; }
         public Android.Graphics.Bitmap image { get; set; }
+        public String url { get; set; }
 
-        public SingleUser(String ID, String name, String email, Android.Graphics.Bitmap image)
+        public SingleUser(String ID, String name, String email,String url, Android.Graphics.Bitmap image)
         {
             this.ID = ID;
             this.name = name;
             this.email = email;
             this.image = image;
+            this.url = url;
         }
     }
 }
