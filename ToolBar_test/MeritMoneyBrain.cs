@@ -15,6 +15,7 @@ using System.IO;
 using System.Threading.Tasks;
 using Org.Json;
 using ToolBar_test;
+using System.Threading;
 
 namespace Merit_Money
 {
@@ -200,11 +201,11 @@ namespace Merit_Money
             }
         }
 
-        public static async Task<List<SingleUser>> GetListOfUsers(Context context)
+        public static async Task<List<SingleUser>> GetListOfUsers()
         {
             List<SingleUser> ListOfUsers = new List<SingleUser>();
-            ISharedPreferences info = context.GetSharedPreferences(context.GetString(Resource.String.ApplicationInfo), FileCreationMode.Private);
-            String profileEmail = info.GetString(context.GetString(Resource.String.UserEmail), String.Empty);
+            ISharedPreferences info = Application.Context.GetSharedPreferences(Application.Context.GetString(Resource.String.ApplicationInfo), FileCreationMode.Private);
+            String profileEmail = info.GetString(Application.Context.GetString(Resource.String.UserEmail), String.Empty);
             try
             {
                 // Create an HTTP web request using the URL:
@@ -232,30 +233,25 @@ namespace Merit_Money
                         else
                         {
                             Console.Out.WriteLine("Response Body: \r\n {0}", jsonDoc.ToString());
+                            JSONArray array = new JSONArray(jsonDoc.ToString());
+                            for (int i = 0; i < array.Length(); i++)
+                            {
+                                JSONObject jsonobject = array.GetJSONObject(i);
+                                String name = jsonobject.GetString("name");
+                                String ID = jsonobject.GetString("ID");
+                                String email = jsonobject.GetString("email");
+                                String imUrl = jsonobject.GetString("imageUrl");
+
+                                if (email != profileEmail && email != String.Empty)
+                                {
+                                    //Android.Graphics.Bitmap img = GetImageBitmapFromUrl(imUrl);
+                                    ListOfUsers.Add(new SingleUser(ID, name, email, null));
+                                }
+                            }
                         }
-
-                        stream.Flush();
-                        stream.Close();
                     }
                 }
-
-                JSONArray array = new JSONArray(jsonDoc.ToString());
-                for (int i = 0; i < array.Length(); i++)
-                {
-                    JSONObject jsonobject = array.GetJSONObject(i);
-                    String name = jsonobject.GetString("name");
-                    String ID = jsonobject.GetString("ID");
-                    String email = jsonobject.GetString("email");
-                    String imUrl = jsonobject.GetString("imageUrl");
-
-                    Android.Graphics.Bitmap image = GetImageBitmapFromUrl(imUrl);
-
-                    if (email != profileEmail && email!=String.Empty)
-                    {
-                        ListOfUsers.Add(new SingleUser(ID, name, email, image));
-                    }
-                }
-            }
+        }
             catch (WebException exception)
             {
                 string responseText;

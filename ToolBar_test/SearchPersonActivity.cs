@@ -45,7 +45,7 @@ namespace Merit_Money
             ToolBarSearchView = FindViewById<EditText>(Resource.Id.search_view);
 
             ProgressDialog progressDialog = ProgressDialog.Show(this, "", "Loading. Please wait...", true);
-            SearchUsersList = await MeritMoneyBrain.GetListOfUsers(Application.Context);
+            SearchUsersList = await MeritMoneyBrain.GetListOfUsers();
             progressDialog.Dismiss();
 
             RecyclerViewManager = new LinearLayoutManager(this);
