@@ -65,23 +65,6 @@ namespace Merit_Money
             UserAvatar.Click += UserAvatar_Click;
         }
 
-        public override void OnBackPressed()
-        {
-            if (DoubleClickedToExit)
-            {
-                base.OnBackPressed();
-                Java.Lang.JavaSystem.Exit(0);
-                return;
-            }
-
-            this.DoubleClickedToExit = true;
-            Toast.MakeText(this, "Press Back to Exit", ToastLength.Short).Show();
-
-            new Handler().PostDelayed(() =>
-            {
-                DoubleClickedToExit = false;
-            }, 3000);
-        }
 
         private void InitializeProfile()
         {

@@ -61,6 +61,11 @@ namespace Merit_Money
             NumberOfPoints.FocusChange += NumberOfPoints_FocusChanged;
         }
 
+        public override void OnBackPressed()
+        {
+            Finish();
+        }
+
         private void InitializeProfile()
         {
             ISharedPreferences info = Application.Context.GetSharedPreferences(GetString(Resource.String.ApplicationInfo), FileCreationMode.Private);

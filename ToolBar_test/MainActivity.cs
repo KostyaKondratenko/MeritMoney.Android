@@ -88,24 +88,6 @@ namespace Merit_Money
             RefreshInfo.Refresh += Profile_Refresh;
         }
 
-        public override void OnBackPressed()
-        {
-            if (DoubleClickedToExit)
-            {
-                base.OnBackPressed();
-                Java.Lang.JavaSystem.Exit(0);
-                return;
-            }
-
-            this.DoubleClickedToExit = true;
-            Toast.MakeText(this, "Press Back to Exit", ToastLength.Short).Show();
-
-            new Handler().PostDelayed(() =>
-            {
-                DoubleClickedToExit = false;
-            }, 3000);
-        }
-
         private async void Profile_Refresh(object sender, EventArgs e)
         {
             Profile profile = await MeritMoneyBrain.GetProfile();
