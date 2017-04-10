@@ -48,11 +48,11 @@ namespace Merit_Money
             UserName = FindViewById<TextView>(Resource.Id.ProfileUserName);
             UserEmail = FindViewById<TextView>(Resource.Id.ProfileUserEmail);
 
-            Thread thread = new Thread(() =>
-            {
+            //Thread thread = new Thread(() =>
+            //{
                 InitializeProfile();
-            });
-            thread.Start();
+            //});
+            //thread.Start();
 
             MainToolbar.InflateMenu(Resource.Menu.profile_top_menu);
             MainToolbar.Title = "Profile";
@@ -86,9 +86,9 @@ namespace Merit_Money
         private void InitializeProfile()
         {
             ISharedPreferences info = Application.Context.GetSharedPreferences(GetString(Resource.String.ApplicationInfo), FileCreationMode.Private);
+            NotificationSwitch.Checked = info.GetBoolean(GetString(Resource.String.EmailNotification), false);
             UserName.Text = info.GetString(GetString(Resource.String.UserName), String.Empty);
             UserEmail.Text = info.GetString(GetString(Resource.String.UserEmail), String.Empty);
-            NotificationSwitch.Checked = info.GetBoolean(GetString(Resource.String.EmailNotification), false);
             //this.RunOnUiThread(() => {
             //    var imageBitmap = base.GetImageBitmapFromUrl(info.GetString(GetString(Resource.String.UserAvatar), String.Empty));
             //    if (imageBitmap != null)

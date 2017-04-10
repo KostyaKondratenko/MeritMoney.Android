@@ -157,7 +157,6 @@ namespace Merit_Money
                 request.Headers.Add("Access-Token", CurrentAccessToken);
                 request.Method = "POST";
                 
-                
                 JsonValue jsonDoc;
 
                 // Send the request to the server and wait for the response:

@@ -61,8 +61,8 @@ namespace Merit_Money
             edit.PutInt(GetString(Resource.String.BalancePoints), profile.balance);
             edit.PutInt(GetString(Resource.String.RewardsPoints), profile.rewards);
             edit.PutInt(GetString(Resource.String.DistributePoints), profile.distribute);
-            edit.PutString(GetString(Resource.String.CurrentAccessToken), MeritMoneyBrain.CurrentAccessToken);
             edit.PutBoolean(GetString(Resource.String.EmailNotification), profile.emailNotificaion);
+            edit.PutString(GetString(Resource.String.CurrentAccessToken), MeritMoneyBrain.CurrentAccessToken);
             edit.Apply();
         }
     }
