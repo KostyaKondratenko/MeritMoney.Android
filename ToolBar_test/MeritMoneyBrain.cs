@@ -17,7 +17,7 @@ using Org.Json;
 using ToolBar_test;
 using System.Threading;
 
-namespace Merit_Money
+namespace ToolBar_test
 {
     public static class MeritMoneyBrain
     {

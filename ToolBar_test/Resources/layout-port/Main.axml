@@ -27,7 +27,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/TopHorizontalLayout">
-                <Merit_Money.CircularImageView
+                <ToolBar_test.CircularImageView
                     android:id="@+id/UserAvatar"
                     android:layout_width="80dp"
                     android:layout_height="80dp"

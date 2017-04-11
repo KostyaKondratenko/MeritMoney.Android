@@ -12,7 +12,7 @@ using Android.Views;
 using Android.Widget;
 using Android.Util;
 
-namespace Merit_Money
+namespace ToolBar_test
 {
     public class CircularImageView : ImageView
     {

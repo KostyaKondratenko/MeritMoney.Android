@@ -16,7 +16,7 @@ using ToolBar_test;
 using Android.Support.V4.Widget;
 using SupportToolBar = Android.Support.V7.Widget.Toolbar;
 
-namespace Merit_Money
+namespace ToolBar_test
 {
     [Activity(Label = "Merit Money", MainLauncher = true, Icon = "@drawable/cloud")]
     public class MainActivity : BaseBottomBarActivity

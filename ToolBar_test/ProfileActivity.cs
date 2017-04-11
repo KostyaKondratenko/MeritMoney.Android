@@ -10,11 +10,9 @@ using Android.Views;
 using Android.Widget;
 using Android.Support.V7.App;
 using Android.Views.InputMethods;
-using System.Threading;
-using ToolBar_test;
 using SupportToolBar = Android.Support.V7.Widget.Toolbar;
 
-namespace Merit_Money
+namespace ToolBar_test
 {
     [Activity(Label = "ProfileActivity")]
     public class ProfileActivity : BaseBottomBarActivity

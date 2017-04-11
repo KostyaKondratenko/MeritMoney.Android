@@ -17,7 +17,7 @@ using Android.Support.V7.Widget;
 using Android.Text;
 using System.Threading;
 
-namespace Merit_Money
+namespace ToolBar_test
 {
     [Activity(Label = "SearchPersonActivity")]
     public class SearchPersonActivity : AppCompatActivity

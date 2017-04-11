@@ -23,5 +23,9 @@
   <string name="WebHookNotification">webhookNotification</string>
   <string name="CurrentAccessToken">AccessToken</string>
   <string name="LogIn">LOG_IN</string>
+  
+  <!--History-->
+  <string name="Personal">Personal</string>
+  <string name="Company">Company</string>
 </resources>
 

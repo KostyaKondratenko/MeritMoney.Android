@@ -14,7 +14,7 @@ using System.Text.RegularExpressions;
 using SupportToolBar = Android.Support.V7.Widget.Toolbar;
 using SupportEditText = Android.Support.Design.Widget.TextInputEditText;
 
-namespace Merit_Money
+namespace ToolBar_test
 {
     [Activity(Label = "SendPointsActivity")]
     public class SendPointsActivity : BaseBottomBarActivity

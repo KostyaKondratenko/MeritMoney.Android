@@ -16,7 +16,7 @@ using System.Threading.Tasks;
 using Android.Support.V7.App;
 using ToolBar_test;
 
-namespace Merit_Money
+namespace ToolBar_test
 {
     [Activity(Label = "LogInActivity")]
     public class LogInActivity : AppCompatActivity

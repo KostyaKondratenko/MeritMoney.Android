@@ -12,7 +12,7 @@ using Android.Support.V7.App;
 using ToolBar_test;
 using SupportBottomBar = Android.Support.Design.Widget.BottomNavigationView;
 
-namespace Merit_Money
+namespace ToolBar_test
 {
     [Activity(Label = "BaseBottomBarActivity")]
     public class BaseBottomBarActivity : AppCompatActivity
@@ -90,7 +90,11 @@ namespace Merit_Money
                     OverridePendingTransition(0, 0);
                     break;
                 case Resource.Id.bottom_history:
-                    Toast.MakeText(this, "Bottom Bar Action: " + e.Item.TitleFormatted, ToastLength.Short).Show();
+                    Intent historyIntent = new Intent(this, typeof(HistoryActivity));
+                    historyIntent.AddFlags(ActivityFlags.ClearTop | ActivityFlags.NewTask | ActivityFlags.NoAnimation);
+                    this.StartActivity(historyIntent);
+                    Finish();
+                    OverridePendingTransition(0, 0);
                     break;
                 case Resource.Id.bottom_profile:
                     Intent profileIntent = new Intent(this, typeof(ProfileActivity));
