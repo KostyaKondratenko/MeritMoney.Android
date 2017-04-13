@@ -12,11 +12,10 @@ using System.Net;
 using System.IO;
 using System.Threading.Tasks;
 using Android.Graphics;
-using ToolBar_test;
 using Android.Support.V4.Widget;
 using SupportToolBar = Android.Support.V7.Widget.Toolbar;
 
-namespace ToolBar_test
+namespace Merit_Money
 {
     [Activity(Label = "Merit Money", MainLauncher = true, Icon = "@drawable/cloud")]
     public class MainActivity : BaseBottomBarActivity
@@ -33,6 +32,10 @@ namespace ToolBar_test
         private TextView Rewards;
         private TextView Distribute;
         private CircularImageView UserAvatar;
+
+        private TextView ABPointstext;
+        private TextView RPointstext;
+        private TextView CDPointstext;
 
         private static readonly int LOG_IN_REQUEST = 1;
 
@@ -54,6 +57,10 @@ namespace ToolBar_test
             Distribute = FindViewById<TextView>(Resource.Id.CDpoints);
             RefreshInfo = FindViewById<SwipeRefreshLayout>(Resource.Id.activity_main_swipe_refresh_layout);
 
+            ABPointstext = FindViewById<TextView>(Resource.Id.ABpointsText);
+            RPointstext = FindViewById<TextView>(Resource.Id.RpointsText);
+            CDPointstext = FindViewById<TextView>(Resource.Id.CDpointsText);
+
             ISharedPreferences info = Application.Context.GetSharedPreferences(GetString(Resource.String.ApplicationInfo), FileCreationMode.Private);
             Loggedin = info.GetBoolean(GetString(Resource.String.LogIn), false);
 
@@ -72,6 +79,7 @@ namespace ToolBar_test
             }
 
             //Correct "point(s)" textView
+            CorrectPointsText();
 
             if (Android.OS.Build.VERSION.SdkInt >= BuildVersionCodes.Lollipop)
             {
@@ -137,25 +145,7 @@ namespace ToolBar_test
             Distribute.Text = info.GetInt(GetString(Resource.String.DistributePoints), -1).ToString();
             MeritMoneyBrain.CurrentAccessToken = info.GetString(GetString(Resource.String.CurrentAccessToken), String.Empty);
 
-            //this.RunOnUiThread(() => {
-            //    var imageBitmap = base.GetImageBitmapFromUrl(info.GetString(GetString(Resource.String.UserAvatar), String.Empty));
-            //    if (imageBitmap != null)
-            //    {
-            //        UserAvatar.SetImageBitmap(imageBitmap);
-            //    }
-            //    else
-            //    {
-            //        UserAvatar.SetImageResource(Resource.Drawable.ic_noavatar);
-            //    }
-            //});
-
-            //if (UserName.Text == String.Empty || UserEmail.Text == String.Empty ||
-            //    Balance.Text == "-1" || Rewards.Text == "-1" || Distribute.Text == "-1")
-            //{
-            //    return false;
-            //}
-
-            //return true;
+            new SetImageFromUrl(UserAvatar).Execute(info.GetString(GetString(Resource.String.UserAvatar), String.Empty));
         }
 
         private async void MainToolbar_MenuItemClick(object sender, SupportToolBar.MenuItemClickEventArgs e)
@@ -180,6 +170,24 @@ namespace ToolBar_test
         {
             MenuInflater.Inflate(Resource.Menu.top_menu, menu);
             return base.OnCreateOptionsMenu(menu);
+        }
+
+        private void CorrectPointsText()
+        {
+            try
+            {
+                if (Convert.ToInt32(Distribute.Text) == 1) { CDPointstext.Text = "point"; }
+                else { CDPointstext.Text = "points"; }
+
+                if (Convert.ToInt32(Balance.Text) == 1) { ABPointstext.Text = "point"; }
+                else { ABPointstext.Text = "points"; }
+
+                if (Convert.ToInt32(Rewards.Text) == 1) { RPointstext.Text = "point"; }
+                else { RPointstext.Text = "points"; }
+
+            }
+            catch (System.OverflowException e) { Console.Out.WriteLine(e.Message); }
+
         }
     }
 }

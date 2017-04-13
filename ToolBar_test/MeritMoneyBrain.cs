@@ -14,10 +14,10 @@ using System.Net;
 using System.IO;
 using System.Threading.Tasks;
 using Org.Json;
-using ToolBar_test;
+using Merit_Money;
 using System.Threading;
 
-namespace ToolBar_test
+namespace Merit_Money
 {
     public static class MeritMoneyBrain
     {

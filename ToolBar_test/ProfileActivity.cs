@@ -12,7 +12,7 @@ using Android.Support.V7.App;
 using Android.Views.InputMethods;
 using SupportToolBar = Android.Support.V7.Widget.Toolbar;
 
-namespace ToolBar_test
+namespace Merit_Money
 {
     [Activity(Label = "ProfileActivity")]
     public class ProfileActivity : BaseBottomBarActivity
@@ -70,17 +70,8 @@ namespace ToolBar_test
             NotificationSwitch.Checked = info.GetBoolean(GetString(Resource.String.EmailNotification), false);
             UserName.Text = info.GetString(GetString(Resource.String.UserName), String.Empty);
             UserEmail.Text = info.GetString(GetString(Resource.String.UserEmail), String.Empty);
-            //this.RunOnUiThread(() => {
-            //    var imageBitmap = base.GetImageBitmapFromUrl(info.GetString(GetString(Resource.String.UserAvatar), String.Empty));
-            //    if (imageBitmap != null)
-            //    {
-            //        UserAvatar.SetImageBitmap(imageBitmap);
-            //    }
-            //    else
-            //    {
-            //        UserAvatar.SetImageResource(Resource.Drawable.ic_noavatar);
-            //    }
-            //});
+
+            new SetImageFromUrl(UserAvatar).Execute(info.GetString(GetString(Resource.String.UserAvatar), String.Empty));
         }
 
         private void SetSwitchState()
@@ -161,20 +152,6 @@ namespace ToolBar_test
         {
             MenuInflater.Inflate(Resource.Menu.profile_top_menu, menu);
             return base.OnCreateOptionsMenu(menu);
-        }
-
-        private void ShowKeyboard(EditText editText)
-        {
-            InputMethodManager imm = (InputMethodManager)GetSystemService(Context.InputMethodService);
-            imm.ShowSoftInput(editText, ShowFlags.Forced);
-            imm.ToggleSoftInput(ShowFlags.Forced, HideSoftInputFlags.ImplicitOnly);
-            editText.SetSelection(editText.Text.Length);
-        }
-
-        private void HideKeyboard(EditText editText)
-        {
-            InputMethodManager imm = (InputMethodManager)GetSystemService(Context.InputMethodService);
-            imm.HideSoftInputFromWindow(editText.WindowToken, HideSoftInputFlags.None);
         }
     }
 }

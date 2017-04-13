@@ -9,24 +9,25 @@ using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 using Android.Support.V7.App;
-using ToolBar_test;
+using Merit_Money;
 using SupportSearchView = Android.Support.V7.Widget.SearchView;
 using SupportToolBar = Android.Support.V7.Widget.Toolbar;
 using SupportRecyclerView = Android.Support.V7.Widget.RecyclerView;
 using Android.Support.V7.Widget;
 using Android.Text;
 using System.Threading;
+using Android.Views.InputMethods;
 
-namespace ToolBar_test
+namespace Merit_Money
 {
     [Activity(Label = "SearchPersonActivity")]
-    public class SearchPersonActivity : AppCompatActivity
+    public class SearchPersonActivity : AppCompatActivity, 
+        Android.Support.V7.Widget.SearchView.IOnQueryTextListener
     {
         private SupportToolBar ToolBar;
-        private EditText ToolBarSearchView;
         private SupportRecyclerView SearchUserView;
         private SupportRecyclerView.LayoutManager RecyclerViewManager;
-        private SupportRecyclerView.Adapter RecyclerViewAdapter;
+        private UsersAdapter RecyclerViewAdapter;
         private List<SingleUser> SearchUsersList;
 
         protected override async void OnCreate(Bundle savedInstanceState)
@@ -34,41 +35,51 @@ namespace ToolBar_test
             base.OnCreate(savedInstanceState);
 
             SetContentView(Resource.Layout.SearchPerson);
-            ToolBar = FindViewById<SupportToolBar>(Resource.Id.search_toolbar);
+            ToolBar = FindViewById<SupportToolBar>(Resource.Id.toolbar);
             SearchUserView = FindViewById<SupportRecyclerView>(Resource.Id.searchUserList);
 
             SetSupportActionBar(ToolBar);
+            SupportActionBar.Title = "Select Person";
 
             SupportActionBar.SetHomeButtonEnabled(true);
             SupportActionBar.SetDisplayHomeAsUpEnabled(true);
-
-            ToolBarSearchView = FindViewById<EditText>(Resource.Id.search_view);
 
             ProgressDialog progressDialog = ProgressDialog.Show(this, "", "Loading. Please wait...", true);
             SearchUsersList = await MeritMoneyBrain.GetListOfUsers();
             progressDialog.Dismiss();
 
-            Thread thread = new Thread(() =>
-            {
-                foreach (SingleUser user in SearchUsersList)
-                {
-                    user.image = MeritMoneyBrain.GetImageBitmapFromUrl(user.url);
-                }
-            });
-            thread.Start();
+            //Thread thread = new Thread(() =>
+            //{
+            //    foreach (SingleUser user in SearchUsersList)
+            //    {
+            //        user.image = MeritMoneyBrain.GetImageBitmapFromUrl(user.url);
+            //    }
+            //});
+            //thread.Start();
 
             RecyclerViewManager = new LinearLayoutManager(this);
             SearchUserView.SetLayoutManager(RecyclerViewManager);
             RecyclerViewAdapter = new UsersAdapter(SearchUsersList, this);
             SearchUserView.SetAdapter(RecyclerViewAdapter);
 
-            ToolBarSearchView.TextChanged += ToolBarSearchView_TextChanged;
-            ToolBar.MenuItemClick += Toolbar_MenuItemClick;
+            foreach (SingleUser user in SearchUsersList)
+            {
+                new ImageDownloader(RecyclerViewAdapter).Execute(user);
+            }
         }
 
-        private void ToolBarSearchView_TextChanged(object sender, TextChangedEventArgs e)
+        public override bool OnCreateOptionsMenu(IMenu menu)
         {
-            String text = e.Text.ToString().ToLower();
+            MenuInflater.Inflate(Resource.Menu.search_top_menu, menu);
+            IMenuItem menuItem = menu.FindItem(Resource.Id.action_search);
+            Android.Support.V7.Widget.SearchView searchView = (Android.Support.V7.Widget.SearchView)Android.Support.V4.View.MenuItemCompat.GetActionView(menuItem);
+            searchView.SetOnQueryTextListener(this);
+            return base.OnCreateOptionsMenu(menu);
+        }
+
+        bool SupportSearchView.IOnQueryTextListener.OnQueryTextChange(string newText)
+        {
+            String text = newText.ToLower();
             List<SingleUser> newList = new List<SingleUser>();
 
             foreach (SingleUser user in SearchUsersList)
@@ -82,22 +93,13 @@ namespace ToolBar_test
             }
             RecyclerViewAdapter = new UsersAdapter(newList, this);
             SearchUserView.SetAdapter(RecyclerViewAdapter);
+
+            return true;
         }
 
-        public override bool OnCreateOptionsMenu(IMenu menu)
+        bool SupportSearchView.IOnQueryTextListener.OnQueryTextSubmit(string query)
         {
-            MenuInflater.Inflate(Resource.Menu.search_top_menu, menu);
-            return base.OnCreateOptionsMenu(menu);
-        }
-
-        private void Toolbar_MenuItemClick(object sender, SupportToolBar.MenuItemClickEventArgs e)
-        {
-            switch (e.Item.ItemId)
-            {
-                case Resource.Id.search_exit_menu:
-                    ToolBarSearchView.Text = "";
-                    break;
-            }
+            return false;
         }
 
         public override bool OnOptionsItemSelected(IMenuItem item)
@@ -105,11 +107,33 @@ namespace ToolBar_test
             switch (item.ItemId)
             {
                 case Android.Resource.Id.Home:
-                    ToolBarSearchView.Text = "";
                     Finish();
                     return true;
                 default:
                     return base.OnOptionsItemSelected(item);
+            }
+        }
+
+        private class ImageDownloader : AsyncTask<SingleUser, Java.Lang.Void, SingleUser>
+        {
+            RecyclerView.Adapter adapter;
+
+            public ImageDownloader(RecyclerView.Adapter adapter)
+            {
+                this.adapter = adapter;
+            }
+
+            protected override SingleUser RunInBackground(params SingleUser[] @params)
+            {
+                SingleUser user = @params[0];
+                user.image = MeritMoneyBrain.GetImageBitmapFromUrl(user.url);
+                return user;
+            }
+
+            protected override void OnPostExecute(SingleUser result)
+            {
+                adapter.NotifyDataSetChanged();
+                base.OnPostExecute(result);
             }
         }
     }
@@ -126,12 +150,12 @@ namespace ToolBar_test
         }
 
         public class ListViewHolder : RecyclerView.ViewHolder, View.IOnClickListener
-        {
+        { 
             public View MainView { get; set; }
             public TextView Name { get; set; }
             public TextView Email { get; set; }
             public CircularImageView Avatar { get; set; }
-            public List<SingleUser> users;// = new List<SingleUser>();
+            public List<SingleUser> users;
             public SearchPersonActivity activity;
 
             public ListViewHolder(View view, SearchPersonActivity activity, List<SingleUser> users) : base(view)
@@ -178,6 +202,5 @@ namespace ToolBar_test
             ListViewHolder view = new ListViewHolder(item, activity, MeritMoneyUsers) { Name = itemName, Email = itemEmail, Avatar = itemAvatar };
             return view;
         }
-
     }
 }

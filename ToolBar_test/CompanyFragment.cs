@@ -10,7 +10,7 @@ using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 
-namespace ToolBar_test
+namespace Merit_Money
 {
     [Activity(Label = "CompanyFragment")]
     public class CompanyFragment : Android.Support.V4.App.Fragment

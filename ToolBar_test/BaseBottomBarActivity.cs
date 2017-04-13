@@ -9,10 +9,12 @@ using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 using Android.Support.V7.App;
-using ToolBar_test;
+using Merit_Money;
 using SupportBottomBar = Android.Support.Design.Widget.BottomNavigationView;
+using Android.Views.InputMethods;
+using Android.Graphics;
 
-namespace ToolBar_test
+namespace Merit_Money
 {
     [Activity(Label = "BaseBottomBarActivity")]
     public class BaseBottomBarActivity : AppCompatActivity
@@ -32,10 +34,10 @@ namespace ToolBar_test
             return ConvertDpToPx(BottomHeightInDps);
         }
 
-        protected void CombineWith(FrameLayout MainLayout, 
+        protected void CombineWith(FrameLayout MainLayout,
             int mainLayoutId, ActivityIs curScreen)
         {
-            
+
             LayoutInflater inflate = (LayoutInflater)GetSystemService(Context.LayoutInflaterService);
 
             RelativeLayout main = (RelativeLayout)LayoutInflater.Inflate(
@@ -103,6 +105,52 @@ namespace ToolBar_test
                     Finish();
                     OverridePendingTransition(0, 0);
                     break;
+            }
+        }
+
+        protected void ShowKeyboard(EditText editText)
+        {
+            InputMethodManager imm = (InputMethodManager)GetSystemService(Context.InputMethodService);
+            imm.ShowSoftInput(editText, ShowFlags.Forced);
+            imm.ToggleSoftInput(ShowFlags.Forced, HideSoftInputFlags.ImplicitOnly);
+            editText.SetSelection(editText.Text.Length);
+        }
+
+        protected void HideKeyboard(EditText editText)
+        {
+            InputMethodManager imm = (InputMethodManager)GetSystemService(Context.InputMethodService);
+            imm.HideSoftInputFromWindow(editText.WindowToken, HideSoftInputFlags.None);
+        }
+
+        protected class SetImageFromUrl : AsyncTask<String, Java.Lang.Void, Bitmap>
+        {
+            CircularImageView image;
+
+            public SetImageFromUrl(CircularImageView image)
+            {
+                this.image = image;
+            }
+
+            protected override Android.Graphics.Bitmap RunInBackground(params String[] @params)
+            {
+                String imageUrl = @params[0];
+                Bitmap imageBitmap = MeritMoneyBrain.GetImageBitmapFromUrl(imageUrl);
+
+                return imageBitmap;
+            }
+
+            protected override void OnPostExecute(Bitmap result)
+            {
+                if (result != null)
+                {
+                    image.SetImageBitmap(result);
+                }
+                else
+                {
+                    image.SetImageResource(Resource.Drawable.ic_noavatar);
+                }
+                
+                base.OnPostExecute(result);
             }
         }
     }

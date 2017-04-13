@@ -14,7 +14,7 @@ using SupportTabLayout = Android.Support.Design.Widget.TabLayout;
 using SupportViewPager = Android.Support.V4.View.ViewPager;
 using Android.Support.V4.App;
 
-namespace ToolBar_test
+namespace Merit_Money
 {
     [Activity(Label = "HistoryActivity")]
     public class HistoryActivity : BaseBottomBarActivity

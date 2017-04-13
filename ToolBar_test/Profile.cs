@@ -10,7 +10,7 @@ using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 
-namespace ToolBar_test
+namespace Merit_Money
 {
     public class Profile
     {

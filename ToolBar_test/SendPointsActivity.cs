@@ -9,12 +9,12 @@ using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 using Android.Support.V7.App;
-using ToolBar_test;
+using Merit_Money;
 using System.Text.RegularExpressions;
 using SupportToolBar = Android.Support.V7.Widget.Toolbar;
 using SupportEditText = Android.Support.Design.Widget.TextInputEditText;
 
-namespace ToolBar_test
+namespace Merit_Money
 {
     [Activity(Label = "SendPointsActivity")]
     public class SendPointsActivity : BaseBottomBarActivity
@@ -23,6 +23,7 @@ namespace ToolBar_test
         private SupportToolBar ToolBar;
         private SupportEditText userNameToDistribute;
         private SupportEditText NumberOfPoints;
+        private SupportEditText Notes;
         private String userIDtoDistribute;
         private TextView CanDistributePoints;
 
@@ -41,7 +42,9 @@ namespace ToolBar_test
             userNameToDistribute = FindViewById<SupportEditText>(Resource.Id.SPSelectPerson);
             NumberOfPoints = FindViewById<SupportEditText>(Resource.Id.SPNumOfPointsEditText);
             CanDistributePoints = FindViewById<TextView>(Resource.Id.SPCDpoints);
-            //SendPointsButton.Enabled = false;
+            Notes = FindViewById<SupportEditText>(Resource.Id.SPNotesEditText);
+
+            SendPointsButton.Enabled = false;
 
             InitializeProfile();
 
@@ -59,6 +62,14 @@ namespace ToolBar_test
             SendPointsButton.Click += SendPointsButton_Clicked;
             userNameToDistribute.Click += SelectPerson_Clicked;
             NumberOfPoints.FocusChange += NumberOfPoints_FocusChanged;
+            SendPointsLayout.Touch += Layout_Touched;
+        }
+
+        private void Layout_Touched(object sender, View.TouchEventArgs e)
+        {
+            HideKeyboard(NumberOfPoints);
+            NumberOfPoints.ClearFocus();
+            Notes.ClearFocus();
         }
 
         public override void OnBackPressed()
@@ -74,6 +85,13 @@ namespace ToolBar_test
 
         private void NumberOfPoints_FocusChanged(object sender, View.FocusChangeEventArgs e)
         {
+            if(NumberOfPoints.Text!=String.Empty && userNameToDistribute.Text != String.Empty)
+            {
+                SendPointsButton.Enabled = true;
+            }else
+            {
+                SendPointsButton.Enabled = false;
+            }
             if (NumberOfPoints.Text != String.Empty && NumberOfPoints.Text[0] == '0' )
             {
                 NumberOfPoints.Text = Regex.Replace(NumberOfPoints.Text, @"^0+", "");
@@ -83,7 +101,7 @@ namespace ToolBar_test
         private void SelectPerson_Clicked(object sender, EventArgs e)
         {
             Intent intent = new Intent(this, typeof(SearchPersonActivity));
-            this.StartActivityForResult(intent,SELECT_PERSON_REQUEST);
+            this.StartActivityForResult(intent, SELECT_PERSON_REQUEST);
         }
 
         protected override void OnActivityResult(int requestCode, [GeneratedEnum] Result resultCode, Intent data)
