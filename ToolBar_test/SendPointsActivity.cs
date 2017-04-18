@@ -17,7 +17,8 @@ using SupportEditText = Android.Support.Design.Widget.TextInputEditText;
 namespace Merit_Money
 {
     [Activity(Label = "SendPointsActivity")]
-    public class SendPointsActivity : BaseBottomBarActivity
+    public class SendPointsActivity : BaseBottomBarActivity, 
+        IDialogInterfaceOnClickListener
     {
         private Button SendPointsButton;
         private SupportToolBar ToolBar;
@@ -122,13 +123,18 @@ namespace Merit_Money
             //Add nuber of points, a person
             if (NumberOfPoints.Text != String.Empty && userNameToDistribute.Text != String.Empty)
             {
-                Toast.MakeText(this, NumberOfPoints.Text + " points were sent to "+ userNameToDistribute.Text, ToastLength.Short).Show();
+                Android.Support.V7.App.AlertDialog.Builder dialog = new Android.Support.V7.App.AlertDialog.Builder(this);
+                dialog.SetMessage("Do you want to send " + NumberOfPoints.Text + " point(s) to " + userNameToDistribute.Text + "?");
+                dialog.SetCancelable(true);
+                dialog.SetNeutralButton("Cancel", this);
+                dialog.SetPositiveButton("Send", this);
+                dialog.Create().Show();
             }
-            else if(NumberOfPoints.Text == String.Empty && userNameToDistribute.Text == String.Empty)
+            else if (NumberOfPoints.Text == String.Empty && userNameToDistribute.Text == String.Empty)
             {
                 Toast.MakeText(this, "Please, fill in \"Select person\" and \"# of points\" fields.", ToastLength.Short).Show();
             }
-            else if(NumberOfPoints.Text == String.Empty)
+            else if (NumberOfPoints.Text == String.Empty)
             {
                 Toast.MakeText(this, "Please, fill in \"# of points\" field." + userNameToDistribute.Text, ToastLength.Short).Show();
             }
@@ -147,6 +153,22 @@ namespace Merit_Money
                     return true;
                 default:
                     return base.OnOptionsItemSelected(item);
+            }
+        }
+
+        public async void OnClick(IDialogInterface dialog, int which)
+        {
+            switch (which)
+            {
+                case (int)DialogButtonType.Neutral:
+                    dialog.Dismiss();
+                    NumberOfPoints.Text = String.Empty;
+                    SendPointsButton.Enabled = false;
+                    break;
+                case (int)DialogButtonType.Positive:
+                    await MeritMoneyBrain.DistributePoints(NumberOfPoints.Text, userIDtoDistribute, Notes.Text);
+                    //Toast.MakeText(this, NumberOfPoints.Text + " points were sent to " + userNameToDistribute.Text, ToastLength.Short).Show();
+                    break;
             }
         }
     }

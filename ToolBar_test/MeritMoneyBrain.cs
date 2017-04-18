@@ -16,6 +16,9 @@ using System.Threading.Tasks;
 using Org.Json;
 using Merit_Money;
 using System.Threading;
+using Org.Apache.Http.Impl.Client;
+using Org.Apache.Http.Client;
+using Org.Apache.Http.Client.Methods;
 
 namespace Merit_Money
 {
@@ -40,6 +43,66 @@ namespace Merit_Money
                 using (var streamWriter = new StreamWriter(request.GetRequestStream()))
                 {
                     string jsonData = @"{""email"":" + "\"" + email + "\"" + "}";
+                    streamWriter.Write(jsonData);
+                    streamWriter.Flush();
+                    streamWriter.Close();
+                }
+
+                JsonValue jsonDoc;
+
+                // Send the request to the server and wait for the response:
+                using (WebResponse response = await request.GetResponseAsync())
+                {
+                    // Get a stream representation of the HTTP web response:
+                    using (Stream stream = response.GetResponseStream())
+                    {
+                        // Use this stream to build a JSON document object:
+                        jsonDoc = await Task.Run(() => JsonObject.Load(stream));
+
+                        if (string.IsNullOrWhiteSpace(jsonDoc.ToString()))
+                        {
+                            Console.Out.WriteLine("Response contained empty body...");
+                        }
+                        else
+                        {
+                            Console.Out.WriteLine("Response Body: \r\n {0}", jsonDoc.ToString());
+                            CurrentAccessToken = jsonDoc["accessToken"];
+                        }
+
+                        stream.Flush();
+                        stream.Close();
+                        // Return the JSON document:
+                        //return jsonDoc;
+                    }
+                }
+            }
+            catch (WebException exception)
+            {
+                string responseText;
+                Console.WriteLine(exception.Message);
+                using (var reader = new StreamReader(exception.Response.GetResponseStream()))
+                {
+                    responseText = reader.ReadToEnd();
+                    Console.WriteLine(responseText);
+                }
+            }
+        }
+
+        public static async Task SingInWithGoogle(String token)
+        {
+            try
+            {
+                // Create an HTTP web request using the URL:
+                string url = MeritMoneyApiUrl + "login";
+                HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create(new Uri(url));
+                request.ContentType = "application/json";
+                request.Method = "POST";
+
+                using (var streamWriter = new StreamWriter(request.GetRequestStream()))
+                {
+                    //string jsonData = @"{""token"":" + "\""  token + "\"" + "}";
+                    string jsonData = "{\"token\":\"" + token +"\"}";
+
                     streamWriter.Write(jsonData);
                     streamWriter.Flush();
                     streamWriter.Close();
@@ -155,6 +218,7 @@ namespace Merit_Money
                 HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create(new Uri(url));
                 request.ContentType = "application/x-www-form-urlencoded";
                 request.Headers.Add("Access-Token", CurrentAccessToken);
+                request.ContentLength = UTF8Encoding.Default.GetBytes(CurrentAccessToken).Length;
                 request.Method = "POST";
 
                 JsonValue jsonDoc;
@@ -263,6 +327,67 @@ namespace Merit_Money
                 Console.WriteLine(e.Message);
             }
             return ListOfUsers;
+        }
+
+        public static async Task DistributePoints(String points, String userId, String message)
+        {
+            try
+            {
+                // Create an HTTP web request using the URL:
+                string url = MeritMoneyApiUrl + "distributePoints";
+                HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create(new Uri(url));
+                request.ContentType = "application/json";
+                request.Method = "POST";
+                request.Headers.Add("Access-Token", CurrentAccessToken);
+
+                using (var streamWriter = new StreamWriter(request.GetRequestStream()))
+                {
+                    string jsonData = @"{""userID"":" + "\"" + userId + "\"" + "," +
+                                      @"""points"":" +  points + "," +
+                                      @"""comment"":" + "\"" + message + "\"" + "}";
+                    streamWriter.Write(jsonData);
+                    streamWriter.Flush();
+                    streamWriter.Close();
+                }
+
+                JsonValue jsonDoc;
+
+                // Send the request to the server and wait for the response:
+                using (WebResponse response = await request.GetResponseAsync())
+                {
+                    // Get a stream representation of the HTTP web response:
+                    using (Stream stream = response.GetResponseStream())
+                    {
+                        // Use this stream to build a JSON document object:
+                        jsonDoc = await Task.Run(() => JsonObject.Load(stream));
+
+                        if (string.IsNullOrWhiteSpace(jsonDoc.ToString()))
+                        {
+                            Console.Out.WriteLine("Response contained empty body...");
+                        }
+                        else
+                        {
+                            Console.Out.WriteLine("Response Body: \r\n {0}", jsonDoc.ToString());
+                            CurrentAccessToken = jsonDoc["accessToken"];
+                        }
+
+                        stream.Flush();
+                        stream.Close();
+                        // Return the JSON document:
+                        //return jsonDoc;
+                    }
+                }
+            }
+            catch (WebException exception)
+            {
+                string responseText;
+                Console.WriteLine(exception.Message);
+                using (var reader = new StreamReader(exception.Response.GetResponseStream()))
+                {
+                    responseText = reader.ReadToEnd();
+                    Console.WriteLine(responseText);
+                }
+            }
         }
 
         public static Android.Graphics.Bitmap GetImageBitmapFromUrl(string url)

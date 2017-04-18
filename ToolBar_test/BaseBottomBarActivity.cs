@@ -13,6 +13,7 @@ using Merit_Money;
 using SupportBottomBar = Android.Support.Design.Widget.BottomNavigationView;
 using Android.Views.InputMethods;
 using Android.Graphics;
+using Android.Net;
 
 namespace Merit_Money
 {
@@ -22,6 +23,19 @@ namespace Merit_Money
         private SupportBottomBar BottomBar;
         private const int BottomHeightInDps = 56;
         protected bool DoubleClickedToExit = false;
+        protected NetworkStatusMonitor NetworkStatus = new NetworkStatusMonitor();
+
+        protected override void OnCreate(Bundle savedInstanceState)
+        {
+            base.OnCreate(savedInstanceState);
+            NetworkStatus.Start();
+        }
+
+        protected override void OnStop()
+        {
+            base.OnStop();
+            NetworkStatus.Stop();
+        }
 
         protected int ConvertDpToPx(int padding_in_dp)
         {

@@ -66,6 +66,20 @@ namespace Merit_Money
             {
                 new ImageDownloader(RecyclerViewAdapter).Execute(user);
             }
+
+            ToolBar.MenuItemClick += ToolBar_MenuItemClick;
+        }
+
+        private async void ToolBar_MenuItemClick(object sender, SupportToolBar.MenuItemClickEventArgs e)
+        {
+            switch (e.Item.ItemId)
+            {
+                case Resource.Id.menu_refresh:
+                    ProgressDialog progressDialog = ProgressDialog.Show(this, "", "Loading. Please wait...", true);
+                    SearchUsersList = await MeritMoneyBrain.GetListOfUsers();
+                    progressDialog.Dismiss();
+                    break;
+            }
         }
 
         public override bool OnCreateOptionsMenu(IMenu menu)
@@ -171,6 +185,7 @@ namespace Merit_Money
                 int position = AdapterPosition;
                 SingleUser user = users[position];
                 Intent returnIntent = new Intent();
+                v.Selected = true;
                 returnIntent.PutExtra(Application.Context.GetString(Resource.String.ID), user.ID);
                 returnIntent.PutExtra(Application.Context.GetString(Resource.String.UserName), user.name);
                 activity.SetResult(Result.Ok, returnIntent);
