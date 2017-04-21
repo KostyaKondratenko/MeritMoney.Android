@@ -4,11 +4,11 @@
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:layout_marginTop="1dp"
-    android:background="#FAFAFA"
     android:weightSum="100"
     android:clickable="true"
     android:focusable="true"
-    android:focusableInTouchMode="true">
+    android:focusableInTouchMode="true"
+    android:background="@drawable/search_item_selector">
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="match_parent"

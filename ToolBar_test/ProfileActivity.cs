@@ -29,6 +29,11 @@ namespace Merit_Money
         private TextView UserEmail;
         private Switch NotificationSwitch;
 
+        private bool nameWasChanged = false;
+        private bool SwitchWasChanged = false;
+        private String SaveName = String.Empty;
+        private bool SaveSwitchState = false;
+
         public static readonly int PickImageId = 1000;
 
         protected override void OnCreate(Bundle savedInstanceState)
@@ -111,7 +116,7 @@ namespace Merit_Money
             }
         }
 
-        private void MainToolbar_MenuItemClick(object sender, SupportToolBar.MenuItemClickEventArgs e)
+        private async void MainToolbar_MenuItemClick(object sender, SupportToolBar.MenuItemClickEventArgs e)
         {
             switch (e.Item.ItemId)
             {
@@ -126,15 +131,20 @@ namespace Merit_Money
                         SwitchState.Visibility = ViewStates.Invisible;
                         UserName.Visibility = ViewStates.Invisible;
 
+                        SaveName = UserName.Text;
+                        SaveSwitchState = NotificationSwitch.Checked;
+
                         EditName.Text = UserName.Text;
 
                         ShowKeyboard(EditName);
-                        
+
                         isEditing = true;
                     }
                     else
                     {
                         e.Item.SetTitle("Edit");
+
+                        ProgressDialog progressDialog = ProgressDialog.Show(this, "", "Saving...", true);
 
                         NotificationSwitch.Visibility = ViewStates.Invisible;
                         EditName.Visibility = ViewStates.Invisible;
@@ -148,14 +158,38 @@ namespace Merit_Money
                             EditName.Text = String.Empty;
                         }
 
+                        if (SaveSwitchState != NotificationSwitch.Checked)
+                            SwitchWasChanged = true;
+                        else
+                            SwitchWasChanged = false;
+                        if (SaveName != UserName.Text)
+                            nameWasChanged = true;
+                        else
+                            nameWasChanged = false;
+
                         HideKeyboard(EditName);
 
                         isEditing = false;
+
+                        if (SwitchWasChanged && !nameWasChanged)
+                        {
+                            Profile p = await MeritMoneyBrain.updateProfile(String.Empty, SwitchWasChanged, NotificationSwitch.Checked);
+                            ProfileDatabase db = new ProfileDatabase(GetString(Resource.String.ProfileDBFilename));
+                            db.Update(p);
+                            progressDialog.Dismiss();
+                        }
+                        if (nameWasChanged)
+                        {
+                            Profile p = await MeritMoneyBrain.updateProfile(UserName.Text, SwitchWasChanged, NotificationSwitch.Checked);
+                            ProfileDatabase db = new ProfileDatabase(GetString(Resource.String.ProfileDBFilename));
+                            db.Update(p);
+                            progressDialog.Dismiss();
+                        }
+                        progressDialog.Dismiss();
                     }
                     SetSwitchState();
                     break;
             }
-
         }
 
         protected override void OnActivityResult(int requestCode, [GeneratedEnum] Result resultCode, Intent data)

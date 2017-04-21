@@ -216,9 +216,9 @@ namespace Merit_Money
                 // Create an HTTP web request using the URL:
                 string url = MeritMoneyApiUrl + "logout";
                 HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create(new Uri(url));
-                request.ContentType = "application/x-www-form-urlencoded";
+                request.ContentType = "application/json";
                 request.Headers.Add("Access-Token", CurrentAccessToken);
-                request.ContentLength = UTF8Encoding.Default.GetBytes(CurrentAccessToken).Length;
+                //request.ContentLength = UTF8Encoding.Default.GetBytes(CurrentAccessToken).Length;
                 request.Method = "POST";
 
                 JsonValue jsonDoc;
@@ -390,6 +390,80 @@ namespace Merit_Money
             }
         }
 
+        public static async Task<Profile> updateProfile(String name, bool emailNotificationWasChanged, bool value)
+        {
+            try
+            {
+                // Create an HTTP web request using the URL:
+                string url = MeritMoneyApiUrl + "updateProfile";
+                HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create(new Uri(url));
+                request.ContentType = "application/json";
+                request.Method = "POST";
+                request.Headers.Add("Access-Token", CurrentAccessToken);
+
+                using (var streamWriter = new StreamWriter(request.GetRequestStream()))
+                {
+                    string jsonData = "{";
+                    if (name != String.Empty)
+                    {
+                        jsonData += "\"name:\":\"" + name + "\"";
+                    }
+                    if(name!=String.Empty && emailNotificationWasChanged) { jsonData += ","; }
+                    if (emailNotificationWasChanged)
+                    {
+                        int val = value ? 1 : 0;
+                        jsonData += "\"emailNotification\":" + val.ToString();
+                    }
+                    jsonData += "}";
+                    streamWriter.Write(jsonData);
+                    streamWriter.Flush();
+                    streamWriter.Close();
+                }
+
+                JsonValue jsonDoc;
+
+                // Send the request to the server and wait for the response:
+                using (WebResponse response = await request.GetResponseAsync())
+                {
+                    // Get a stream representation of the HTTP web response:
+                    using (Stream stream = response.GetResponseStream())
+                    {
+                        // Use this stream to build a JSON document object:
+                        jsonDoc = await Task.Run(() => JsonObject.Load(stream));
+
+                        if (string.IsNullOrWhiteSpace(jsonDoc.ToString()))
+                        {
+                            Console.Out.WriteLine("Response contained empty body...");
+                        }
+                        else
+                        {
+                            Console.Out.WriteLine("Response Body: \r\n {0}", jsonDoc.ToString());
+                        }
+
+                        stream.Flush();
+                        stream.Close();
+                        // Return the JSON document:
+                        //return jsonDoc;
+                    }
+                }
+                profile = new Profile(jsonDoc["ID"], jsonDoc["name"],
+                    jsonDoc["email"], jsonDoc["imageUrl"],
+                   jsonDoc["balance"], jsonDoc["rewards"],
+                   jsonDoc["distribute"], jsonDoc["emailNotification"]);
+            }
+            catch (WebException exception)
+            {
+                string responseText;
+                Console.WriteLine(exception.Message);
+                using (var reader = new StreamReader(exception.Response.GetResponseStream()))
+                {
+                    responseText = reader.ReadToEnd();
+                    Console.WriteLine(responseText);
+                }
+            }
+            return profile;
+        }
+
         public static Bitmap ReadFromInternalStorage(String userId)
         {
             var sdCardPath = System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal);
@@ -402,9 +476,9 @@ namespace Merit_Money
             return bitmap;
         }
 
-        public static Android.Graphics.Bitmap GetImageBitmapFromUrl(string url)
+        public static Bitmap GetImageBitmapFromUrl(string url)
         {
-            Android.Graphics.Bitmap imageBitmap = null;
+            Bitmap imageBitmap = null;
 
             using (var webClient = new System.Net.WebClient())
             {

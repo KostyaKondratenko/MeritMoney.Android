@@ -300,11 +300,6 @@
     </AndroidResource>
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\layout-port\search_toolbar.xml">
-      <SubType>Designer</SubType>
-    </AndroidResource>
-  </ItemGroup>
-  <ItemGroup>
     <AndroidResource Include="Resources\drawable-hdpi\ic_clear_white_24dp.png" />
   </ItemGroup>
   <ItemGroup>
@@ -327,11 +322,6 @@
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\menu\bottom_navigation_menu.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\layout-land\search_toolbar.xml">
-      <SubType>Designer</SubType>
-    </AndroidResource>
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\drawable-hdpi\ic_home_black_24dp.png" />

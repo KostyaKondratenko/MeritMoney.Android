@@ -58,8 +58,8 @@ namespace Merit_Money
 
         private async void tmp_Click(object sender, EventArgs e)
         {
-            //String email = "kondratenkokostya@gmail.com";
-            String email = "intellogic.ukr@gmail.com";
+            String email = "kondratenkokostya@gmail.com";
+            //String email = "intellogic.ukr@gmail.com";
             if (email != String.Empty)
             {
                 await MeritMoneyBrain.AccessToken(email);
