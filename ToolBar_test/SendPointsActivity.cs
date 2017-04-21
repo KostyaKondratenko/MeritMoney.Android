@@ -80,8 +80,9 @@ namespace Merit_Money
 
         private void InitializeProfile()
         {
-            ISharedPreferences info = Application.Context.GetSharedPreferences(GetString(Resource.String.ApplicationInfo), FileCreationMode.Private);
-            CanDistributePoints.Text = info.GetInt(GetString(Resource.String.DistributePoints), -1).ToString();
+            ProfileDatabase db = new ProfileDatabase(GetString(Resource.String.ProfileDBFilename));
+            Profile p = db.GetProfile();
+            CanDistributePoints.Text = p.distribute.ToString();
         }
 
         private void NumberOfPoints_FocusChanged(object sender, View.FocusChangeEventArgs e)
@@ -166,9 +167,61 @@ namespace Merit_Money
                     SendPointsButton.Enabled = false;
                     break;
                 case (int)DialogButtonType.Positive:
-                    await MeritMoneyBrain.DistributePoints(NumberOfPoints.Text, userIDtoDistribute, Notes.Text);
-                    //Toast.MakeText(this, NumberOfPoints.Text + " points were sent to " + userNameToDistribute.Text, ToastLength.Short).Show();
+                    ProgressDialog progressDialog = ProgressDialog.Show(this, "", "Sending points...", true);
+
+                    String name = userNameToDistribute.Text;
+                    userNameToDistribute.Text = String.Empty;
+                    String number = NumberOfPoints.Text;
+                    NumberOfPoints.Text = String.Empty;
+                    String notes = Notes.Text;
+
+                    await MeritMoneyBrain.DistributePoints(number, userIDtoDistribute, notes);
+                    
+                    Profile profile = await MeritMoneyBrain.GetProfile();
+                    new UpdateProfileData(this, progressDialog, number, name).Execute(profile);
                     break;
+            }
+        }
+
+        private class UpdateProfileData : AsyncTask<Profile, Java.Lang.Void, Java.Lang.Void>
+        {
+            private Activity context;
+            private ProgressDialog progressDialog;
+            String NumberOfPoints;
+            String userNameToDistribute;
+
+            public UpdateProfileData(Activity context, ProgressDialog dialog, String NumberOfPoints, String userNameToDistribute)
+            {
+                this.progressDialog = dialog;
+                this.context = context;
+                this.NumberOfPoints = NumberOfPoints;
+                this.userNameToDistribute = userNameToDistribute;
+            }
+
+            protected override void OnPreExecute()
+            { 
+                base.OnPreExecute();
+            }
+
+            protected override Java.Lang.Void RunInBackground(params Profile[] @params)
+            {
+                Profile profile = @params[0];
+                ProfileDatabase db = new ProfileDatabase(context.GetString(Resource.String.ProfileDBFilename));
+                db.Update(profile);
+                return null;
+            }
+
+            protected override void OnPostExecute(Java.Lang.Void result)
+            {
+                progressDialog.Dismiss();
+                String points = (NumberOfPoints == "1") ? "point" : "points";
+                Intent refresh = new Intent(context, typeof(SendPointsActivity));
+                refresh.AddFlags(ActivityFlags.ClearTop | ActivityFlags.NewTask | ActivityFlags.NoAnimation);
+                context.StartActivity(refresh);
+                context.Finish();
+                context.OverridePendingTransition(0, 0);
+                Toast.MakeText(context, NumberOfPoints + points +" were sent to " + userNameToDistribute, ToastLength.Short).Show();
+                base.OnPostExecute(result);
             }
         }
     }

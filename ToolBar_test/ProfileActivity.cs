@@ -11,6 +11,8 @@ using Android.Widget;
 using Android.Support.V7.App;
 using Android.Views.InputMethods;
 using SupportToolBar = Android.Support.V7.Widget.Toolbar;
+using System.Threading;
+using Android.Graphics;
 
 namespace Merit_Money
 {
@@ -66,12 +68,29 @@ namespace Merit_Money
 
         private void InitializeProfile()
         {
-            ISharedPreferences info = Application.Context.GetSharedPreferences(GetString(Resource.String.ApplicationInfo), FileCreationMode.Private);
-            NotificationSwitch.Checked = info.GetBoolean(GetString(Resource.String.EmailNotification), false);
-            UserName.Text = info.GetString(GetString(Resource.String.UserName), String.Empty);
-            UserEmail.Text = info.GetString(GetString(Resource.String.UserEmail), String.Empty);
+            //ISharedPreferences info = Application.Context.GetSharedPreferences(GetString(Resource.String.ApplicationInfo), FileCreationMode.Private);
+            //NotificationSwitch.Checked = info.GetBoolean(GetString(Resource.String.EmailNotification), false);
+            //UserName.Text = info.GetString(GetString(Resource.String.UserName), String.Empty);
+            //UserEmail.Text = info.GetString(GetString(Resource.String.UserEmail), String.Empty);
 
-            new SetImageFromUrl(UserAvatar).Execute(info.GetString(GetString(Resource.String.UserAvatar), String.Empty));
+            ProfileDatabase db = new ProfileDatabase(GetString(Resource.String.ProfileDBFilename));
+            Profile p = db.GetProfile();
+
+            UserName.Text = p.name;
+            UserEmail.Text = p.email;
+            NotificationSwitch.Checked = p.emailNotificaion;
+
+            Bitmap imageBitmap = MeritMoneyBrain.ReadFromInternalStorage(p.ID);
+            if (imageBitmap == null)
+            {
+                new LoadAndSaveImage(UserAvatar).Execute(p.imageUri, p.ID);
+            }
+            else
+            {
+                UserAvatar.SetImageBitmap(imageBitmap);
+            }
+
+            //new SetImageFromUrl(UserAvatar).Execute(info.GetString(GetString(Resource.String.UserAvatar), String.Empty));
         }
 
         private void SetSwitchState()

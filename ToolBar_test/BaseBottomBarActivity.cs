@@ -14,6 +14,7 @@ using SupportBottomBar = Android.Support.Design.Widget.BottomNavigationView;
 using Android.Views.InputMethods;
 using Android.Graphics;
 using Android.Net;
+using System.IO;
 
 namespace Merit_Money
 {
@@ -164,6 +165,48 @@ namespace Merit_Money
                     image.SetImageResource(Resource.Drawable.ic_noavatar);
                 }
                 
+                base.OnPostExecute(result);
+            }
+        }
+
+        protected class LoadAndSaveImage : AsyncTask<String, Java.Lang.Void, Bitmap>
+        {
+            CircularImageView image;
+
+            public LoadAndSaveImage(CircularImageView image)
+            {
+                this.image = image;
+            }
+
+            protected override Android.Graphics.Bitmap RunInBackground(params String[] @params)
+            {
+                String imageUrl = @params[0];
+                String userId = @params[1];
+
+                Bitmap imageBitmap = MeritMoneyBrain.GetImageBitmapFromUrl(imageUrl);
+
+                var sdCardPath = System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal);
+                var filePath = System.IO.Path.Combine(sdCardPath, userId);
+                using (var stream = new FileStream(filePath, FileMode.OpenOrCreate))
+                {
+
+                    imageBitmap.Compress(Bitmap.CompressFormat.Png, 100, stream);
+
+                }
+                return imageBitmap;
+            }
+
+            protected override void OnPostExecute(Bitmap result)
+            {
+                if (result != null)
+                {
+                    image.SetImageBitmap(result);
+                }
+                else
+                {
+                    image.SetImageResource(Resource.Drawable.ic_noavatar);
+                }
+
                 base.OnPostExecute(result);
             }
         }

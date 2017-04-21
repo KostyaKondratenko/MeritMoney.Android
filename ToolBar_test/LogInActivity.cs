@@ -58,7 +58,8 @@ namespace Merit_Money
 
         private async void tmp_Click(object sender, EventArgs e)
         {
-            String email = "kondratenkokostya@gmail.com";
+            //String email = "kondratenkokostya@gmail.com";
+            String email = "intellogic.ukr@gmail.com";
             if (email != String.Empty)
             {
                 await MeritMoneyBrain.AccessToken(email);
@@ -121,16 +122,20 @@ namespace Merit_Money
         {
             ISharedPreferences info = Application.Context.GetSharedPreferences(GetString(Resource.String.ApplicationInfo), FileCreationMode.Private);
             ISharedPreferencesEditor edit = info.Edit();
-            edit.PutString(GetString(Resource.String.ID), profile.ID);
-            edit.PutString(GetString(Resource.String.UserName), profile.name);
-            edit.PutString(GetString(Resource.String.UserEmail), profile.email);
-            edit.PutString(GetString(Resource.String.UserAvatar), profile.imageUri);
-            edit.PutInt(GetString(Resource.String.BalancePoints), profile.balance);
-            edit.PutInt(GetString(Resource.String.RewardsPoints), profile.rewards);
-            edit.PutInt(GetString(Resource.String.DistributePoints), profile.distribute);
-            edit.PutBoolean(GetString(Resource.String.EmailNotification), profile.emailNotificaion);
+            //edit.PutString(GetString(Resource.String.ID), profile.ID);
+            //edit.PutString(GetString(Resource.String.UserName), profile.name);
+            //edit.PutString(GetString(Resource.String.UserEmail), profile.email);
+            //edit.PutString(GetString(Resource.String.UserAvatar), profile.imageUri);
+            //edit.PutInt(GetString(Resource.String.BalancePoints), profile.balance);
+            //edit.PutInt(GetString(Resource.String.RewardsPoints), profile.rewards);
+            //edit.PutInt(GetString(Resource.String.DistributePoints), profile.distribute);
+            //edit.PutBoolean(GetString(Resource.String.EmailNotification), profile.emailNotificaion);
             edit.PutString(GetString(Resource.String.CurrentAccessToken), MeritMoneyBrain.CurrentAccessToken);
             edit.Apply();
+
+            ProfileDatabase db = new ProfileDatabase(GetString(Resource.String.ProfileDBFilename));
+            db.createDatabase();
+            db.Insert(profile);
         }
 
         public void OnConnectionFailed(ConnectionResult result)

@@ -27,5 +27,9 @@
   <!--History-->
   <string name="Personal">Personal</string>
   <string name="Company">Company</string>
+
+  <!--Profile Database-->
+  <string name="ProfileDBFilename">profile.db</string>
+  <string name="UsersDBFilename">users.db</string>
 </resources>
 

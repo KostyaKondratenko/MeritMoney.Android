@@ -19,6 +19,7 @@ using System.Threading;
 using Org.Apache.Http.Impl.Client;
 using Org.Apache.Http.Client;
 using Org.Apache.Http.Client.Methods;
+using Android.Graphics;
 
 namespace Merit_Money
 {
@@ -190,8 +191,7 @@ namespace Merit_Money
                 profile = new Profile(jsonDoc["ID"], jsonDoc["name"],
                     jsonDoc["email"], jsonDoc["imageUrl"],
                    jsonDoc["balance"], jsonDoc["rewards"],
-                   jsonDoc["distribute"], jsonDoc["emailNotification"],
-                   jsonDoc["webhookNotification"]);
+                   jsonDoc["distribute"], jsonDoc["emailNotification"]);
             }
             catch (WebException exception)
             {
@@ -388,6 +388,18 @@ namespace Merit_Money
                     Console.WriteLine(responseText);
                 }
             }
+        }
+
+        public static Bitmap ReadFromInternalStorage(String userId)
+        {
+            var sdCardPath = System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal);
+            var filePath = System.IO.Path.Combine(sdCardPath, userId);
+
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.InPreferredConfig = Bitmap.Config.Argb8888;
+            Bitmap bitmap = BitmapFactory.DecodeFile(filePath, options);
+
+            return bitmap;
         }
 
         public static Android.Graphics.Bitmap GetImageBitmapFromUrl(string url)

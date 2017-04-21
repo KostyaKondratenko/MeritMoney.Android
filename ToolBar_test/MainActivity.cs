@@ -71,11 +71,11 @@ namespace Merit_Money
             }
             else
             {
-                Thread thread = new Thread(() =>
-                {
+                //Thread thread = new Thread(() =>
+                //{
                     InitializeProfile();
-                });
-                thread.Start();
+                //});
+                //thread.Start();
             }
 
             //Correct "point(s)" textView
@@ -99,17 +99,19 @@ namespace Merit_Money
         private async void Profile_Refresh(object sender, EventArgs e)
         {
             Profile profile = await MeritMoneyBrain.GetProfile();
-            ISharedPreferences info = Application.Context.GetSharedPreferences(GetString(Resource.String.ApplicationInfo), FileCreationMode.Private);
-            ISharedPreferencesEditor edit = info.Edit();
-            edit.PutString(GetString(Resource.String.UserName), profile.name);
-            edit.PutString(GetString(Resource.String.UserEmail), profile.email);
-            edit.PutString(GetString(Resource.String.UserAvatar), profile.imageUri);
-            edit.PutInt(GetString(Resource.String.BalancePoints), profile.balance);
-            edit.PutInt(GetString(Resource.String.RewardsPoints), profile.rewards);
-            edit.PutInt(GetString(Resource.String.DistributePoints), profile.distribute);
-            edit.PutString(GetString(Resource.String.CurrentAccessToken), MeritMoneyBrain.CurrentAccessToken);
-            edit.PutBoolean(GetString(Resource.String.EmailNotification), profile.emailNotificaion);
-            edit.Apply();
+            //ISharedPreferences info = Application.Context.GetSharedPreferences(GetString(Resource.String.ApplicationInfo), FileCreationMode.Private);
+            //ISharedPreferencesEditor edit = info.Edit();
+            //edit.PutString(GetString(Resource.String.UserName), profile.name);
+            //edit.PutString(GetString(Resource.String.UserEmail), profile.email);
+            //edit.PutString(GetString(Resource.String.UserAvatar), profile.imageUri);
+            //edit.PutInt(GetString(Resource.String.BalancePoints), profile.balance);
+            //edit.PutInt(GetString(Resource.String.RewardsPoints), profile.rewards);
+            //edit.PutInt(GetString(Resource.String.DistributePoints), profile.distribute);
+            //edit.PutString(GetString(Resource.String.CurrentAccessToken), MeritMoneyBrain.CurrentAccessToken);
+            //edit.PutBoolean(GetString(Resource.String.EmailNotification), profile.emailNotificaion);
+            //edit.Apply();
+            ProfileDatabase db = new ProfileDatabase(GetString(Resource.String.ProfileDBFilename));
+            db.Update(profile);
             InitializeProfile();
             RefreshInfo.Refreshing = false;
         }
@@ -128,9 +130,9 @@ namespace Merit_Money
                         ISharedPreferencesEditor edit = info.Edit();
                         edit.PutBoolean(GetString(Resource.String.LogIn), Loggedin);
                         edit.Apply();
-                        InitializeProfile();
                     });
                     thread.Start();
+                    InitializeProfile();
                 }
             }
         }
@@ -138,14 +140,32 @@ namespace Merit_Money
         private void InitializeProfile()
         {
             ISharedPreferences info = Application.Context.GetSharedPreferences(GetString(Resource.String.ApplicationInfo), FileCreationMode.Private);
-            UserName.Text = info.GetString(GetString(Resource.String.UserName), String.Empty);
-            UserEmail.Text = info.GetString(GetString(Resource.String.UserEmail), String.Empty);
-            Balance.Text = info.GetInt(GetString(Resource.String.BalancePoints), -1).ToString();
-            Rewards.Text = info.GetInt(GetString(Resource.String.RewardsPoints), -1).ToString();
-            Distribute.Text = info.GetInt(GetString(Resource.String.DistributePoints), -1).ToString();
+            //UserName.Text = info.GetString(GetString(Resource.String.UserName), String.Empty);
+            //UserEmail.Text = info.GetString(GetString(Resource.String.UserEmail), String.Empty);
+            //Balance.Text = info.GetInt(GetString(Resource.String.BalancePoints), -1).ToString();
+            //Rewards.Text = info.GetInt(GetString(Resource.String.RewardsPoints), -1).ToString();
+            //Distribute.Text = info.GetInt(GetString(Resource.String.DistributePoints), -1).ToString();
             MeritMoneyBrain.CurrentAccessToken = info.GetString(GetString(Resource.String.CurrentAccessToken), String.Empty);
 
-            new SetImageFromUrl(UserAvatar).Execute(info.GetString(GetString(Resource.String.UserAvatar), String.Empty));
+            ProfileDatabase db = new ProfileDatabase(GetString(Resource.String.ProfileDBFilename));
+            Profile p = db.GetProfile();
+
+            UserName.Text = p.name;
+            UserEmail.Text = p.email;
+            Balance.Text = p.balance.ToString();
+            Rewards.Text = p.rewards.ToString();
+            Distribute.Text = p.distribute.ToString();
+
+            Bitmap imageBitmap = MeritMoneyBrain.ReadFromInternalStorage(p.ID);
+            if (imageBitmap == null)
+            {
+                new LoadAndSaveImage(UserAvatar).Execute(p.imageUri, p.ID);
+            }
+            else
+            {
+                UserAvatar.SetImageBitmap(imageBitmap);
+            }
+            //new SetImageFromUrl(UserAvatar).Execute(info.GetString(GetString(Resource.String.UserAvatar), String.Empty));
         }
 
         private async void MainToolbar_MenuItemClick(object sender, SupportToolBar.MenuItemClickEventArgs e)
@@ -186,7 +206,7 @@ namespace Merit_Money
                 else { RPointstext.Text = "points"; }
 
             }
-            catch (System.OverflowException e) { Console.Out.WriteLine(e.Message); }
+            catch (OverflowException e) { Console.Out.WriteLine(e.Message); }
 
         }
     }

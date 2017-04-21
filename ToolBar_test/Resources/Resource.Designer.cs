@@ -3492,6 +3492,9 @@ namespace Merit_Money
 			// aapt resource value: 0x7f07004e
 			public const int Personal = 2131165262;
 			
+			// aapt resource value: 0x7f070050
+			public const int ProfileDBFilename = 2131165264;
+			
 			// aapt resource value: 0x7f070048
 			public const int RewardsPoints = 2131165256;
 			
@@ -3515,6 +3518,9 @@ namespace Merit_Money
 			
 			// aapt resource value: 0x7f070044
 			public const int UserName = 2131165252;
+			
+			// aapt resource value: 0x7f070051
+			public const int UsersDBFilename = 2131165265;
 			
 			// aapt resource value: 0x7f07004b
 			public const int WebHookNotification = 2131165259;

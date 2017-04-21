@@ -45,7 +45,16 @@ namespace Merit_Money
             SupportActionBar.SetDisplayHomeAsUpEnabled(true);
 
             ProgressDialog progressDialog = ProgressDialog.Show(this, "", "Loading. Please wait...", true);
-            SearchUsersList = await MeritMoneyBrain.GetListOfUsers();
+            //SearchUsersList = await MeritMoneyBrain.GetListOfUsers();
+            UsersDatabase db = new UsersDatabase(GetString(Resource.String.UsersDBFilename));
+            SearchUsersList = db.GetUsers();
+            if (SearchUsersList == null)
+            {
+                List<SingleUser> tmp = await MeritMoneyBrain.GetListOfUsers();
+                db.createDatabase();
+                db.Insert(tmp);
+                SearchUsersList = tmp;
+            }
             progressDialog.Dismiss();
 
             //Thread thread = new Thread(() =>
@@ -77,6 +86,8 @@ namespace Merit_Money
                 case Resource.Id.menu_refresh:
                     ProgressDialog progressDialog = ProgressDialog.Show(this, "", "Loading. Please wait...", true);
                     SearchUsersList = await MeritMoneyBrain.GetListOfUsers();
+                    UsersDatabase db = new UsersDatabase(GetString(Resource.String.UsersDBFilename));
+                    db.Update(SearchUsersList);
                     progressDialog.Dismiss();
                     break;
             }
