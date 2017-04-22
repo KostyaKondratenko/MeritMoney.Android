@@ -368,7 +368,6 @@ namespace Merit_Money
                         else
                         {
                             Console.Out.WriteLine("Response Body: \r\n {0}", jsonDoc.ToString());
-                            CurrentAccessToken = jsonDoc["accessToken"];
                         }
 
                         stream.Flush();

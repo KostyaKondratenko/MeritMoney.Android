@@ -214,13 +214,13 @@ namespace Merit_Money
             protected override void OnPostExecute(Java.Lang.Void result)
             {
                 progressDialog.Dismiss();
-                String points = (NumberOfPoints == "1") ? "point" : "points";
+                String points = (NumberOfPoints == "1") ? " point was" : " points were";
                 Intent refresh = new Intent(context, typeof(SendPointsActivity));
                 refresh.AddFlags(ActivityFlags.ClearTop | ActivityFlags.NewTask | ActivityFlags.NoAnimation);
                 context.StartActivity(refresh);
                 context.Finish();
                 context.OverridePendingTransition(0, 0);
-                Toast.MakeText(context, NumberOfPoints + points +" were sent to " + userNameToDistribute, ToastLength.Short).Show();
+                Toast.MakeText(context, NumberOfPoints + points +" sent to " + userNameToDistribute, ToastLength.Short).Show();
                 base.OnPostExecute(result);
             }
         }
