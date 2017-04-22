@@ -17,7 +17,7 @@ using SupportToolBar = Android.Support.V7.Widget.Toolbar;
 
 namespace Merit_Money
 {
-    [Activity(Label = "Merit Money", MainLauncher = true, Icon = "@drawable/cloud")]
+    [Activity(Label = "Merit Money")]
     public class MainActivity : BaseBottomBarActivity
     {
         private SupportToolBar MainToolbar;
@@ -67,7 +67,9 @@ namespace Merit_Money
             if (!Loggedin)
             {
                 Intent LogInIntent = new Intent(this, typeof(LogInActivity));
+                LogInIntent.AddFlags(ActivityFlags.NoAnimation);
                 this.StartActivityForResult(LogInIntent, LOG_IN_REQUEST);
+                OverridePendingTransition(0, 0);
             }
             else
             {

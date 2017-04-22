@@ -110,7 +110,6 @@ namespace Merit_Money
         {
             if (requestCode == SELECT_PERSON_REQUEST)
             {
-                // Make sure the request was successful
                 if (resultCode == Result.Ok)
                 {
                     userIDtoDistribute = data.GetStringExtra(GetString(Resource.String.ID));
@@ -121,7 +120,6 @@ namespace Merit_Money
 
         private void SendPointsButton_Clicked(object sender, EventArgs e)
         {
-            //Add nuber of points, a person
             if (NumberOfPoints.Text != String.Empty && userNameToDistribute.Text != String.Empty)
             {
                 Android.Support.V7.App.AlertDialog.Builder dialog = new Android.Support.V7.App.AlertDialog.Builder(this);
@@ -130,18 +128,6 @@ namespace Merit_Money
                 dialog.SetNeutralButton("Cancel", this);
                 dialog.SetPositiveButton("Send", this);
                 dialog.Create().Show();
-            }
-            else if (NumberOfPoints.Text == String.Empty && userNameToDistribute.Text == String.Empty)
-            {
-                Toast.MakeText(this, "Please, fill in \"Select person\" and \"# of points\" fields.", ToastLength.Short).Show();
-            }
-            else if (NumberOfPoints.Text == String.Empty)
-            {
-                Toast.MakeText(this, "Please, fill in \"# of points\" field." + userNameToDistribute.Text, ToastLength.Short).Show();
-            }
-            else
-            {
-                Toast.MakeText(this, "Please, fill in \"Select person\" field.", ToastLength.Short).Show();
             }
         }
 

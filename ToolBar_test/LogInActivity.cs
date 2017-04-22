@@ -24,7 +24,7 @@ using Android.Gms.Auth.Api.SignIn;
 namespace Merit_Money
 {
     [Activity(Label = "LogInActivity")]
-    public class LogInActivity : AppCompatActivity, GoogleApiClient.IOnConnectionFailedListener
+    public class LogInActivity : BaseBottomBarActivity, GoogleApiClient.IOnConnectionFailedListener
     {
         private SignInButton LogIn;
         private GoogleApiClient GoogleClient;
@@ -150,12 +150,15 @@ namespace Merit_Money
             {
                 View v = signInButton.GetChildAt(i);
 
-                if (v is TextView) {
-                TextView tv = (TextView)v;
-                tv.Text = buttonText;
-                return;
+                if (v is TextView)
+                {
+                    TextView tv = (TextView)v;
+                    tv.Text = buttonText;
+                    return;
+                }
             }
         }
+
+        public override void OnBackPressed() { }
     }
-}
 }

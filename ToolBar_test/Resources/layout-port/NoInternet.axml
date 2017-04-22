@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    <include
+        layout="@layout/toolbar"
+        android:id="@+id/toolbar" />
+    <LinearLayout
+        android:orientation="vertical"
+        android:minWidth="25px"
+        android:minHeight="25px"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_gravity="bottom"
+        android:gravity="bottom"
+        android:layout_below="@id/toolbar">
+        <TextView
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:text="No Internet Connection"
+            android:layout_weight="1"
+            android:paddingTop="20dp"
+            android:drawableTint="#00000000"
+            android:textColor="@color/material_grey_300" />
+        <Button
+            android:id="@+id/RetryButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Try Again"
+            android:layout_gravity="center"
+            android:textSize="25dp"
+            android:textAllCaps="false"
+            android:layout_marginBottom="60dp"
+            android:textColor="@drawable/button_text_style"
+            android:theme="@style/BlueButton"
+            android:fadingEdge="horizontal"
+            android:fadingEdgeLength="4dp"
+            android:gravity="center"
+            android:padding="20dp" />
+    </LinearLayout>
+</LinearLayout>

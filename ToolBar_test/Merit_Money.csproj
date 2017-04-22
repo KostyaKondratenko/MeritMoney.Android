@@ -171,6 +171,7 @@
     <Compile Include="MainActivity.cs" />
     <Compile Include="MeritMoneyBrain.cs" />
     <Compile Include="NetworkStatusMonitor.cs" />
+    <Compile Include="NoInternetActivity.cs" />
     <Compile Include="PersonalFragment.cs" />
     <Compile Include="Profile.cs" />
     <Compile Include="ProfileActivity.cs" />
@@ -178,6 +179,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SearchPersonActivity.cs" />
     <Compile Include="SendPointsActivity.cs" />
+    <Compile Include="SplashScreenActivity.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -214,6 +216,12 @@
       <SubType>Designer</SubType>
     </AndroidResource>
     <AndroidResource Include="Resources\layout-port\History.axml">
+      <SubType>Designer</SubType>
+    </AndroidResource>
+    <AndroidResource Include="Resources\layout-port\SplashScreen.axml">
+      <SubType>Designer</SubType>
+    </AndroidResource>
+    <AndroidResource Include="Resources\layout-port\NoInternet.axml">
       <SubType>Designer</SubType>
     </AndroidResource>
   </ItemGroup>
