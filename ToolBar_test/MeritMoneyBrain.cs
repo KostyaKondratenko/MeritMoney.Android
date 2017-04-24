@@ -531,6 +531,8 @@ namespace Merit_Money
         public static Bitmap ReadFromInternalStorage(String userId)
         {
             var sdCardPath = System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal);
+
+            //var sdCardPath = System.Environment.GetFolderPath(System.Environment.SpecialFolder.ApplicationData);
             var filePath = System.IO.Path.Combine(sdCardPath, userId);
 
             BitmapFactory.Options options = new BitmapFactory.Options();

@@ -28,7 +28,6 @@ namespace Merit_Money
     {
         private SignInButton LogIn;
         private GoogleApiClient GoogleClient;
-        private Button tmpEmailLogIn;
 
         private readonly int SIGN_IN = 7;
 
@@ -38,14 +37,13 @@ namespace Merit_Money
 
             SetContentView(Resource.Layout.LogInWithEmail);
 
-            tmpEmailLogIn = FindViewById<Button>(Resource.Id.tmpLogInWithEmail);
             LogIn = FindViewById<SignInButton>(Resource.Id.LogInButton);
             SetGoogleSingInButtonText(LogIn, "Log in with Google");
 
             LogIn.Click += LogIn_Clicked;
-            tmpEmailLogIn.Click += tmp_Click;
 
             GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DefaultSignIn)
+                    .RequestEmail()
                     .RequestIdToken(GetString(Resource.String.ServerClientID))
                     .Build();
 
@@ -54,22 +52,6 @@ namespace Merit_Money
                     .EnableAutoManage(this /* FragmentActivity */, this /* OnConnectionFailedListener */)
                     .AddApi(Auth.GOOGLE_SIGN_IN_API, gso)
                     .Build();
-        }
-
-        private async void tmp_Click(object sender, EventArgs e)
-        {
-            String email = "kondratenkokostya@gmail.com";
-            //String email = "intellogic.ukr@gmail.com";
-            if (email != String.Empty)
-            {
-                await MeritMoneyBrain.AccessToken(email);
-                Profile profile = await MeritMoneyBrain.GetProfile();
-                Intent returnIntent = new Intent();
-                returnIntent.PutExtra(GetString(Resource.String.LogIn), true);
-                SetResult(Result.Ok, returnIntent);
-                SaveData(profile);
-                Finish();
-            }
         }
 
         private void LogIn_Clicked(object sender, EventArgs e)
@@ -109,6 +91,12 @@ namespace Merit_Money
                 // Signed in successfully, show authenticated UI.
                 GoogleSignInAccount acct = result.SignInAccount;
                 await MeritMoneyBrain.SingInWithGoogle(acct.IdToken);
+                Profile profile = await MeritMoneyBrain.GetProfile();
+                Intent returnIntent = new Intent();
+                returnIntent.PutExtra(GetString(Resource.String.LogIn), true);
+                SetResult(Result.Ok, returnIntent);
+                SaveData(profile);
+                Finish();
                 //updateUI(true);
             }
             else

@@ -167,6 +167,7 @@ namespace Merit_Money
             {
                 UserAvatar.SetImageBitmap(imageBitmap);
             }
+
             //new SetImageFromUrl(UserAvatar).Execute(info.GetString(GetString(Resource.String.UserAvatar), String.Empty));
         }
 

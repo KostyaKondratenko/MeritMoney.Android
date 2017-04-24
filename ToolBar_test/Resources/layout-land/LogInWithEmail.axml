@@ -9,7 +9,7 @@
         android:src="@drawable/LogInMeritMoney"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:id="@+id/Logo"
+        android:id="@id/Logo"
         android:layout_weight="1"
         android:paddingTop="20dp" />
     <LinearLayout
@@ -22,7 +22,7 @@
         android:layout_gravity="bottom"
         android:gravity="bottom">
         <com.google.android.gms.common.SignInButton
-            android:id="@+id/LogInButton"
+            android:id="@id/LogInButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"

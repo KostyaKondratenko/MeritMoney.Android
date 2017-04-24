@@ -8,10 +8,6 @@
       app:actionViewClass="android.support.v7.widget.SearchView"
       app:showAsAction="always|collapseActionView">
   </item>
-  <!--item
-    android:id="@+id/search_exit_menu"
-    app:showAsAction="ifRoom"
-    android:title="Cancel"/-->
 <item
      android:id="@+id/menu_refresh"
      android:showAsAction="never"
