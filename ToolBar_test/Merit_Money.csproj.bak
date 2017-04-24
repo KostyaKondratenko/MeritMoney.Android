@@ -17,7 +17,7 @@
     <AndroidResgenFile>Resources\Resource.Designer.cs</AndroidResgenFile>
     <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
     <AndroidUseLatestPlatformSdk>True</AndroidUseLatestPlatformSdk>
-    <TargetFrameworkVersion>v7.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v7.0</TargetFrameworkVersion>
     <AndroidManifest>Properties\AndroidManifest.xml</AndroidManifest>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
@@ -163,7 +163,6 @@
   <ItemGroup>
     <Compile Include="BaseBottomBarActivity.cs" />
     <Compile Include="CircularImageView.cs" />
-    <Compile Include="HistoryObject.cs" />
     <Compile Include="CompanyFragment.cs" />
     <Compile Include="Database.cs" />
     <Compile Include="EnumOfActivities.cs" />

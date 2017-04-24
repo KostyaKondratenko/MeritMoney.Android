@@ -6,4 +6,10 @@ namespace Merit_Money
         History,
         Profile
     }
+
+    public enum HistoryType
+    {
+        Personal,
+        Company
+    }
 }

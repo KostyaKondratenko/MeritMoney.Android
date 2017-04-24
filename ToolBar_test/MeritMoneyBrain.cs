@@ -312,7 +312,7 @@ namespace Merit_Money
                         }
                     }
                 }
-        }
+            }
             catch (WebException exception)
             {
                 string responseText;
@@ -387,6 +387,71 @@ namespace Merit_Money
                     Console.WriteLine(responseText);
                 }
             }
+        }
+
+        public static async Task<List<HistoryObject>> GetHistory(int offset, int batchSize, HistoryType type)
+        {
+            List<HistoryObject> listOfHistoryObjects = new List<HistoryObject>();
+            string histType = (type == HistoryType.Personal) ? "personal" : "company";
+            try
+            {
+                // Create an HTTP web request using the URL:
+                string url = MeritMoneyApiUrl + histType + "History" + "?offset=" + offset.ToString() +
+                    "&batchSize=" + batchSize.ToString();
+                HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create(new Uri(url));
+                request.ContentType = "application/json";
+                request.Headers.Add("Access-Token", CurrentAccessToken);
+                request.Method = "GET";
+
+                JsonValue jsonDoc;
+
+                // Send the request to the server and wait for the response:
+                using (WebResponse response = await request.GetResponseAsync())
+                {
+                    // Get a stream representation of the HTTP web response:
+                    using (Stream stream = response.GetResponseStream())
+                    {
+                        // Use this stream to build a JSON document object:
+                        jsonDoc = await Task.Run(() => JsonObject.Load(stream));
+
+                        if (string.IsNullOrWhiteSpace(jsonDoc.ToString()))
+                        {
+                            Console.Out.WriteLine("Response contained empty body...");
+                        }
+                        else
+                        {
+                            Console.Out.WriteLine("Response Body: \r\n {0}", jsonDoc.ToString());
+                            JSONArray array = new JSONArray(jsonDoc.ToString());
+                            for (int i = 0; i < array.Length(); i++)
+                            {
+                                JSONObject jsonobject = array.GetJSONObject(i);
+                                String ID = jsonobject.GetString("ID");
+                                String toUserID = jsonobject.GetString("toUserID");
+                                String fromUserID = jsonobject.GetString("fromUserID");
+                                int date = jsonobject.GetInt("date");
+                                String message = jsonobject.GetString("message");
+                                String comment = jsonobject.GetString("comment");
+
+                                listOfHistoryObjects.Add(new HistoryObject(ID, toUserID, fromUserID, date, message, comment));
+                            }
+                        }
+                    }
+                }
+            }
+            catch (WebException exception)
+            {
+                string responseText;
+                using (var reader = new StreamReader(exception.Response.GetResponseStream()))
+                {
+                    responseText = reader.ReadToEnd();
+                    Console.WriteLine(responseText);
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+            return listOfHistoryObjects;
         }
 
         public static async Task<Profile> updateProfile(String name, bool emailNotificationWasChanged, bool value)
