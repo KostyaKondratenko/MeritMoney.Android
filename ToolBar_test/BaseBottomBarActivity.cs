@@ -186,10 +186,10 @@ namespace Merit_Money
                 Bitmap imageBitmap = MeritMoneyBrain.GetImageBitmapFromUrl(imageUrl);
 
                 var sdCardPath = System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal);
+                //var sdCardPath = System.Environment.GetFolderPath(System.Environment.SpecialFolder.ApplicationData);
                 var filePath = System.IO.Path.Combine(sdCardPath, userId);
                 using (var stream = new FileStream(filePath, FileMode.OpenOrCreate))
                 {
-
                     imageBitmap.Compress(Bitmap.CompressFormat.Png, 100, stream);
 
                 }
