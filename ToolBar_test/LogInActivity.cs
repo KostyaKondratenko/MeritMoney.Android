@@ -89,6 +89,7 @@ namespace Merit_Money
             if (result.IsSuccess)
             {
                 // Signed in successfully, show authenticated UI.
+                ProgressDialog progressDialog = ProgressDialog.Show(this, "", "Retrieving profile data", true);
                 GoogleSignInAccount acct = result.SignInAccount;
                 await MeritMoneyBrain.SingInWithGoogle(acct.IdToken);
                 Profile profile = await MeritMoneyBrain.GetProfile();
@@ -97,6 +98,7 @@ namespace Merit_Money
                 SetResult(Result.Ok, returnIntent);
                 SaveData(profile);
                 Finish();
+                progressDialog.Dismiss();
                 //updateUI(true);
             }
             else

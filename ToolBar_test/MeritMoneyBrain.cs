@@ -265,8 +265,10 @@ namespace Merit_Money
         public static async Task<List<SingleUser>> GetListOfUsers()
         {
             List<SingleUser> ListOfUsers = new List<SingleUser>();
-            ISharedPreferences info = Application.Context.GetSharedPreferences(Application.Context.GetString(Resource.String.ApplicationInfo), FileCreationMode.Private);
-            String currentID = info.GetString(Application.Context.GetString(Resource.String.ID), String.Empty);
+            ProfileDatabase db = new ProfileDatabase(Application.Context.GetString(Resource.String.ProfileDBFilename));
+            Profile p = db.GetProfile();
+            String currentID = p.ID;
+            String AdministratorID = "0000";
             try
             {
                 // Create an HTTP web request using the URL:
@@ -304,7 +306,7 @@ namespace Merit_Money
                                 String email = jsonobject.GetString("email");
                                 String imUrl = jsonobject.GetString("imageUrl");
 
-                                if (ID != currentID && ID != String.Empty)
+                                if (ID != currentID && ID != AdministratorID)
                                 {
                                     ListOfUsers.Add(new SingleUser(ID, name, email, imUrl, img));
                                 }

@@ -132,10 +132,7 @@ namespace Merit_Money
             try
             {
                 var db = new SQLiteConnection(dbPath);
-                foreach (SingleUser value in values)
-                {
-                    db.Insert(value);
-                }
+                db.InsertAll(values);
                 return true;
             }
             catch (SQLiteException ex)
@@ -152,10 +149,7 @@ namespace Merit_Money
                 deleteDatabase();
                 createDatabase();
                 var db = new SQLiteConnection(dbPath);
-                foreach (SingleUser value in values)
-                {
-                    db.Insert(value);
-                }
+                db.InsertAll(values);
                 return true;
             }
             catch (SQLiteException ex)
@@ -172,6 +166,10 @@ namespace Merit_Money
             {
                 var db = new SQLiteConnection(dbPath);
                 result = db.Table<SingleUser>().ToList();
+                foreach (SingleUser user in result)
+                {
+                    user.image = Android.Graphics.BitmapFactory.DecodeResource(Application.Context.Resources, Resource.Drawable.ic_noavatar);
+                }
                 return result;
             }
             catch (SQLiteException ex)

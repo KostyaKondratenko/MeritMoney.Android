@@ -36,7 +36,9 @@ namespace Merit_Money
 
         async void SimulateStartup()
         {
-            await Task.Delay(1500);
+            await Task.Delay(500);
+            ISharedPreferences info = Application.Context.GetSharedPreferences(GetString(Resource.String.ApplicationInfo), FileCreationMode.Private);
+            MeritMoneyBrain.CurrentAccessToken = info.GetString(GetString(Resource.String.CurrentAccessToken), String.Empty);
             if (NetworkStatus.State != NetworkState.Disconnected)
             {
                 StartActivity(new Intent(Application.Context, typeof(MainActivity)));

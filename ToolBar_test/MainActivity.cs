@@ -22,7 +22,6 @@ namespace Merit_Money
     {
         private SupportToolBar MainToolbar;
         private Button SayThanksButton;
-        //private ProfileClass profile;
         private SwipeRefreshLayout RefreshInfo;
         public static bool Loggedin;
 
@@ -73,14 +72,9 @@ namespace Merit_Money
             }
             else
             {
-                //Thread thread = new Thread(() =>
-                //{
-                    InitializeProfile();
-                //});
-                //thread.Start();
+                 InitializeProfile();
             }
 
-            //Correct "point(s)" textView
             CorrectPointsText();
 
             if (Android.OS.Build.VERSION.SdkInt >= BuildVersionCodes.Lollipop)
@@ -101,17 +95,6 @@ namespace Merit_Money
         private async void Profile_Refresh(object sender, EventArgs e)
         {
             Profile profile = await MeritMoneyBrain.GetProfile();
-            //ISharedPreferences info = Application.Context.GetSharedPreferences(GetString(Resource.String.ApplicationInfo), FileCreationMode.Private);
-            //ISharedPreferencesEditor edit = info.Edit();
-            //edit.PutString(GetString(Resource.String.UserName), profile.name);
-            //edit.PutString(GetString(Resource.String.UserEmail), profile.email);
-            //edit.PutString(GetString(Resource.String.UserAvatar), profile.imageUri);
-            //edit.PutInt(GetString(Resource.String.BalancePoints), profile.balance);
-            //edit.PutInt(GetString(Resource.String.RewardsPoints), profile.rewards);
-            //edit.PutInt(GetString(Resource.String.DistributePoints), profile.distribute);
-            //edit.PutString(GetString(Resource.String.CurrentAccessToken), MeritMoneyBrain.CurrentAccessToken);
-            //edit.PutBoolean(GetString(Resource.String.EmailNotification), profile.emailNotificaion);
-            //edit.Apply();
             ProfileDatabase db = new ProfileDatabase(GetString(Resource.String.ProfileDBFilename));
             db.Update(profile);
             InitializeProfile();
@@ -122,7 +105,6 @@ namespace Merit_Money
         {
             if (requestCode == LOG_IN_REQUEST)
             {
-                // Make sure the request was successful
                 if (resultCode == Result.Ok)
                 {
                     Loggedin = data.GetBooleanExtra(GetString(Resource.String.LogIn), false);
@@ -141,14 +123,6 @@ namespace Merit_Money
 
         private void InitializeProfile()
         {
-            ISharedPreferences info = Application.Context.GetSharedPreferences(GetString(Resource.String.ApplicationInfo), FileCreationMode.Private);
-            //UserName.Text = info.GetString(GetString(Resource.String.UserName), String.Empty);
-            //UserEmail.Text = info.GetString(GetString(Resource.String.UserEmail), String.Empty);
-            //Balance.Text = info.GetInt(GetString(Resource.String.BalancePoints), -1).ToString();
-            //Rewards.Text = info.GetInt(GetString(Resource.String.RewardsPoints), -1).ToString();
-            //Distribute.Text = info.GetInt(GetString(Resource.String.DistributePoints), -1).ToString();
-            MeritMoneyBrain.CurrentAccessToken = info.GetString(GetString(Resource.String.CurrentAccessToken), String.Empty);
-
             ProfileDatabase db = new ProfileDatabase(GetString(Resource.String.ProfileDBFilename));
             Profile p = db.GetProfile();
 
@@ -167,17 +141,13 @@ namespace Merit_Money
             {
                 UserAvatar.SetImageBitmap(imageBitmap);
             }
-
-            //new SetImageFromUrl(UserAvatar).Execute(info.GetString(GetString(Resource.String.UserAvatar), String.Empty));
         }
 
         private async void MainToolbar_MenuItemClick(object sender, SupportToolBar.MenuItemClickEventArgs e)
         {
-            //Add a logout method
             switch (e.Item.ItemId)
             {
                 case Resource.Id.menu_logout:
-                    //Toast.MakeText(this, "Action selected: " + e.Item.TitleFormatted, ToastLength.Short).Show();
                     await MeritMoneyBrain.LogOut();
                     break;
             }

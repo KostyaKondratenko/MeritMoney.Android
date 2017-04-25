@@ -88,6 +88,8 @@ namespace Merit_Money
                     SearchUsersList = await MeritMoneyBrain.GetListOfUsers();
                     UsersDatabase db = new UsersDatabase(GetString(Resource.String.UsersDBFilename));
                     db.Update(SearchUsersList);
+                    RecyclerViewAdapter = new UsersAdapter(SearchUsersList, this);
+                    SearchUserView.SetAdapter(RecyclerViewAdapter);
                     progressDialog.Dismiss();
                     break;
             }
