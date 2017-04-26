@@ -12,6 +12,7 @@ using Android.Widget;
 using Android.Support.V7.App;
 using Android.Util;
 using System.Threading.Tasks;
+using System.Threading;
 
 namespace Merit_Money
 {
@@ -23,29 +24,60 @@ namespace Merit_Money
             base.OnCreate(savedInstanceState);
 
             SetContentView(Resource.Layout.SplashScreen);
+
+            new LoadProfile(this, new ProgressDialog(this)).Execute();
         }
 
         public override void OnBackPressed() { }
 
-        protected override void OnResume()
+        private class LoadProfile : AsyncTask<Java.Lang.Void, Java.Lang.Void, Task<Java.Lang.Void>>
         {
-            base.OnResume();
-            Task startupWork = new Task(() => { SimulateStartup(); });
-            startupWork.Start();
-        }
+            private ProgressDialog dialog;
+            private SplashScreenActivity context;
 
-        async void SimulateStartup()
-        {
-            await Task.Delay(500);
-            ISharedPreferences info = Application.Context.GetSharedPreferences(GetString(Resource.String.ApplicationInfo), FileCreationMode.Private);
-            MeritMoneyBrain.CurrentAccessToken = info.GetString(GetString(Resource.String.CurrentAccessToken), String.Empty);
-            if (NetworkStatus.State != NetworkState.Disconnected)
+            public LoadProfile(SplashScreenActivity activity, ProgressDialog dialog)
             {
-                StartActivity(new Intent(Application.Context, typeof(MainActivity)));
+                this.context = activity;
+                this.dialog = dialog;
             }
-            else
+
+            protected override async Task<Java.Lang.Void> RunInBackground(params Java.Lang.Void[] @params)
             {
-               StartActivity(new Intent(Application.Context, typeof(NoInternetActivity)));
+                ISharedPreferences info = Application.Context.GetSharedPreferences(context.GetString(Resource.String.ApplicationInfo), FileCreationMode.Private);
+
+                if (context.NetworkStatus.State != NetworkState.Disconnected)
+                {
+                    bool LoggedIn = info.GetBoolean(context.GetString(Resource.String.LogIn), false);
+
+                    if (LoggedIn)
+                    {
+                        MeritMoneyBrain.CurrentAccessToken = info.GetString(context.GetString(Resource.String.CurrentAccessToken), String.Empty);
+                        Profile p = await MeritMoneyBrain.GetProfile();
+                        ProfileDatabase db = new ProfileDatabase(context.GetString(Resource.String.ProfileDBFilename));
+                        db.Update(p);
+                    }
+                    context.StartActivity(new Intent(Application.Context, typeof(MainActivity)));
+                }
+                else
+                {
+                    await Task.Delay(500);
+                    context.StartActivity(new Intent(Application.Context, typeof(NoInternetActivity)));
+                }
+
+                return null;
+            }
+
+            protected override void OnPreExecute()
+            {
+                base.OnPreExecute();
+                dialog = ProgressDialog.Show(context, "", "Retrieving pofile data");
+            }
+
+            protected override void OnPostExecute(Task<Java.Lang.Void> result)
+            {
+                base.OnPostExecute(result);
+                dialog.Dismiss();
+                context.Finish();
             }
         }
     }

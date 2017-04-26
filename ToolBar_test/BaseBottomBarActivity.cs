@@ -183,6 +183,11 @@ namespace Merit_Money
                 String imageUrl = @params[0];
                 String userId = @params[1];
 
+                if(imageUrl == null)
+                {
+                    return null;
+                }
+
                 Bitmap imageBitmap = MeritMoneyBrain.GetImageBitmapFromUrl(imageUrl);
 
                 var sdCardPath = System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal);

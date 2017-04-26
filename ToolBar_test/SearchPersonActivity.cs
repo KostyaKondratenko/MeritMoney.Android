@@ -44,7 +44,7 @@ namespace Merit_Money
             SupportActionBar.SetHomeButtonEnabled(true);
             SupportActionBar.SetDisplayHomeAsUpEnabled(true);
 
-            ProgressDialog progressDialog = ProgressDialog.Show(this, "", "Loading. Please wait...", true);
+            ProgressDialog progressDialog = ProgressDialog.Show(this, "", "Loading, please wait...", true);
             //SearchUsersList = await MeritMoneyBrain.GetListOfUsers();
             UsersDatabase db = new UsersDatabase(GetString(Resource.String.UsersDBFilename));
             SearchUsersList = db.GetUsers();
@@ -84,12 +84,19 @@ namespace Merit_Money
             switch (e.Item.ItemId)
             {
                 case Resource.Id.menu_refresh:
-                    ProgressDialog progressDialog = ProgressDialog.Show(this, "", "Loading. Please wait...", true);
+                    ProgressDialog progressDialog = ProgressDialog.Show(this, "", "Loading, please wait", true);
+
                     SearchUsersList = await MeritMoneyBrain.GetListOfUsers();
+
                     UsersDatabase db = new UsersDatabase(GetString(Resource.String.UsersDBFilename));
                     db.Update(SearchUsersList);
+
                     RecyclerViewAdapter = new UsersAdapter(SearchUsersList, this);
                     SearchUserView.SetAdapter(RecyclerViewAdapter);
+
+                    foreach (SingleUser user in SearchUsersList)
+                        new ImageDownloader(RecyclerViewAdapter).Execute(user);
+
                     progressDialog.Dismiss();
                     break;
             }

@@ -120,14 +120,21 @@ namespace Merit_Money
 
         private void SendPointsButton_Clicked(object sender, EventArgs e)
         {
-            if (NumberOfPoints.Text != String.Empty && userNameToDistribute.Text != String.Empty)
+            if (NetworkStatus.State != NetworkState.Disconnected)
             {
-                Android.Support.V7.App.AlertDialog.Builder dialog = new Android.Support.V7.App.AlertDialog.Builder(this);
-                dialog.SetMessage("Do you want to send " + NumberOfPoints.Text + " point(s) to " + userNameToDistribute.Text + "?");
-                dialog.SetCancelable(true);
-                dialog.SetNeutralButton("Cancel", this);
-                dialog.SetPositiveButton("Send", this);
-                dialog.Create().Show();
+                if (NumberOfPoints.Text != String.Empty && userNameToDistribute.Text != String.Empty)
+                {
+                    Android.Support.V7.App.AlertDialog.Builder dialog = new Android.Support.V7.App.AlertDialog.Builder(this);
+                    dialog.SetMessage("Do you want to send " + NumberOfPoints.Text + " point(s) to " + userNameToDistribute.Text + "?");
+                    dialog.SetCancelable(true);
+                    dialog.SetNeutralButton("Cancel", this);
+                    dialog.SetPositiveButton("Send", this);
+                    dialog.Create().Show();
+                }
+            }
+            else
+            {
+                Toast.MakeText(this, "There is no Internet connection.", ToastLength.Short).Show();
             }
         }
 

@@ -13,6 +13,7 @@ using Android.Views.InputMethods;
 using SupportToolBar = Android.Support.V7.Widget.Toolbar;
 using System.Threading;
 using Android.Graphics;
+using System.Threading.Tasks;
 
 namespace Merit_Money
 {
@@ -53,11 +54,7 @@ namespace Merit_Money
             UserName = FindViewById<TextView>(Resource.Id.ProfileUserName);
             UserEmail = FindViewById<TextView>(Resource.Id.ProfileUserEmail);
 
-            //Thread thread = new Thread(() =>
-            //{
-                InitializeProfile();
-            //});
-            //thread.Start();
+            InitializeProfile();
 
             MainToolbar.InflateMenu(Resource.Menu.profile_top_menu);
             MainToolbar.Title = "Profile";
@@ -73,11 +70,6 @@ namespace Merit_Money
 
         private void InitializeProfile()
         {
-            //ISharedPreferences info = Application.Context.GetSharedPreferences(GetString(Resource.String.ApplicationInfo), FileCreationMode.Private);
-            //NotificationSwitch.Checked = info.GetBoolean(GetString(Resource.String.EmailNotification), false);
-            //UserName.Text = info.GetString(GetString(Resource.String.UserName), String.Empty);
-            //UserEmail.Text = info.GetString(GetString(Resource.String.UserEmail), String.Empty);
-
             ProfileDatabase db = new ProfileDatabase(GetString(Resource.String.ProfileDBFilename));
             Profile p = db.GetProfile();
 
@@ -94,8 +86,6 @@ namespace Merit_Money
             {
                 UserAvatar.SetImageBitmap(imageBitmap);
             }
-
-            //new SetImageFromUrl(UserAvatar).Execute(info.GetString(GetString(Resource.String.UserAvatar), String.Empty));
         }
 
         private void SetSwitchState()
@@ -118,77 +108,84 @@ namespace Merit_Money
 
         private async void MainToolbar_MenuItemClick(object sender, SupportToolBar.MenuItemClickEventArgs e)
         {
-            switch (e.Item.ItemId)
+            if (NetworkStatus.State != NetworkState.Disconnected)
             {
-                case Resource.Id.menu_edit:
-                    if (!isEditing)
-                    {
-                        e.Item.SetTitle("Save");
-
-                        NotificationSwitch.Visibility = ViewStates.Visible;
-                        EditName.Visibility = ViewStates.Visible;
-
-                        SwitchState.Visibility = ViewStates.Invisible;
-                        UserName.Visibility = ViewStates.Invisible;
-
-                        SaveName = UserName.Text;
-                        SaveSwitchState = NotificationSwitch.Checked;
-
-                        EditName.Text = UserName.Text;
-
-                        ShowKeyboard(EditName);
-
-                        isEditing = true;
-                    }
-                    else
-                    {
-                        e.Item.SetTitle("Edit");
-
-                        ProgressDialog progressDialog = ProgressDialog.Show(this, "", "Saving...", true);
-
-                        NotificationSwitch.Visibility = ViewStates.Invisible;
-                        EditName.Visibility = ViewStates.Invisible;
-
-                        SwitchState.Visibility = ViewStates.Visible;
-                        UserName.Visibility = ViewStates.Visible;
-
-                        if (EditName.Text != String.Empty)
+                switch (e.Item.ItemId)
+                {
+                    case Resource.Id.menu_edit:
+                        if (!isEditing)
                         {
-                            UserName.Text = EditName.Text;
-                            EditName.Text = String.Empty;
+                            e.Item.SetTitle("Save");
+                            EditingItemsVisible(ViewStates.Visible, ViewStates.Invisible);
+
+                            SaveName = UserName.Text;
+                            SaveSwitchState = NotificationSwitch.Checked;
+
+                            EditName.Text = UserName.Text;
+
+                            ShowKeyboard(EditName);
+                            isEditing = true;
                         }
-
-                        if (SaveSwitchState != NotificationSwitch.Checked)
-                            SwitchWasChanged = true;
                         else
-                            SwitchWasChanged = false;
-                        if (SaveName != UserName.Text)
-                            nameWasChanged = true;
-                        else
-                            nameWasChanged = false;
-
-                        HideKeyboard(EditName);
-
-                        isEditing = false;
-
-                        if (SwitchWasChanged && !nameWasChanged)
                         {
-                            Profile p = await MeritMoneyBrain.updateProfile(String.Empty, SwitchWasChanged, NotificationSwitch.Checked);
-                            ProfileDatabase db = new ProfileDatabase(GetString(Resource.String.ProfileDBFilename));
-                            db.Update(p);
+                            e.Item.SetTitle("Edit");
+
+                            EditingItemsVisible(ViewStates.Invisible, ViewStates.Visible);
+                            isEditing = false;
+                            HideKeyboard(EditName);
+
+                            ProgressDialog progressDialog = ProgressDialog.Show(this, "", "Saving...", true);
+                            await HandleResult();
                             progressDialog.Dismiss();
                         }
-                        if (nameWasChanged)
-                        {
-                            Profile p = await MeritMoneyBrain.updateProfile(UserName.Text, SwitchWasChanged, NotificationSwitch.Checked);
-                            ProfileDatabase db = new ProfileDatabase(GetString(Resource.String.ProfileDBFilename));
-                            db.Update(p);
-                            progressDialog.Dismiss();
-                        }
-                        progressDialog.Dismiss();
-                    }
-                    SetSwitchState();
-                    break;
+                        SetSwitchState();
+                        break;
+                }
+            }
+            else
+            {
+                Toast.MakeText(this, "There is no Internet connection.", ToastLength.Short);
+            }
+        }
+
+        private void EditingItemsVisible(ViewStates editingState, ViewStates savingState)
+        {
+            NotificationSwitch.Visibility = editingState;
+            EditName.Visibility = editingState;
+
+            SwitchState.Visibility = savingState;
+            UserName.Visibility = savingState;
+        }
+
+        private async Task HandleResult()
+        {
+            if (EditName.Text != String.Empty)
+            {
+                UserName.Text = EditName.Text;
+                EditName.Text = String.Empty;
+            }
+
+            if (SaveSwitchState != NotificationSwitch.Checked)
+                SwitchWasChanged = true;
+            else
+                SwitchWasChanged = false;
+
+            if (SaveName != UserName.Text)
+                nameWasChanged = true;
+            else
+                nameWasChanged = false;
+
+            if (SwitchWasChanged && !nameWasChanged)
+            {
+                Profile p = await MeritMoneyBrain.updateProfile(String.Empty, SwitchWasChanged, NotificationSwitch.Checked);
+                ProfileDatabase db = new ProfileDatabase(GetString(Resource.String.ProfileDBFilename));
+                db.Update(p);
+            }
+            if (nameWasChanged)
+            {
+                Profile p = await MeritMoneyBrain.updateProfile(UserName.Text, SwitchWasChanged, NotificationSwitch.Checked);
+                ProfileDatabase db = new ProfileDatabase(GetString(Resource.String.ProfileDBFilename));
+                db.Update(p);
             }
         }
 

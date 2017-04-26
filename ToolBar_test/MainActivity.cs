@@ -94,11 +94,19 @@ namespace Merit_Money
 
         private async void Profile_Refresh(object sender, EventArgs e)
         {
-            Profile profile = await MeritMoneyBrain.GetProfile();
-            ProfileDatabase db = new ProfileDatabase(GetString(Resource.String.ProfileDBFilename));
-            db.Update(profile);
-            InitializeProfile();
-            RefreshInfo.Refreshing = false;
+            if (NetworkStatus.State != NetworkState.Disconnected)
+            {
+                Profile profile = await MeritMoneyBrain.GetProfile();
+                ProfileDatabase db = new ProfileDatabase(GetString(Resource.String.ProfileDBFilename));
+                db.Update(profile);
+                InitializeProfile();
+                RefreshInfo.Refreshing = false;
+            }
+            else
+            {
+                Toast.MakeText(this, "There is no Internet connection.", ToastLength.Short);
+                RefreshInfo.Refreshing = false;
+            }
         }
 
         protected override void OnActivityResult(int requestCode, [GeneratedEnum] Result resultCode, Intent data)
