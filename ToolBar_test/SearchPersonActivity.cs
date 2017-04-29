@@ -21,8 +21,9 @@ using Android.Views.InputMethods;
 namespace Merit_Money
 {
     [Activity(Label = "SearchPersonActivity")]
-    public class SearchPersonActivity : AppCompatActivity, 
-        Android.Support.V7.Widget.SearchView.IOnQueryTextListener
+    public class SearchPersonActivity : BaseBottomBarActivity, 
+        Android.Support.V7.Widget.SearchView.IOnQueryTextListener,
+        IDialogInterfaceOnClickListener
     {
         private SupportToolBar ToolBar;
         private SupportRecyclerView SearchUserView;
@@ -45,7 +46,6 @@ namespace Merit_Money
             SupportActionBar.SetDisplayHomeAsUpEnabled(true);
 
             ProgressDialog progressDialog = ProgressDialog.Show(this, "", "Loading, please wait...", true);
-            //SearchUsersList = await MeritMoneyBrain.GetListOfUsers();
             UsersDatabase db = new UsersDatabase(GetString(Resource.String.UsersDBFilename));
             SearchUsersList = db.GetUsers();
             if (SearchUsersList == null)
@@ -56,15 +56,6 @@ namespace Merit_Money
                 SearchUsersList = tmp;
             }
             progressDialog.Dismiss();
-
-            //Thread thread = new Thread(() =>
-            //{
-            //    foreach (SingleUser user in SearchUsersList)
-            //    {
-            //        user.image = MeritMoneyBrain.GetImageBitmapFromUrl(user.url);
-            //    }
-            //});
-            //thread.Start();
 
             RecyclerViewManager = new LinearLayoutManager(this);
             SearchUserView.SetLayoutManager(RecyclerViewManager);
@@ -81,24 +72,36 @@ namespace Merit_Money
 
         private async void ToolBar_MenuItemClick(object sender, SupportToolBar.MenuItemClickEventArgs e)
         {
-            switch (e.Item.ItemId)
+            if (NetworkStatus.State != NetworkState.Disconnected)
             {
-                case Resource.Id.menu_refresh:
-                    ProgressDialog progressDialog = ProgressDialog.Show(this, "", "Loading, please wait", true);
+                switch (e.Item.ItemId)
+                {
+                    case Resource.Id.menu_refresh:
+                        ProgressDialog progressDialog = ProgressDialog.Show(this, "", "Loading, please wait", true);
 
-                    SearchUsersList = await MeritMoneyBrain.GetListOfUsers();
+                        SearchUsersList = await MeritMoneyBrain.GetListOfUsers();
 
-                    UsersDatabase db = new UsersDatabase(GetString(Resource.String.UsersDBFilename));
-                    db.Update(SearchUsersList);
+                        UsersDatabase db = new UsersDatabase(GetString(Resource.String.UsersDBFilename));
+                        db.Update(SearchUsersList);
 
-                    RecyclerViewAdapter = new UsersAdapter(SearchUsersList, this);
-                    SearchUserView.SetAdapter(RecyclerViewAdapter);
+                        RecyclerViewAdapter = new UsersAdapter(SearchUsersList, this);
+                        SearchUserView.SetAdapter(RecyclerViewAdapter);
 
-                    foreach (SingleUser user in SearchUsersList)
-                        new ImageDownloader(RecyclerViewAdapter).Execute(user);
+                        foreach (SingleUser user in SearchUsersList)
+                            new ImageDownloader(RecyclerViewAdapter).Execute(user);
 
-                    progressDialog.Dismiss();
-                    break;
+                        progressDialog.Dismiss();
+                        break;
+                }
+            }
+            else
+            {
+                //Toast.MakeText(this, "There is no Internet connection.", ToastLength.Short);
+                Android.Support.V7.App.AlertDialog.Builder dialog = new Android.Support.V7.App.AlertDialog.Builder(this);
+                dialog.SetMessage("There is no Internet connection.");
+                dialog.SetCancelable(true);
+                dialog.SetPositiveButton("OK", this);
+                dialog.Create().Show();
             }
         }
 
@@ -146,6 +149,11 @@ namespace Merit_Money
                 default:
                     return base.OnOptionsItemSelected(item);
             }
+        }
+
+        public void OnClick(IDialogInterface dialog, int which)
+        {
+            dialog.Dismiss();
         }
 
         private class ImageDownloader : AsyncTask<SingleUser, Java.Lang.Void, SingleUser>

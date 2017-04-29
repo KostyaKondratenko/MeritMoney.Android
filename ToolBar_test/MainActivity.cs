@@ -18,7 +18,8 @@ using SupportToolBar = Android.Support.V7.Widget.Toolbar;
 namespace Merit_Money
 {
     [Activity(Label = "Merit Money")]
-    public class MainActivity : BaseBottomBarActivity
+    public class MainActivity : BaseBottomBarActivity,
+        IDialogInterfaceOnClickListener
     {
         private SupportToolBar MainToolbar;
         private Button SayThanksButton;
@@ -104,7 +105,11 @@ namespace Merit_Money
             }
             else
             {
-                Toast.MakeText(this, "There is no Internet connection.", ToastLength.Short);
+                Android.Support.V7.App.AlertDialog.Builder dialog = new Android.Support.V7.App.AlertDialog.Builder(this);
+                dialog.SetMessage("There is no Internet connection.");
+                dialog.SetCancelable(true);
+                dialog.SetPositiveButton("OK", this);
+                dialog.Create().Show();
                 RefreshInfo.Refreshing = false;
             }
         }
@@ -140,15 +145,15 @@ namespace Merit_Money
             Rewards.Text = p.rewards.ToString();
             Distribute.Text = p.distribute.ToString();
 
-            Bitmap imageBitmap = MeritMoneyBrain.ReadFromInternalStorage(p.ID);
-            if (imageBitmap == null)
-            {
+            //Bitmap imageBitmap = MeritMoneyBrain.ReadFromInternalStorage(p.ID);
+            //if (imageBitmap == null)
+            //{
                 new LoadAndSaveImage(UserAvatar).Execute(p.imageUri, p.ID);
-            }
-            else
-            {
-                UserAvatar.SetImageBitmap(imageBitmap);
-            }
+            //}
+            //else
+            //{
+            //    UserAvatar.SetImageBitmap(imageBitmap);
+            //}
         }
 
         private async void MainToolbar_MenuItemClick(object sender, SupportToolBar.MenuItemClickEventArgs e)
@@ -189,6 +194,11 @@ namespace Merit_Money
             }
             catch (OverflowException e) { Console.Out.WriteLine(e.Message); }
 
+        }
+
+        public void OnClick(IDialogInterface dialog, int which)
+        {
+            dialog.Dismiss();
         }
     }
 }

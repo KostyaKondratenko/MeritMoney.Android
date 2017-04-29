@@ -18,7 +18,8 @@ using System.Threading.Tasks;
 namespace Merit_Money
 {
     [Activity(Label = "ProfileActivity")]
-    public class ProfileActivity : BaseBottomBarActivity
+    public class ProfileActivity : BaseBottomBarActivity,
+        IDialogInterfaceOnClickListener
     {
         private SupportToolBar MainToolbar;
         private bool isEditing = false;
@@ -77,15 +78,15 @@ namespace Merit_Money
             UserEmail.Text = p.email;
             NotificationSwitch.Checked = p.emailNotificaion;
 
-            Bitmap imageBitmap = MeritMoneyBrain.ReadFromInternalStorage(p.ID);
-            if (imageBitmap == null)
-            {
+            //Bitmap imageBitmap = MeritMoneyBrain.ReadFromInternalStorage(p.ID);
+            //if (imageBitmap == null)
+            //{
                 new LoadAndSaveImage(UserAvatar).Execute(p.imageUri, p.ID);
-            }
-            else
-            {
-                UserAvatar.SetImageBitmap(imageBitmap);
-            }
+            //}
+            //else
+            //{
+            //    UserAvatar.SetImageBitmap(imageBitmap);
+            //}
         }
 
         private void SetSwitchState()
@@ -108,25 +109,25 @@ namespace Merit_Money
 
         private async void MainToolbar_MenuItemClick(object sender, SupportToolBar.MenuItemClickEventArgs e)
         {
-            if (NetworkStatus.State != NetworkState.Disconnected)
+            switch (e.Item.ItemId)
             {
-                switch (e.Item.ItemId)
-                {
-                    case Resource.Id.menu_edit:
-                        if (!isEditing)
-                        {
-                            e.Item.SetTitle("Save");
-                            EditingItemsVisible(ViewStates.Visible, ViewStates.Invisible);
+                case Resource.Id.menu_edit:
+                    if (!isEditing)
+                    {
+                        e.Item.SetTitle("Save");
+                        EditingItemsVisible(ViewStates.Visible, ViewStates.Invisible);
 
-                            SaveName = UserName.Text;
-                            SaveSwitchState = NotificationSwitch.Checked;
+                        SaveName = UserName.Text;
+                        SaveSwitchState = NotificationSwitch.Checked;
 
-                            EditName.Text = UserName.Text;
+                        EditName.Text = UserName.Text;
 
-                            ShowKeyboard(EditName);
-                            isEditing = true;
-                        }
-                        else
+                        ShowKeyboard(EditName);
+                        isEditing = true;
+                    }
+                    else
+                    {
+                        if (NetworkStatus.State != NetworkState.Disconnected)
                         {
                             e.Item.SetTitle("Edit");
 
@@ -138,13 +139,26 @@ namespace Merit_Money
                             await HandleResult();
                             progressDialog.Dismiss();
                         }
-                        SetSwitchState();
-                        break;
-                }
-            }
-            else
-            {
-                Toast.MakeText(this, "There is no Internet connection.", ToastLength.Short);
+                        else
+                        {
+                            Android.Support.V7.App.AlertDialog.Builder dialog = new Android.Support.V7.App.AlertDialog.Builder(this);
+                            dialog.SetMessage("There is no Internet connection.");
+                            dialog.SetCancelable(true);
+                            dialog.SetPositiveButton("OK", this);
+                            dialog.Create().Show();
+
+                            UserName.Text = SaveName;
+                            EditName.Text = String.Empty;
+
+                            NotificationSwitch.Checked = SaveSwitchState;
+
+                            EditingItemsVisible(ViewStates.Invisible, ViewStates.Visible);
+                            isEditing = false;
+                            HideKeyboard(EditName);
+                        }
+                    }
+                    SetSwitchState();
+                    break;
             }
         }
 
@@ -202,6 +216,11 @@ namespace Merit_Money
         {
             MenuInflater.Inflate(Resource.Menu.profile_top_menu, menu);
             return base.OnCreateOptionsMenu(menu);
+        }
+
+        public void OnClick(IDialogInterface dialog, int which)
+        {
+            dialog.Dismiss();
         }
     }
 }
