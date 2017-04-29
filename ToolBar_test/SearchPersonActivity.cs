@@ -22,8 +22,7 @@ namespace Merit_Money
 {
     [Activity(Label = "SearchPersonActivity")]
     public class SearchPersonActivity : BaseBottomBarActivity, 
-        Android.Support.V7.Widget.SearchView.IOnQueryTextListener,
-        IDialogInterfaceOnClickListener
+        Android.Support.V7.Widget.SearchView.IOnQueryTextListener
     {
         private SupportToolBar ToolBar;
         private SupportRecyclerView SearchUserView;
@@ -96,12 +95,7 @@ namespace Merit_Money
             }
             else
             {
-                //Toast.MakeText(this, "There is no Internet connection.", ToastLength.Short);
-                Android.Support.V7.App.AlertDialog.Builder dialog = new Android.Support.V7.App.AlertDialog.Builder(this);
-                dialog.SetMessage("There is no Internet connection.");
-                dialog.SetCancelable(true);
-                dialog.SetPositiveButton("OK", this);
-                dialog.Create().Show();
+                Toast.MakeText(this, "There is no Internet connection.", ToastLength.Short).Show();
             }
         }
 
@@ -149,11 +143,6 @@ namespace Merit_Money
                 default:
                     return base.OnOptionsItemSelected(item);
             }
-        }
-
-        public void OnClick(IDialogInterface dialog, int which)
-        {
-            dialog.Dismiss();
         }
 
         private class ImageDownloader : AsyncTask<SingleUser, Java.Lang.Void, SingleUser>

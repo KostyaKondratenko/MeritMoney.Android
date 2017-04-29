@@ -105,12 +105,7 @@ namespace Merit_Money
             }
             else
             {
-                Android.Support.V7.App.AlertDialog.Builder dialog = new Android.Support.V7.App.AlertDialog.Builder(this);
-                dialog.SetMessage("There is no Internet connection.");
-                dialog.SetCancelable(true);
-                dialog.SetPositiveButton("OK", this);
-                dialog.Create().Show();
-                RefreshInfo.Refreshing = false;
+                Toast.MakeText(this, "There is no Internet connection.", ToastLength.Short).Show();
             }
         }
 

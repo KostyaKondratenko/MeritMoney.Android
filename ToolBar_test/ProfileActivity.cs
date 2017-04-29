@@ -19,7 +19,8 @@ namespace Merit_Money
 {
     [Activity(Label = "ProfileActivity")]
     public class ProfileActivity : BaseBottomBarActivity,
-        IDialogInterfaceOnClickListener
+        IDialogInterfaceOnClickListener,
+        IDialogInterfaceOnCancelListener
     {
         private SupportToolBar MainToolbar;
         private bool isEditing = false;
@@ -147,13 +148,6 @@ namespace Merit_Money
                             dialog.SetPositiveButton("OK", this);
                             dialog.Create().Show();
 
-                            UserName.Text = SaveName;
-                            EditName.Text = String.Empty;
-
-                            NotificationSwitch.Checked = SaveSwitchState;
-
-                            EditingItemsVisible(ViewStates.Invisible, ViewStates.Visible);
-                            isEditing = false;
                             HideKeyboard(EditName);
                         }
                     }
@@ -221,6 +215,19 @@ namespace Merit_Money
         public void OnClick(IDialogInterface dialog, int which)
         {
             dialog.Dismiss();
+
+            UserName.Text = SaveName;
+            EditName.Text = String.Empty;
+
+            NotificationSwitch.Checked = SaveSwitchState;
+
+            EditingItemsVisible(ViewStates.Invisible, ViewStates.Visible);
+            isEditing = false; 
+        }
+
+        public void OnCancel(IDialogInterface dialog)
+        {
+            ShowKeyboard(EditName);
         }
     }
 }

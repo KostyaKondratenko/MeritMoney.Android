@@ -18,17 +18,33 @@
         android:layout_gravity="bottom"
         android:gravity="bottom"
         android:layout_below="@id/toolbar">
-        <TextView
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:layout_gravity="center"
-            android:gravity="center"
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:text="No Internet Connection"
-            android:layout_weight="1"
-            android:paddingTop="20dp"
-            android:drawableTint="#00000000"
-            android:textColor="@color/material_grey_300" />
+            android:layout_weight="1">
+            <TextView
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:text="No Internet Connection"
+                android:id="@+id/NoInternetText"
+                android:layout_weight="1"
+                android:paddingTop="20dp"
+                android:drawableTint="#00000000"
+                android:textColor="@color/material_grey_300"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content" />
+            <RelativeLayout
+                android:id="@+id/loadingPanel"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center">
+                <ProgressBar
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:indeterminate="true" />
+            </RelativeLayout>
+        </FrameLayout>
         <Button
             android:id="@+id/RetryButton"
             android:layout_width="wrap_content"
@@ -43,6 +59,9 @@
             android:fadingEdge="horizontal"
             android:fadingEdgeLength="4dp"
             android:gravity="center"
-            android:padding="20dp" />
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:paddingBottom="20dp"
+            android:paddingTop="20dp" />
     </LinearLayout>
 </LinearLayout>

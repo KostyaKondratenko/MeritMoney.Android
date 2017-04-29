@@ -18,6 +18,8 @@ namespace Merit_Money
     {
         private Button TryAgainButton;
         private SupportToolBar MainToolbar;
+        private View LoadingPanel;
+        private TextView NoInternetText;
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
@@ -27,6 +29,10 @@ namespace Merit_Money
 
             MainToolbar = FindViewById<SupportToolBar>(Resource.Id.toolbar);
             TryAgainButton = FindViewById<Button>(Resource.Id.RetryButton);
+            LoadingPanel = FindViewById<View>(Resource.Id.loadingPanel);
+            NoInternetText = FindViewById<TextView>(Resource.Id.NoInternetText);
+
+            LoadingPanel.Visibility = ViewStates.Invisible;
 
             if (Android.OS.Build.VERSION.SdkInt >= BuildVersionCodes.Lollipop)
             {
@@ -40,12 +46,22 @@ namespace Merit_Money
             TryAgainButton.Click += TryAgainButton_Click;
         }
 
-        private void TryAgainButton_Click(object sender, EventArgs e)
+        private async void TryAgainButton_Click(object sender, EventArgs e)
         {
+            LoadingPanel.Visibility = ViewStates.Visible;
+            NoInternetText.Visibility = ViewStates.Invisible;
+
+            await System.Threading.Tasks.Task.Delay(100);
+
             if (NetworkStatus.State != NetworkState.Disconnected)
             {
                 Intent intent = new Intent(this, typeof(MainActivity));
                 StartActivity(intent);
+            }
+            else
+            {
+                LoadingPanel.Visibility = ViewStates.Invisible;
+                NoInternetText.Visibility = ViewStates.Visible;
             }
         }
     }

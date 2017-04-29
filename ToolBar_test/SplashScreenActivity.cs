@@ -44,14 +44,13 @@ namespace Merit_Money
             protected override async Task<Java.Lang.Void> RunInBackground(params Java.Lang.Void[] @params)
             {
                 ISharedPreferences info = Application.Context.GetSharedPreferences(context.GetString(Resource.String.ApplicationInfo), FileCreationMode.Private);
+                bool LoggedIn = info.GetBoolean(context.GetString(Resource.String.LogIn), false);
+                MeritMoneyBrain.CurrentAccessToken = info.GetString(context.GetString(Resource.String.CurrentAccessToken), String.Empty);
 
                 if (context.NetworkStatus.State != NetworkState.Disconnected)
                 {
-                    bool LoggedIn = info.GetBoolean(context.GetString(Resource.String.LogIn), false);
-
                     if (LoggedIn)
                     {
-                        MeritMoneyBrain.CurrentAccessToken = info.GetString(context.GetString(Resource.String.CurrentAccessToken), String.Empty);
                         Profile p = await MeritMoneyBrain.GetProfile();
                         ProfileDatabase db = new ProfileDatabase(context.GetString(Resource.String.ProfileDBFilename));
                         db.Update(p);

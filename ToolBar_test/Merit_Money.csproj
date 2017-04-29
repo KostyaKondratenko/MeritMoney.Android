@@ -228,13 +228,13 @@
     <AndroidResource Include="Resources\layout-land\LogInWithEmail.axml">
       <SubType>Designer</SubType>
     </AndroidResource>
-    <AndroidResource Include="Resources\layout-land\NoInternet.axml">
-      <SubType>Designer</SubType>
-    </AndroidResource>
     <AndroidResource Include="Resources\layout-land\SplashScreen.axml">
       <SubType>Designer</SubType>
     </AndroidResource>
     <AndroidResource Include="Resources\layout-port\history_list_item.axml" />
+    <AndroidResource Include="Resources\layout-land\NoInternet.axml">
+      <SubType>Designer</SubType>
+    </AndroidResource>
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\layout-port\Main.axml">
