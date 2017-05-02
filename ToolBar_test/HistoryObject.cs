@@ -22,6 +22,7 @@ namespace Merit_Money
         public int date { get; set; }
         public String message { get; set; }
         public String comment { get; set; }
+
         public HistoryObject()
         {
             ID = String.Empty;
@@ -40,6 +41,38 @@ namespace Merit_Money
             this.date = date;
             this.message = message;
             this.comment = comment;
+        }
+    }
+
+    public class History
+    {
+        public HistoryType type { get; set; }
+        public List<HistoryObject> ListOfHistory;
+        public Boolean hasMore { get; set; }
+
+        public History(HistoryType type)
+        {
+            this.type = type;
+            ListOfHistory = new List<HistoryObject>();
+            hasMore = false;
+        }
+
+        public void Add(HistoryObject value)
+        {
+            ListOfHistory.Add(value);
+        }
+
+        public int Count()
+        {
+            return ListOfHistory.Count;
+        }
+
+        public HistoryObject this[int key]
+        {
+            get
+            {
+                return ListOfHistory[key];
+            }
         }
     }
 }

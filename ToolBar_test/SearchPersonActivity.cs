@@ -144,29 +144,6 @@ namespace Merit_Money
                     return base.OnOptionsItemSelected(item);
             }
         }
-
-        private class ImageDownloader : AsyncTask<SingleUser, Java.Lang.Void, SingleUser>
-        {
-            RecyclerView.Adapter adapter;
-
-            public ImageDownloader(RecyclerView.Adapter adapter)
-            {
-                this.adapter = adapter;
-            }
-
-            protected override SingleUser RunInBackground(params SingleUser[] @params)
-            {
-                SingleUser user = @params[0];
-                user.image = MeritMoneyBrain.GetImageBitmapFromUrl(user.url);
-                return user;
-            }
-
-            protected override void OnPostExecute(SingleUser result)
-            {
-                adapter.NotifyDataSetChanged();
-                base.OnPostExecute(result);
-            }
-        }
     }
 
     public class UsersAdapter : RecyclerView.Adapter

@@ -164,7 +164,6 @@
     <Compile Include="BaseBottomBarActivity.cs" />
     <Compile Include="CircularImageView.cs" />
     <Compile Include="HistoryObject.cs" />
-    <Compile Include="CompanyFragment.cs" />
     <Compile Include="Database.cs" />
     <Compile Include="EnumOfActivities.cs" />
     <Compile Include="HistoryActivity.cs" />
@@ -173,7 +172,7 @@
     <Compile Include="MeritMoneyBrain.cs" />
     <Compile Include="NetworkStatusMonitor.cs" />
     <Compile Include="NoInternetActivity.cs" />
-    <Compile Include="PersonalFragment.cs" />
+    <Compile Include="HistoryFragment.cs" />
     <Compile Include="Profile.cs" />
     <Compile Include="ProfileActivity.cs" />
     <Compile Include="Resources\Resource.Designer.cs" />
@@ -416,10 +415,7 @@
     <AndroidResource Include="Resources\menu\profile_top_menu.xml" />
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\layout-port\PersonalHistory.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\layout-port\CompanyHistory.xml" />
+    <AndroidResource Include="Resources\layout-port\HistoryFragment.xml" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\drawable-xhdpi\ic_search_white.png" />

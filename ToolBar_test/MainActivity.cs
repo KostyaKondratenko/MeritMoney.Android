@@ -73,7 +73,7 @@ namespace Merit_Money
             }
             else
             {
-                 InitializeProfile();
+                InitializeProfile();
             }
 
             CorrectPointsText();

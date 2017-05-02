@@ -391,10 +391,12 @@ namespace Merit_Money
             }
         }
 
-        public static async Task<List<HistoryObject>> GetHistory(int offset, int batchSize, HistoryType type)
+        public static async Task<History> GetHistory(int offset, int batchSize, HistoryType type)
         {
-            List<HistoryObject> listOfHistoryObjects = new List<HistoryObject>();
+            History HistoryList = new History(type);
+
             string histType = (type == HistoryType.Personal) ? "personal" : "company";
+
             try
             {
                 // Create an HTTP web request using the URL:
@@ -423,6 +425,12 @@ namespace Merit_Money
                         else
                         {
                             Console.Out.WriteLine("Response Body: \r\n {0}", jsonDoc.ToString());
+
+                            bool hasMore = jsonDoc["hasMore"];
+                            jsonDoc = jsonDoc["history"];
+
+                            HistoryList.hasMore = hasMore;
+
                             JSONArray array = new JSONArray(jsonDoc.ToString());
                             for (int i = 0; i < array.Length(); i++)
                             {
@@ -434,7 +442,7 @@ namespace Merit_Money
                                 String message = jsonobject.GetString("message");
                                 String comment = jsonobject.GetString("comment");
 
-                                listOfHistoryObjects.Add(new HistoryObject(ID, toUserID, fromUserID, date, message, comment));
+                                HistoryList.Add(new HistoryObject(ID, toUserID, fromUserID, date, message, comment));
                             }
                         }
                     }
@@ -453,7 +461,7 @@ namespace Merit_Money
             {
                 Console.WriteLine(e.Message);
             }
-            return listOfHistoryObjects;
+            return HistoryList;
         }
 
         public static async Task<Profile> updateProfile(String name, bool emailNotificationWasChanged, bool value)

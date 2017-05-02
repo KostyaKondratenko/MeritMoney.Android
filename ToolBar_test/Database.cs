@@ -159,6 +159,31 @@ namespace Merit_Money
             }
         }
 
+        public String GetUserNameByID(String ID)
+        {
+            try
+            {
+                var ProfileDB = new ProfileDatabase(Application.Context.GetString(Resource.String.ProfileDBFilename));
+                Profile p = ProfileDB.GetProfile();
+
+                if (p.ID == ID)
+                    return p.name;
+
+                var db = new SQLiteConnection(dbPath);
+                return db.Get<SingleUser>(ID).name;
+            }
+            catch (SQLiteException ex)
+            {
+                Console.Out.WriteLine(ex.Message);
+                return null;
+            }
+            catch(System.InvalidOperationException ex)
+            {
+                Console.Out.WriteLine(ex.Message);
+                return "Unknown user";
+            }
+        }
+
         public List<SingleUser> GetUsers()
         {
             List<SingleUser> result = new List<SingleUser>();

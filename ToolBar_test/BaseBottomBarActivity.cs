@@ -15,6 +15,7 @@ using Android.Views.InputMethods;
 using Android.Graphics;
 using Android.Net;
 using System.IO;
+using Android.Support.V7.Widget;
 
 namespace Merit_Money
 {
@@ -165,6 +166,29 @@ namespace Merit_Money
                     image.SetImageResource(Resource.Drawable.ic_noavatar);
                 }
                 
+                base.OnPostExecute(result);
+            }
+        }
+
+        protected class ImageDownloader : AsyncTask<SingleUser, Java.Lang.Void, SingleUser>
+        {
+            RecyclerView.Adapter adapter;
+
+            public ImageDownloader(RecyclerView.Adapter adapter)
+            {
+                this.adapter = adapter;
+            }
+
+            protected override SingleUser RunInBackground(params SingleUser[] @params)
+            {
+                SingleUser user = @params[0];
+                user.image = MeritMoneyBrain.GetImageBitmapFromUrl(user.url);
+                return user;
+            }
+
+            protected override void OnPostExecute(SingleUser result)
+            {
+                adapter.NotifyDataSetChanged();
                 base.OnPostExecute(result);
             }
         }
