@@ -2122,26 +2122,8 @@ namespace Merit_Money
 			// aapt resource value: 0x7f020053
 			public const int avd_hide_password = 2130837587;
 			
-			// aapt resource value: 0x7f020096
-			public const int avd_hide_password_1 = 2130837654;
-			
-			// aapt resource value: 0x7f020097
-			public const int avd_hide_password_2 = 2130837655;
-			
-			// aapt resource value: 0x7f020098
-			public const int avd_hide_password_3 = 2130837656;
-			
 			// aapt resource value: 0x7f020054
 			public const int avd_show_password = 2130837588;
-			
-			// aapt resource value: 0x7f020099
-			public const int avd_show_password_1 = 2130837657;
-			
-			// aapt resource value: 0x7f02009a
-			public const int avd_show_password_2 = 2130837658;
-			
-			// aapt resource value: 0x7f02009b
-			public const int avd_show_password_3 = 2130837659;
 			
 			// aapt resource value: 0x7f020055
 			public const int blueRect_style = 2130837589;
@@ -2813,8 +2795,8 @@ namespace Merit_Money
 			// aapt resource value: 0x7f0a0091
 			public const int historyReason = 2131361937;
 			
-			// aapt resource value: 0x7f0a008c
-			public const int history_indicator = 2131361932;
+			// aapt resource value: 0x7f0a008d
+			public const int history_indicator = 2131361933;
 			
 			// aapt resource value: 0x7f0a0005
 			public const int home = 2131361797;
@@ -2837,8 +2819,8 @@ namespace Merit_Money
 			// aapt resource value: 0x7f0a004d
 			public const int image = 2131361869;
 			
-			// aapt resource value: 0x7f0a008b
-			public const int indicator = 2131361931;
+			// aapt resource value: 0x7f0a008c
+			public const int indicator = 2131361932;
 			
 			// aapt resource value: 0x7f0a00d7
 			public const int info = 2131362007;
@@ -2861,8 +2843,8 @@ namespace Merit_Money
 			// aapt resource value: 0x7f0a00de
 			public const int line3 = 2131362014;
 			
-			// aapt resource value: 0x7f0a008d
-			public const int linearLayout1 = 2131361933;
+			// aapt resource value: 0x7f0a008b
+			public const int linearLayout1 = 2131361931;
 			
 			// aapt resource value: 0x7f0a00b7
 			public const int linearLayout2 = 2131361975;
