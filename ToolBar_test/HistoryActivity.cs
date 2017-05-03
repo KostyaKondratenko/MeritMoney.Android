@@ -143,7 +143,8 @@ namespace Merit_Money
             //Holder.Avatar.SetImageBitmap(PersonalHistory[position].);
             Holder.comment.Text = PersonalHistory[position].comment;
             Holder.message.Text = OrganizeMessageString(PersonalHistory[position]);
-            Holder.date.Text = PersonalHistory[position].date.ToString();
+            //Holder.date.Text = PersonalHistory[position].date.ToString();
+            Holder.date.Text = FromUnixTime(Convert.ToInt64(PersonalHistory[position].date)).ToString();
         }
 
         public override RecyclerView.ViewHolder OnCreateViewHolder(ViewGroup parent, int viewType)
@@ -188,6 +189,12 @@ namespace Merit_Money
         {
             UsersDatabase db = new UsersDatabase(context.GetString(Resource.String.UsersDBFilename));
             return db.GetUserNameByID(ID);
+        }
+
+        private DateTime FromUnixTime(long unixTime)
+        {
+            var epoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+            return epoch.AddSeconds(unixTime);
         }
     }
 }
