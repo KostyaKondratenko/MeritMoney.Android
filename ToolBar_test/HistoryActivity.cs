@@ -29,7 +29,7 @@ namespace Merit_Money
         private History CompanyHistoryList;
 
         private int Offset = 0;
-        private const int BatchSize = 5;
+        private const int BatchSize = 10;
 
         protected override async void OnCreate(Bundle savedInstanceState)
         {
@@ -120,7 +120,7 @@ namespace Merit_Money
             public TextView comment { get; set; }
             public TextView date { get; set; }
             public CircularImageView Avatar { get; set; }
-            public CircularImageView Indicator { get; set; }
+            public ImageView Indicator { get; set; }
             public History PersonalHistory;
             public Context context;
 
@@ -144,7 +144,7 @@ namespace Merit_Money
             Holder.comment.Text = PersonalHistory[position].comment;
             Holder.message.Text = OrganizeMessageString(PersonalHistory[position]);
             //Holder.date.Text = PersonalHistory[position].date.ToString();
-            Holder.date.Text = FromUnixTime(Convert.ToInt64(PersonalHistory[position].date)).ToString();
+            Holder.date.Text = FromUnixTime(Convert.ToInt64(PersonalHistory[position].date));
         }
 
         public override RecyclerView.ViewHolder OnCreateViewHolder(ViewGroup parent, int viewType)
@@ -156,7 +156,9 @@ namespace Merit_Money
             TextView itemComment = item.FindViewById<TextView>(Resource.Id.historyReason);
             //AVATAR
             CircularImageView itemAvatar = item.FindViewById<CircularImageView>(Resource.Id.searchAvatar);
-            CircularImageView itemIndicator = item.FindViewById<CircularImageView>(Resource.Id.history_indicator);
+            ImageView itemIndicator = item.FindViewById<ImageView>(Resource.Id.history_indicator);
+
+            itemIndicator.Visibility = ViewStates.Invisible;
 
             HistoryViewHolder view = new HistoryViewHolder(item, context, PersonalHistory)
             {
@@ -191,10 +193,24 @@ namespace Merit_Money
             return db.GetUserNameByID(ID);
         }
 
-        private DateTime FromUnixTime(long unixTime)
+        private String FromUnixTime(long unixTime)
         {
             var epoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
-            return epoch.AddSeconds(unixTime);
+            DateTime currentTime = DateTime.Now;
+
+            epoch = epoch.AddSeconds(unixTime);
+
+            if (currentTime.ToString("d.MM.yy") == epoch.ToString("d.MM.yy"))
+            {
+                return "Today";
+            }
+
+            if(currentTime.AddDays(-1).ToString("d.MM.yy") == epoch.ToString("d.MM.yy"))
+            {
+                return "Yesterday";
+            }
+
+            return epoch.ToString("d.MM.yy");
         }
     }
 }
