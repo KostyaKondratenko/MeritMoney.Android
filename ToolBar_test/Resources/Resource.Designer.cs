@@ -3483,44 +3483,56 @@ namespace Merit_Money
 			// aapt resource value: 0x7f07003a
 			public const int ApplicationName = 2131165242;
 			
-			// aapt resource value: 0x7f070047
-			public const int BalancePoints = 2131165255;
+			// aapt resource value: 0x7f070048
+			public const int BalancePoints = 2131165256;
 			
 			// aapt resource value: 0x7f07003b
 			public const int BalanceText = 2131165243;
 			
-			// aapt resource value: 0x7f07004f
-			public const int Company = 2131165263;
+			// aapt resource value: 0x7f070051
+			public const int Company = 2131165265;
 			
-			// aapt resource value: 0x7f07004c
-			public const int CurrentAccessToken = 2131165260;
+			// aapt resource value: 0x7f070055
+			public const int CompanyHistoryDBFilename = 2131165269;
 			
-			// aapt resource value: 0x7f070049
-			public const int DistributePoints = 2131165257;
+			// aapt resource value: 0x7f07004d
+			public const int CurrentAccessToken = 2131165261;
+			
+			// aapt resource value: 0x7f07004a
+			public const int DistributePoints = 2131165258;
 			
 			// aapt resource value: 0x7f07003d
 			public const int DistributeText = 2131165245;
 			
-			// aapt resource value: 0x7f07004a
-			public const int EmailNotification = 2131165258;
+			// aapt resource value: 0x7f07004b
+			public const int EmailNotification = 2131165259;
+			
+			// aapt resource value: 0x7f070042
+			public const int EmailNotificationText = 2131165250;
+			
+			// aapt resource value: 0x7f070044
+			public const int ID = 2131165252;
 			
 			// aapt resource value: 0x7f070041
-			public const int EmailNotificationText = 2131165249;
-			
-			// aapt resource value: 0x7f070043
-			public const int ID = 2131165251;
-			
-			// aapt resource value: 0x7f07004d
-			public const int LogIn = 2131165261;
+			public const int LoadMore = 2131165249;
 			
 			// aapt resource value: 0x7f07004e
-			public const int Personal = 2131165262;
+			public const int LogIn = 2131165262;
+			
+			// aapt resource value: 0x7f07004f
+			public const int ModifyDate = 2131165263;
 			
 			// aapt resource value: 0x7f070050
-			public const int ProfileDBFilename = 2131165264;
+			public const int Personal = 2131165264;
 			
-			// aapt resource value: 0x7f070048
-			public const int RewardsPoints = 2131165256;
+			// aapt resource value: 0x7f070054
+			public const int PersonalHistoryDBFilename = 2131165268;
+			
+			// aapt resource value: 0x7f070052
+			public const int ProfileDBFilename = 2131165266;
+			
+			// aapt resource value: 0x7f070049
+			public const int RewardsPoints = 2131165257;
 			
 			// aapt resource value: 0x7f07003c
 			public const int RewardsText = 2131165244;
@@ -3528,26 +3540,26 @@ namespace Merit_Money
 			// aapt resource value: 0x7f070040
 			public const int SendPoints = 2131165248;
 			
-			// aapt resource value: 0x7f070042
-			public const int ServerClientID = 2131165250;
+			// aapt resource value: 0x7f070043
+			public const int ServerClientID = 2131165251;
 			
 			// aapt resource value: 0x7f07003e
 			public const int ThanksButton = 2131165246;
 			
+			// aapt resource value: 0x7f070047
+			public const int UserAvatar = 2131165255;
+			
 			// aapt resource value: 0x7f070046
-			public const int UserAvatar = 2131165254;
+			public const int UserEmail = 2131165254;
 			
 			// aapt resource value: 0x7f070045
-			public const int UserEmail = 2131165253;
+			public const int UserName = 2131165253;
 			
-			// aapt resource value: 0x7f070044
-			public const int UserName = 2131165252;
+			// aapt resource value: 0x7f070053
+			public const int UsersDBFilename = 2131165267;
 			
-			// aapt resource value: 0x7f070051
-			public const int UsersDBFilename = 2131165265;
-			
-			// aapt resource value: 0x7f07004b
-			public const int WebHookNotification = 2131165259;
+			// aapt resource value: 0x7f07004c
+			public const int WebHookNotification = 2131165260;
 			
 			// aapt resource value: 0x7f070011
 			public const int abc_action_bar_home_description = 2131165201;

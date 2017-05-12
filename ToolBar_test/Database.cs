@@ -12,6 +12,7 @@ using Android.Views;
 using Android.Widget;
 using SQLite;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace Merit_Money
 {
@@ -19,12 +20,13 @@ namespace Merit_Money
     {
         private String dbPath;
 
-        public ProfileDatabase(String filename)
+        public ProfileDatabase()
         {
+            String filename = Application.Context.GetString(Resource.String.ProfileDBFilename);
             dbPath = Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal), filename);
         }
 
-        public void createDatabase()
+        public void CreateDatabase()
         {
             try
             {
@@ -37,7 +39,7 @@ namespace Merit_Money
             }
         }
 
-        public void deleteDatabase()
+        public void DeleteDatabase()
         {
             try
             {
@@ -96,17 +98,18 @@ namespace Merit_Money
     {
         private String dbPath;
 
-        public UsersDatabase(String filename)
+        public UsersDatabase()
         {
+            String filename = Application.Context.GetString(Resource.String.UsersDBFilename);
             dbPath = Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal), filename);
         }
 
-        public void createDatabase()
+        public async Task CreateDatabase()
         {
             try
             {
-                var connection = new SQLiteConnection(dbPath);
-                connection.CreateTable<SingleUser>();
+                var connection = new SQLiteAsyncConnection(dbPath);
+                await connection.CreateTableAsync<UserListItem>();
             }
             catch (SQLiteException ex)
             {
@@ -114,12 +117,12 @@ namespace Merit_Money
             }
         }
 
-        public void deleteDatabase()
+        public async Task DeleteDatabase()
         {
             try
             {
-                var connection = new SQLiteConnection(dbPath);
-                connection.DropTable<SingleUser>();
+                var connection = new SQLiteAsyncConnection(dbPath);
+                await connection.DropTableAsync<UserListItem>();
             }
             catch (SQLiteException ex)
             {
@@ -127,12 +130,12 @@ namespace Merit_Money
             }
         }
 
-        public bool Insert(List<SingleUser> values)
+        public async Task<bool> Insert(List<UserListItem> values)
         {
             try
             {
-                var db = new SQLiteConnection(dbPath);
-                db.InsertAll(values);
+                var db = new SQLiteAsyncConnection(dbPath);
+                await db.InsertAllAsync(values);
                 return true;
             }
             catch (SQLiteException ex)
@@ -142,14 +145,16 @@ namespace Merit_Money
             }
         }
 
-        public bool Update(List<SingleUser> values)
+        public async Task<bool> Merge(List<UserListItem> values)
         {
             try
             {
-                deleteDatabase();
-                createDatabase();
-                var db = new SQLiteConnection(dbPath);
-                db.InsertAll(values);
+                var db = new SQLiteAsyncConnection(dbPath);
+                foreach (UserListItem item in values)
+                    if (await db.GetAsync<UserListItem>(item.ID) != null)
+                        await db.UpdateAsync(item);
+                    else
+                        await db.InsertAsync(item);
                 return true;
             }
             catch (SQLiteException ex)
@@ -159,42 +164,77 @@ namespace Merit_Money
             }
         }
 
-        public String GetUserNameByID(String ID)
+        public async Task<bool> Update(List<UserListItem> values)
         {
             try
             {
-                var ProfileDB = new ProfileDatabase(Application.Context.GetString(Resource.String.ProfileDBFilename));
+                await DeleteDatabase();
+                await CreateDatabase();
+                var db = new SQLiteAsyncConnection(dbPath);
+                await db.InsertAllAsync(values);
+                return true;
+            }
+            catch (SQLiteException ex)
+            {
+                Console.Out.WriteLine(ex.Message);
+                return false;
+            }
+        }
+
+        public UserListItem GetUserByID(String ID)
+        {
+            try
+            {
+                var ProfileDB = new ProfileDatabase();
                 Profile p = ProfileDB.GetProfile();
 
                 if (p.ID == ID)
-                    return p.name;
+                    return new UserListItem(p.ID, p.name, p.email, p.imageUri, null);
 
                 var db = new SQLiteConnection(dbPath);
-                return db.Get<SingleUser>(ID).name;
+                return db.Get<UserListItem>(ID);
             }
             catch (SQLiteException ex)
             {
                 Console.Out.WriteLine(ex.Message);
                 return null;
             }
-            catch(System.InvalidOperationException ex)
+            catch (System.InvalidOperationException ex)
             {
                 Console.Out.WriteLine(ex.Message);
-                return "Unknown user";
+                return new UserListItem();
             }
         }
 
-        public List<SingleUser> GetUsers()
+        public async Task<bool> IsExist()
         {
-            List<SingleUser> result = new List<SingleUser>();
+            List<UserListItem> result = new List<UserListItem>();
             try
             {
-                var db = new SQLiteConnection(dbPath);
-                result = db.Table<SingleUser>().ToList();
-                foreach (SingleUser user in result)
-                {
+                var db = new SQLiteAsyncConnection(dbPath);
+
+                var count = await db.ExecuteScalarAsync<int>("SELECT Count(*) FROM UserListItem");
+
+                return true;
+            }
+            catch (SQLiteException ex)
+            {
+                Console.Out.WriteLine(ex.Message);
+                return false;
+            }
+        }
+
+        public async Task<List<UserListItem>> GetUsers()
+        {
+            List<UserListItem> result = new List<UserListItem>();
+            try
+            {
+                var db = new SQLiteAsyncConnection(dbPath);
+                result = await db.Table<UserListItem>().ToListAsync();
+
+                foreach (UserListItem user in result)
                     user.image = Android.Graphics.BitmapFactory.DecodeResource(Application.Context.Resources, Resource.Drawable.ic_noavatar);
-                }
+
                 return result;
             }
             catch (SQLiteException ex)
@@ -204,4 +244,229 @@ namespace Merit_Money
             }
         }
     }
+
+    public class HistoryDatabase
+    {
+        private String dbPath;
+        private HistoryType type;
+
+        public HistoryDatabase(HistoryType type)
+        {
+            String filename = String.Empty;
+            this.type = type;
+
+            switch (type)
+            {
+                case HistoryType.Company:
+                    filename = Application.Context.GetString(Resource.String.PersonalHistoryDBFilename);
+                    break;
+                case HistoryType.Personal:
+                    filename = Application.Context.GetString(Resource.String.CompanyHistoryDBFilename);
+                    break;
+            }
+
+            dbPath = Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal), filename);
+        }
+
+        public void CreateDatabase()
+        {
+            try
+            {
+                var connection = new SQLiteConnection(dbPath);
+                connection.CreateTable<HistoryListItem>();
+            }
+            catch (SQLiteException ex)
+            {
+                Console.Out.WriteLine(ex.Message);
+            }
+        }
+
+        public void DeleteDatabase()
+        {
+            try
+            {
+                var connection = new SQLiteConnection(dbPath);
+                connection.DropTable<HistoryListItem>();
+            }
+            catch (SQLiteException ex)
+            {
+                Console.Out.WriteLine(ex.Message);
+            }
+        }
+
+        public bool Insert(HistoryList values)
+        {
+            try
+            {
+
+                //ADD TO SHARED PREF
+
+                var db = new SQLiteConnection(dbPath);
+                db.InsertAll(values);
+                return true;
+            }
+            catch (SQLiteException ex)
+            {
+                Console.Out.WriteLine(ex.Message);
+                return false;
+            }
+        }
+
+        public bool Update(List<HistoryListItem> values)
+        {
+            try
+            {
+                DeleteDatabase();
+                CreateDatabase();
+                var db = new SQLiteConnection(dbPath);
+                db.InsertAll(values);
+                return true;
+            }
+            catch (SQLiteException ex)
+            {
+                Console.Out.WriteLine(ex.Message);
+                return false;
+            }
+        }
+
+        public HistoryList GetUsers()
+        {
+            List<HistoryListItem> result = new List<HistoryListItem>();
+
+            try
+            {
+                var db = new SQLiteConnection(dbPath);
+                result = db.Table<HistoryListItem>().ToList();
+                foreach (HistoryListItem user in result)
+                {
+                    user.image = Android.Graphics.BitmapFactory.DecodeResource(Application.Context.Resources, Resource.Drawable.ic_noavatar);
+                }
+
+                //SHARED PREFF
+                bool hasMore = false;///
+
+                return new HistoryList(result, hasMore, type);
+            }
+            catch (SQLiteException ex)
+            {
+                Console.Out.WriteLine(ex.Message);
+                return null;
+            }
+        }
+    }
+    //public class Database<T>
+    //{
+    //    private enum DatabaseType
+    //    {
+    //        Profile,
+    //        UserList,
+    //        HistoryList,
+    //        Unknown
+    //    }
+
+    //    private String dbPath;
+    //    private DatabaseType type;
+
+    //    public Database()
+    //    {
+    //        String filename = String.Empty;
+    //        type = DefineType();
+
+    //        switch (type)
+    //        {
+    //            case DatabaseType.Profile:
+    //                filename = Application.Context.GetString(Resource.String.ProfileDBFilename);
+    //                break;
+    //            case DatabaseType.HistoryList:
+    //                filename = Application.Context.GetString(Resource.String.HistoryDBFilename);
+    //                break;
+    //            case DatabaseType.UserList:
+    //                filename = Application.Context.GetString(Resource.String.UsersDBFilename);
+    //                break;
+    //        }
+
+    //        dbPath = Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal), filename);
+    //    }
+
+    //    private DatabaseType DefineType()
+    //    {
+    //        DatabaseType result = DatabaseType.Unknown;
+    //        if (typeof(T) == typeof(Profile))
+    //            result = DatabaseType.Profile;
+    //        else if (typeof(T) == typeof(UserListItem))
+    //            result = DatabaseType.UserList;
+    //        else if (typeof(T) == typeof(HistoryListItem))
+    //            result = DatabaseType.HistoryList;
+
+    //        return result;
+    //    }
+
+    //    public void createDatabase()
+    //    {
+    //        try
+    //        {
+    //            var connection = new SQLiteConnection(dbPath);
+    //            connection.CreateTable<T>();
+    //        }
+    //        catch (SQLiteException ex)
+    //        {
+    //            Console.Out.WriteLine(ex.Message);
+    //        }
+    //    }
+
+    //    public void deleteDatabase()
+    //    {
+    //        try
+    //        {
+    //            var connection = new SQLiteConnection(dbPath);
+    //            connection.DropTable<T>();
+    //        }
+    //        catch (SQLiteException ex)
+    //        {
+    //            Console.Out.WriteLine(ex.Message);
+    //        }
+    //    }
+
+    //    public void Insert(T value)
+    //    {
+    //        try
+    //        {
+    //            var db = new SQLiteConnection(dbPath);
+    //            db.Insert(value);
+    //        }
+    //        catch (SQLiteException ex)
+    //        {
+    //            Console.Out.WriteLine(ex.Message);
+    //        }
+    //    }
+
+    //    public void Update(T value)
+    //    {
+    //        try
+    //        {
+    //            var db = new SQLiteConnection(dbPath);
+    //            db.Update(value);
+    //        }
+    //        catch (SQLiteException ex)
+    //        {
+    //            Console.Out.WriteLine(ex.Message);
+    //        }
+    //    }
+
+    //    public Profile GetProfile()
+    //    {
+    //        Profile result = new Profile();
+    //        try
+    //        {
+    //            var db = new SQLiteConnection(dbPath);
+    //            result = db.Table<Profile>().ToList();
+    //        }
+    //        catch (SQLiteException ex)
+    //        {
+    //            Console.Out.WriteLine(ex.Message);
+    //        }
+    //        return result;
+    //    }
+    //}
+
 }

@@ -93,12 +93,21 @@ namespace Merit_Money
             RefreshInfo.Refresh += Profile_Refresh;
         }
 
+        protected override void OnDestroy()
+        {
+            base.OnDestroy();
+            SayThanksButton.Click -= SayThanksButton_Click;
+            MainToolbar.MenuItemClick -= MainToolbar_MenuItemClick;
+            RefreshInfo.Refresh -= Profile_Refresh;
+            GC.Collect();
+        }
+
         private async void Profile_Refresh(object sender, EventArgs e)
         {
             if (NetworkStatus.State != NetworkState.Disconnected)
             {
                 Profile profile = await MeritMoneyBrain.GetProfile();
-                ProfileDatabase db = new ProfileDatabase(GetString(Resource.String.ProfileDBFilename));
+                ProfileDatabase db = new ProfileDatabase();
                 db.Update(profile);
                 InitializeProfile();
                 RefreshInfo.Refreshing = false;
@@ -131,7 +140,7 @@ namespace Merit_Money
 
         private void InitializeProfile()
         {
-            ProfileDatabase db = new ProfileDatabase(GetString(Resource.String.ProfileDBFilename));
+            ProfileDatabase db = new ProfileDatabase();
             Profile p = db.GetProfile();
 
             UserName.Text = p.name;
@@ -140,15 +149,7 @@ namespace Merit_Money
             Rewards.Text = p.rewards.ToString();
             Distribute.Text = p.distribute.ToString();
 
-            //Bitmap imageBitmap = MeritMoneyBrain.ReadFromInternalStorage(p.ID);
-            //if (imageBitmap == null)
-            //{
-                new LoadAndSaveImage(UserAvatar).Execute(p.imageUri, p.ID);
-            //}
-            //else
-            //{
-            //    UserAvatar.SetImageBitmap(imageBitmap);
-            //}
+            new CacheUserAvatar(UserAvatar, Application.Context).Execute(p.imageUri, p.ID);
         }
 
         private async void MainToolbar_MenuItemClick(object sender, SupportToolBar.MenuItemClickEventArgs e)

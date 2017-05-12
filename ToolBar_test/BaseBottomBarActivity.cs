@@ -33,9 +33,15 @@ namespace Merit_Money
             NetworkStatus.Start();
         }
 
-        protected override void OnStop()
+        protected override void OnResume()
         {
-            base.OnStop();
+            base.OnResume();
+            NetworkStatus.Start();
+        }
+
+        protected override void OnPause()
+        {
+            base.OnPause();
             NetworkStatus.Stop();
         }
 
@@ -136,115 +142,6 @@ namespace Merit_Money
         {
             InputMethodManager imm = (InputMethodManager)GetSystemService(Context.InputMethodService);
             imm.HideSoftInputFromWindow(editText.WindowToken, HideSoftInputFlags.None);
-        }
-
-        protected class SetImageFromUrl : AsyncTask<String, Java.Lang.Void, Bitmap>
-        {
-            CircularImageView image;
-
-            public SetImageFromUrl(CircularImageView image)
-            {
-                this.image = image;
-            }
-
-            protected override Android.Graphics.Bitmap RunInBackground(params String[] @params)
-            {
-                String imageUrl = @params[0];
-                Bitmap imageBitmap = MeritMoneyBrain.GetImageBitmapFromUrl(imageUrl);
-
-                return imageBitmap;
-            }
-
-            protected override void OnPostExecute(Bitmap result)
-            {
-                if (result != null)
-                {
-                    image.SetImageBitmap(result);
-                }
-                else
-                {
-                    image.SetImageResource(Resource.Drawable.ic_noavatar);
-                }
-                
-                base.OnPostExecute(result);
-            }
-        }
-
-        protected class ImageDownloader : AsyncTask<SingleUser, Java.Lang.Void, SingleUser>
-        {
-            RecyclerView.Adapter adapter;
-
-            public ImageDownloader(RecyclerView.Adapter adapter)
-            {
-                this.adapter = adapter;
-            }
-
-            protected override SingleUser RunInBackground(params SingleUser[] @params)
-            {
-                SingleUser user = @params[0];
-                user.image = MeritMoneyBrain.GetImageBitmapFromUrl(user.url);
-                return user;
-            }
-
-            protected override void OnPostExecute(SingleUser result)
-            {
-                adapter.NotifyDataSetChanged();
-                base.OnPostExecute(result);
-            }
-        }
-
-        protected class LoadAndSaveImage : AsyncTask<String, Java.Lang.Void, Bitmap>
-        {
-            CircularImageView image;
-
-            public LoadAndSaveImage(CircularImageView image)
-            {
-                this.image = image;
-            }
-
-            protected override Android.Graphics.Bitmap RunInBackground(params String[] @params)
-            {
-                String imageUrl = @params[0];
-                String userId = @params[1];
-
-                Bitmap imageBitmap = MeritMoneyBrain.ReadFromInternalStorage(userId);
-
-                if (imageBitmap != null)
-                {
-                    return imageBitmap;
-                }
-
-                if (imageUrl == null)
-                {
-                    return null;
-                }
-
-                imageBitmap = MeritMoneyBrain.GetImageBitmapFromUrl(imageUrl);
-
-                var sdCardPath = System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal);
-                //var sdCardPath = System.Environment.GetFolderPath(System.Environment.SpecialFolder.ApplicationData);
-                var filePath = System.IO.Path.Combine(sdCardPath, userId);
-                using (var stream = new FileStream(filePath, FileMode.OpenOrCreate))
-                {
-                    imageBitmap.Compress(Bitmap.CompressFormat.Png, 100, stream);
-
-                }
-                return imageBitmap;
-            }
-
-            protected override void OnPostExecute(Bitmap result)
-            {
-                if (result != null)
-                {
-                    image.SetImageBitmap(result);
-                }
-                else
-                {
-                    image.SetImageResource(Resource.Drawable.ic_noavatar);
-                }
-
-                base.OnPostExecute(result);
-            }
-        }
+        }    
     }
 }

@@ -9,7 +9,7 @@
  <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/HistoryList" />
+        android:id="@id/HistoryList" />
   <!--Button
                android:text="@string/LoadMore"
                android:textSize="18dp"

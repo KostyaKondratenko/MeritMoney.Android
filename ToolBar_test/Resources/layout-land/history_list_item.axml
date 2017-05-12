@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="1dp"
+    android:weightSum="100"
+    android:focusable="true"
+    android:clickable="true"
+    android:background="@drawable/search_item_selector">
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:minWidth="25px"
+        android:minHeight="25px"
+        android:id="@+id/linearLayout1">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:minWidth="25px"
+            android:minHeight="25px"
+            android:id="@id/indicator"
+            android:layout_gravity="center"
+            android:layout_marginLeft="3dp"
+            android:layout_marginRight="3dp">
+            <ImageView
+                android:id="@id/history_indicator"
+                android:layout_width="7dp"
+                android:layout_height="7dp"
+                android:background="@drawable/imageView_frame"
+                android:src="@drawable/Indicator" />
+        </LinearLayout>
+        <Merit_Money.CircularImageView
+            android:id="@id/searchAvatar"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/ic_noavatar"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginRight="13dp" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingRight="10dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+            <TextView
+                android:text="Name and Action."
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:id="@id/historyName"
+                android:textColor="#000"
+                android:gravity="center_vertical"
+                android:textSize="14sp"
+                android:scrollHorizontally="true"
+                android:ellipsize="end"
+                android:paddingRight="10dp"
+                android:layout_weight="3" />
+            <TextView
+                android:text="Date"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:id="@id/historyDate"
+                android:textColor="@color/material_grey_600"
+                android:gravity="end"
+                android:padding="3dp"
+                android:textSize="14dp"
+                android:singleLine="true"
+                android:maxLines="1"
+                android:scrollHorizontally="true"
+                android:ellipsize="end"
+                android:paddingLeft="10dp" />
+        </LinearLayout>
+        <TextView
+            android:text="Reason"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:id="@id/historyReason"
+            android:textColor="@color/material_grey_600"
+            android:gravity="center_vertical"
+            android:textSize="14sp"
+            android:ellipsize="end"
+            android:scrollHorizontally="true" />
+    </LinearLayout>
+</LinearLayout>

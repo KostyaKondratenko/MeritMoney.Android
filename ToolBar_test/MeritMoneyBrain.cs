@@ -102,7 +102,7 @@ namespace Merit_Money
                 using (var streamWriter = new StreamWriter(request.GetRequestStream()))
                 {
                     //string jsonData = @"{""token"":" + "\""  token + "\"" + "}";
-                    string jsonData = "{\"token\":\"" + token +"\"}";
+                    string jsonData = "{\"token\":\"" + token + "\"}";
 
                     streamWriter.Write(jsonData);
                     streamWriter.Flush();
@@ -202,7 +202,7 @@ namespace Merit_Money
                     Console.WriteLine(responseText);
                 }
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Console.WriteLine(e.Message);
             }
@@ -256,19 +256,20 @@ namespace Merit_Money
                     Console.WriteLine(responseText);
                 }
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Console.WriteLine(e.Message);
             }
         }
 
-        public static async Task<List<SingleUser>> GetListOfUsers()
+        public static async Task<List<UserListItem>> GetListOfUsers(String modifyBefore)
         {
-            List<SingleUser> ListOfUsers = new List<SingleUser>();
-            ProfileDatabase db = new ProfileDatabase(Application.Context.GetString(Resource.String.ProfileDBFilename));
+            List<UserListItem> ListOfUsers = new List<UserListItem>();
+            ProfileDatabase db = new ProfileDatabase();
             Profile p = db.GetProfile();
             String currentID = p.ID;
             String AdministratorID = "0000";
+
             try
             {
                 // Create an HTTP web request using the URL:
@@ -278,8 +279,10 @@ namespace Merit_Money
                 request.Headers.Add("Access-Token", CurrentAccessToken);
                 request.Method = "GET";
 
-                JsonValue jsonDoc;
+                if (modifyBefore != String.Empty)
+                    url += "?modifyBefore=" + modifyBefore;
 
+                JsonValue jsonDoc;
                 // Send the request to the server and wait for the response:
                 using (WebResponse response = await request.GetResponseAsync())
                 {
@@ -298,6 +301,9 @@ namespace Merit_Money
                             Console.Out.WriteLine("Response Body: \r\n {0}", jsonDoc.ToString());
                             JSONArray array = new JSONArray(jsonDoc.ToString());
                             Android.Graphics.Bitmap img = Android.Graphics.BitmapFactory.DecodeResource(Application.Context.Resources, Resource.Drawable.ic_noavatar);
+
+                            long maxTimeStamp = 0;
+
                             for (int i = 0; i < array.Length(); i++)
                             {
                                 JSONObject jsonobject = array.GetJSONObject(i);
@@ -305,12 +311,20 @@ namespace Merit_Money
                                 String ID = jsonobject.GetString("ID");
                                 String email = jsonobject.GetString("email");
                                 String imUrl = jsonobject.GetString("imageUrl");
+                                long editTimeStamp = jsonobject.GetLong("editTimestamp");
+                                if (maxTimeStamp < editTimeStamp)
+                                    maxTimeStamp = editTimeStamp;
 
                                 if (ID != currentID && ID != AdministratorID)
-                                {
-                                    ListOfUsers.Add(new SingleUser(ID, name, email, imUrl, img));
-                                }
+                                    ListOfUsers.Add(new UserListItem(ID, name, email, imUrl, img));
                             }
+
+                            maxTimeStamp += 1;
+
+                            ISharedPreferences info = Application.Context.GetSharedPreferences(Application.Context.GetString(Resource.String.ApplicationInfo), FileCreationMode.Private);
+                            ISharedPreferencesEditor edit = info.Edit();
+                            edit.PutString(Application.Context.GetString(Resource.String.ModifyDate), maxTimeStamp.ToString());
+                            edit.Apply();
                         }
                     }
                 }
@@ -345,7 +359,7 @@ namespace Merit_Money
                 using (var streamWriter = new StreamWriter(request.GetRequestStream()))
                 {
                     string jsonData = @"{""userID"":" + "\"" + userId + "\"" + "," +
-                                      @"""points"":" +  points + "," +
+                                      @"""points"":" + points + "," +
                                       @"""comment"":" + "\"" + message + "\"" + "}";
                     streamWriter.Write(jsonData);
                     streamWriter.Flush();
@@ -391,9 +405,9 @@ namespace Merit_Money
             }
         }
 
-        public static async Task<History> GetHistory(int offset, int batchSize, HistoryType type)
+        public static async Task<HistoryList> GetHistory(int offset, int batchSize, HistoryType type)
         {
-            History HistoryList = new History(type);
+            HistoryList HistoryList = new HistoryList(type);
 
             string histType = (type == HistoryType.Personal) ? "personal" : "company";
 
@@ -431,6 +445,8 @@ namespace Merit_Money
 
                             HistoryList.hasMore = hasMore;
 
+                            Android.Graphics.Bitmap img = Android.Graphics.BitmapFactory.DecodeResource(Application.Context.Resources, Resource.Drawable.ic_noavatar);
+
                             JSONArray array = new JSONArray(jsonDoc.ToString());
                             for (int i = 0; i < array.Length(); i++)
                             {
@@ -442,7 +458,7 @@ namespace Merit_Money
                                 String message = jsonobject.GetString("message");
                                 String comment = jsonobject.GetString("comment");
 
-                                HistoryList.Add(new HistoryObject(ID, toUserID, fromUserID, date, message, comment));
+                                HistoryList.Add(new HistoryListItem(ID, toUserID, fromUserID, date, message, comment, img));
                             }
                         }
                     }
@@ -482,7 +498,7 @@ namespace Merit_Money
                     {
                         jsonData += "\"name:\":\"" + name + "\"";
                     }
-                    if(name!=String.Empty && emailNotificationWasChanged) { jsonData += ","; }
+                    if (name != String.Empty && emailNotificationWasChanged) { jsonData += ","; }
                     if (emailNotificationWasChanged)
                     {
                         int val = value ? 1 : 0;
@@ -538,47 +554,12 @@ namespace Merit_Money
             return profile;
         }
 
-        public static Bitmap ReadFromInternalStorage(String userId)
+        private static DateTime FromUnixTime(String unixTime)
         {
-            var sdCardPath = System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal);
-
-            //var sdCardPath = System.Environment.GetFolderPath(System.Environment.SpecialFolder.ApplicationData);
-            var filePath = System.IO.Path.Combine(sdCardPath, userId);
-
-            BitmapFactory.Options options = new BitmapFactory.Options();
-            options.InPreferredConfig = Bitmap.Config.Argb8888;
-            Bitmap bitmap = BitmapFactory.DecodeFile(filePath, options);
-
-            return bitmap;
-        }
-
-        public static Bitmap GetImageBitmapFromUrl(string url)
-        {
-            Bitmap imageBitmap = null;
-
-            using (var webClient = new System.Net.WebClient())
-            {
-                if (url != String.Empty)
-                {
-                    try
-                    {
-                        var imageBytes = webClient.DownloadData(url);
-                        if (imageBytes != null && imageBytes.Length > 0)
-                        {
-                            imageBitmap = Android.Graphics.BitmapFactory.DecodeByteArray(imageBytes, 0, imageBytes.Length);
-                        }
-                    }
-                    catch (System.Net.WebException)
-                    {
-                        return null;
-                    }
-                    catch (Java.Lang.OutOfMemoryError)
-                    {
-                        return null;
-                    }
-                }
-            }
-            return imageBitmap;
+            var epoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+            try { epoch = epoch.AddSeconds(Convert.ToUInt64(unixTime)); }
+            catch (OverflowException e) { Console.Out.WriteLine(e.Message); }
+            return epoch;
         }
     }
 }

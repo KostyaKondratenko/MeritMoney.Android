@@ -28,7 +28,7 @@ namespace Merit_Money
         private SupportRecyclerView SearchUserView;
         private SupportRecyclerView.LayoutManager RecyclerViewManager;
         private UsersAdapter RecyclerViewAdapter;
-        private List<SingleUser> SearchUsersList;
+        private List<UserListItem> SearchUsersList;
 
         protected override async void OnCreate(Bundle savedInstanceState)
         {
@@ -44,29 +44,49 @@ namespace Merit_Money
             SupportActionBar.SetHomeButtonEnabled(true);
             SupportActionBar.SetDisplayHomeAsUpEnabled(true);
 
+            UsersDatabase db = new UsersDatabase();
+
+            ISharedPreferences info = Application.Context.GetSharedPreferences(Application.Context.GetString(Resource.String.ApplicationInfo), FileCreationMode.Private);
+            String Date = info.GetString(Application.Context.GetString(Resource.String.ModifyDate), String.Empty);
+
             ProgressDialog progressDialog = ProgressDialog.Show(this, "", "Loading, please wait...", true);
-            UsersDatabase db = new UsersDatabase(GetString(Resource.String.UsersDBFilename));
-            SearchUsersList = db.GetUsers();
-            if (SearchUsersList == null)
+
+            List<UserListItem> tmp = await MeritMoneyBrain.GetListOfUsers(modifyBefore: Date);
+            if (await db.IsExist())
+                await db.Merge(tmp);
+            else
             {
-                List<SingleUser> tmp = await MeritMoneyBrain.GetListOfUsers();
-                db.createDatabase();
-                db.Insert(tmp);
-                SearchUsersList = tmp;
+                await db.CreateDatabase();
+                await db.Insert(tmp);
             }
+
+            SearchUsersList = await db.GetUsers();
+
             progressDialog.Dismiss();
+
 
             RecyclerViewManager = new LinearLayoutManager(this);
             SearchUserView.SetLayoutManager(RecyclerViewManager);
             RecyclerViewAdapter = new UsersAdapter(SearchUsersList, this);
             SearchUserView.SetAdapter(RecyclerViewAdapter);
 
-            foreach (SingleUser user in SearchUsersList)
-            {
-                new ImageDownloader(RecyclerViewAdapter).Execute(user);
-            }
+
+            foreach (UserListItem user in SearchUsersList)
+                new CacheUserListItemImage(RecyclerViewAdapter, Application.Context).Execute(user);
 
             ToolBar.MenuItemClick += ToolBar_MenuItemClick;
+        }
+
+        protected override void OnDestroy()
+        {
+            base.OnDestroy();
+            ToolBar.MenuItemClick -= ToolBar_MenuItemClick;
+            GC.Collect();
+        }
+
+        public override void OnBackPressed()
+        {
+            Finish();
         }
 
         private async void ToolBar_MenuItemClick(object sender, SupportToolBar.MenuItemClickEventArgs e)
@@ -78,16 +98,16 @@ namespace Merit_Money
                     case Resource.Id.menu_refresh:
                         ProgressDialog progressDialog = ProgressDialog.Show(this, "", "Loading, please wait", true);
 
-                        SearchUsersList = await MeritMoneyBrain.GetListOfUsers();
+                        SearchUsersList = await MeritMoneyBrain.GetListOfUsers(String.Empty);
 
-                        UsersDatabase db = new UsersDatabase(GetString(Resource.String.UsersDBFilename));
-                        db.Update(SearchUsersList);
+                        UsersDatabase db = new UsersDatabase();
+                        await db.Update(SearchUsersList);
 
                         RecyclerViewAdapter = new UsersAdapter(SearchUsersList, this);
                         SearchUserView.SetAdapter(RecyclerViewAdapter);
 
-                        foreach (SingleUser user in SearchUsersList)
-                            new ImageDownloader(RecyclerViewAdapter).Execute(user);
+                        foreach (UserListItem user in SearchUsersList)
+                            new CacheUserListItemImage(RecyclerViewAdapter, Application.Context).Execute(user);
 
                         progressDialog.Dismiss();
                         break;
@@ -111,9 +131,9 @@ namespace Merit_Money
         bool SupportSearchView.IOnQueryTextListener.OnQueryTextChange(string newText)
         {
             String text = newText.ToLower();
-            List<SingleUser> newList = new List<SingleUser>();
+            List<UserListItem> newList = new List<UserListItem>();
 
-            foreach (SingleUser user in SearchUsersList)
+            foreach (UserListItem user in SearchUsersList)
             {
                 String name = user.name.ToLower();
                 String email = user.email.ToLower();
@@ -148,10 +168,10 @@ namespace Merit_Money
 
     public class UsersAdapter : RecyclerView.Adapter
     {
-        private List<SingleUser> MeritMoneyUsers;
+        private List<UserListItem> MeritMoneyUsers;
         private SearchPersonActivity activity;
 
-        public UsersAdapter(List<SingleUser> users, SearchPersonActivity activity)
+        public UsersAdapter(List<UserListItem> users, SearchPersonActivity activity)
         {
             MeritMoneyUsers = users;
             this.activity = activity;
@@ -163,10 +183,10 @@ namespace Merit_Money
             public TextView Name { get; set; }
             public TextView Email { get; set; }
             public CircularImageView Avatar { get; set; }
-            public List<SingleUser> users;
+            public List<UserListItem> users;
             public SearchPersonActivity activity;
 
-            public ListViewHolder(View view, SearchPersonActivity activity, List<SingleUser> users) : base(view)
+            public ListViewHolder(View view, SearchPersonActivity activity, List<UserListItem> users) : base(view)
             {
                 MainView = view;
                 this.users = users;
@@ -177,7 +197,7 @@ namespace Merit_Money
             public void OnClick(View v)
             {
                 int position = AdapterPosition;
-                SingleUser user = users[position];
+                UserListItem user = users[position];
                 Intent returnIntent = new Intent();
                 v.Selected = true;
                 returnIntent.PutExtra(Application.Context.GetString(Resource.String.ID), user.ID);

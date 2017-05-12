@@ -66,6 +66,15 @@ namespace Merit_Money
             SendPointsLayout.Touch += Layout_Touched;
         }
 
+        protected override void OnDestroy()
+        {
+            base.OnDestroy();
+            SendPointsButton.Click -= SendPointsButton_Clicked;
+            userNameToDistribute.Click -= SelectPerson_Clicked;
+            NumberOfPoints.FocusChange -= NumberOfPoints_FocusChanged;
+            GC.Collect();
+        }
+
         private void Layout_Touched(object sender, View.TouchEventArgs e)
         {
             HideKeyboard(NumberOfPoints);
@@ -80,7 +89,7 @@ namespace Merit_Money
 
         private void InitializeProfile()
         {
-            ProfileDatabase db = new ProfileDatabase(GetString(Resource.String.ProfileDBFilename));
+            ProfileDatabase db = new ProfileDatabase();
             Profile p = db.GetProfile();
             CanDistributePoints.Text = p.distribute.ToString();
         }
@@ -199,7 +208,7 @@ namespace Merit_Money
             protected override Java.Lang.Void RunInBackground(params Profile[] @params)
             {
                 Profile profile = @params[0];
-                ProfileDatabase db = new ProfileDatabase(context.GetString(Resource.String.ProfileDBFilename));
+                ProfileDatabase db = new ProfileDatabase();
                 db.Update(profile);
                 return null;
             }

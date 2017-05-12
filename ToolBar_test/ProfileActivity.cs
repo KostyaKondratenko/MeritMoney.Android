@@ -69,25 +69,24 @@ namespace Merit_Money
             UserAvatar.Click += UserAvatar_Click;
         }
 
+        protected override void OnDestroy()
+        {
+            base.OnDestroy();
+            MainToolbar.MenuItemClick += MainToolbar_MenuItemClick;
+            UserAvatar.Click += UserAvatar_Click;
+            GC.Collect();
+        }
 
         private void InitializeProfile()
         {
-            ProfileDatabase db = new ProfileDatabase(GetString(Resource.String.ProfileDBFilename));
+            ProfileDatabase db = new ProfileDatabase();
             Profile p = db.GetProfile();
 
             UserName.Text = p.name;
             UserEmail.Text = p.email;
             NotificationSwitch.Checked = p.emailNotificaion;
 
-            //Bitmap imageBitmap = MeritMoneyBrain.ReadFromInternalStorage(p.ID);
-            //if (imageBitmap == null)
-            //{
-                new LoadAndSaveImage(UserAvatar).Execute(p.imageUri, p.ID);
-            //}
-            //else
-            //{
-            //    UserAvatar.SetImageBitmap(imageBitmap);
-            //}
+            new CacheUserAvatar(UserAvatar, Application.Context).Execute(p.imageUri, p.ID);
         }
 
         private void SetSwitchState()
@@ -186,13 +185,13 @@ namespace Merit_Money
             if (SwitchWasChanged && !nameWasChanged)
             {
                 Profile p = await MeritMoneyBrain.updateProfile(String.Empty, SwitchWasChanged, NotificationSwitch.Checked);
-                ProfileDatabase db = new ProfileDatabase(GetString(Resource.String.ProfileDBFilename));
+                ProfileDatabase db = new ProfileDatabase();
                 db.Update(p);
             }
             if (nameWasChanged)
             {
                 Profile p = await MeritMoneyBrain.updateProfile(UserName.Text, SwitchWasChanged, NotificationSwitch.Checked);
-                ProfileDatabase db = new ProfileDatabase(GetString(Resource.String.ProfileDBFilename));
+                ProfileDatabase db = new ProfileDatabase();
                 db.Update(p);
             }
         }

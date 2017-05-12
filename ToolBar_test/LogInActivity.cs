@@ -123,8 +123,8 @@ namespace Merit_Money
             edit.PutString(GetString(Resource.String.CurrentAccessToken), MeritMoneyBrain.CurrentAccessToken);
             edit.Apply();
 
-            ProfileDatabase db = new ProfileDatabase(GetString(Resource.String.ProfileDBFilename));
-            db.createDatabase();
+            ProfileDatabase db = new ProfileDatabase();
+            db.CreateDatabase();
             db.Insert(profile);
         }
 

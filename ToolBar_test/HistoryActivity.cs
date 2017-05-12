@@ -25,8 +25,8 @@ namespace Merit_Money
         private SupportViewPager ViewPager;
         private ViewPagerAdapter ViewPagerAdapter;
 
-        private History PersonalHistoryList;
-        private History CompanyHistoryList;
+        private HistoryList PersonalHistoryList;
+        private HistoryList CompanyHistoryList;
 
         private int Offset = 0;
         private const int BatchSize = 10;
@@ -47,11 +47,18 @@ namespace Merit_Money
 
             ProgressDialog progressDialog = ProgressDialog.Show(this, "", "Loading list of users, please wait.", true);
 
-            UsersDatabase db = new UsersDatabase(GetString(Resource.String.UsersDBFilename));
-            if (db.GetUsers() == null)
+            UsersDatabase db = new UsersDatabase();
+
+            ISharedPreferences info = Application.Context.GetSharedPreferences(Application.Context.GetString(Resource.String.ApplicationInfo), FileCreationMode.Private);
+            String Date = info.GetString(Application.Context.GetString(Resource.String.ModifyDate), String.Empty);
+
+            List<UserListItem> tmp = await MeritMoneyBrain.GetListOfUsers(modifyBefore: Date);
+            if (await db.IsExist())
+                await db.Merge(tmp);
+            else
             {
-                db.createDatabase();
-                db.Insert(await MeritMoneyBrain.GetListOfUsers());
+                await db.CreateDatabase();
+                await db.Insert(tmp);
             }
 
             progressDialog.SetMessage("Loading history, please wait.");
@@ -68,6 +75,36 @@ namespace Merit_Money
 
             progressDialog.Dismiss();
 
+            var onScrollListener = new XamarinRecyclerViewOnScrollListener(new LinearLayoutManager(this));
+
+
+        }
+    }
+
+    public class XamarinRecyclerViewOnScrollListener : RecyclerView.OnScrollListener
+    {
+        public delegate void LoadMoreEventHandler(object sender, EventArgs e);
+        public event LoadMoreEventHandler LoadMoreEvent;
+
+        private LinearLayoutManager LayoutManager;
+
+        public XamarinRecyclerViewOnScrollListener(LinearLayoutManager layoutManager)
+        {
+            LayoutManager = layoutManager;
+        }
+
+        public override void OnScrolled(RecyclerView recyclerView, int dx, int dy)
+        {
+            base.OnScrolled(recyclerView, dx, dy);
+
+            var visibleItemCount = recyclerView.ChildCount;
+            var totalItemCount = recyclerView.GetAdapter().ItemCount;
+            var pastVisiblesItems = LayoutManager.FindFirstVisibleItemPosition();
+
+            if ((visibleItemCount + pastVisiblesItems) >= totalItemCount)
+            {
+                LoadMoreEvent(this, null);
+            }
         }
     }
 
@@ -102,14 +139,14 @@ namespace Merit_Money
         }
     }
 
-    public class PersonalHistoryAdapter : RecyclerView.Adapter
+    public class HistoryAdapter : RecyclerView.Adapter
     {
-        private History PersonalHistory;
+        private HistoryList History;
         private Context context;
 
-        public PersonalHistoryAdapter(History history, Context context)
+        public HistoryAdapter(HistoryList history, Context context)
         {
-            this.PersonalHistory = history;
+            this.History = history;
             this.context = context;
         }
 
@@ -121,30 +158,29 @@ namespace Merit_Money
             public TextView date { get; set; }
             public CircularImageView Avatar { get; set; }
             public ImageView Indicator { get; set; }
-            public History PersonalHistory;
+            public HistoryList History;
             public Context context;
 
-            public HistoryViewHolder(View view, Context context, History history) : base(view)
+            public HistoryViewHolder(View view, Context context, HistoryList history) : base(view)
             {
                 MainView = view;
-                this.PersonalHistory = history;
+                this.History = history;
                 this.context = context;
             }
         }
 
         public override int ItemCount
         {
-            get { return PersonalHistory.Count(); }
+            get { return History.Count(); }
         }
 
         public override void OnBindViewHolder(RecyclerView.ViewHolder holder, int position)
         {
             HistoryViewHolder Holder = holder as HistoryViewHolder;
-            //Holder.Avatar.SetImageBitmap(PersonalHistory[position].);
-            Holder.comment.Text = PersonalHistory[position].comment;
-            Holder.message.Text = OrganizeMessageString(PersonalHistory[position]);
-            //Holder.date.Text = PersonalHistory[position].date.ToString();
-            Holder.date.Text = FromUnixTime(Convert.ToInt64(PersonalHistory[position].date));
+            Holder.Avatar.SetImageBitmap(History[position].image);
+            Holder.comment.Text = History[position].comment;
+            Holder.message.Text = OrganizeMessageString(History[position]);
+            Holder.date.Text = FromUnixTime(Convert.ToInt64(History[position].date));
         }
 
         public override RecyclerView.ViewHolder OnCreateViewHolder(ViewGroup parent, int viewType)
@@ -160,7 +196,7 @@ namespace Merit_Money
 
             itemIndicator.Visibility = ViewStates.Invisible;
 
-            HistoryViewHolder view = new HistoryViewHolder(item, context, PersonalHistory)
+            HistoryViewHolder view = new HistoryViewHolder(item, context, History)
             {
                 date = itemDate,
                 message = itemMessage,
@@ -171,7 +207,7 @@ namespace Merit_Money
             return view;
         }
 
-        private String OrganizeMessageString(HistoryObject value)
+        private String OrganizeMessageString(HistoryListItem value)
         {
             String result = String.Empty;
 
@@ -189,8 +225,8 @@ namespace Merit_Money
 
         private String DefineSenderName(String ID)
         {
-            UsersDatabase db = new UsersDatabase(context.GetString(Resource.String.UsersDBFilename));
-            return db.GetUserNameByID(ID);
+            UsersDatabase db = new UsersDatabase();
+            return db.GetUserByID(ID).name;
         }
 
         private String FromUnixTime(long unixTime)

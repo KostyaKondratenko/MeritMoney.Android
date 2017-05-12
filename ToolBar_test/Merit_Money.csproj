@@ -162,8 +162,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BaseBottomBarActivity.cs" />
+    <Compile Include="CacheImage.cs" />
     <Compile Include="CircularImageView.cs" />
-    <Compile Include="HistoryObject.cs" />
     <Compile Include="Database.cs" />
     <Compile Include="EnumOfActivities.cs" />
     <Compile Include="HistoryActivity.cs" />
@@ -173,7 +173,8 @@
     <Compile Include="NetworkStatusMonitor.cs" />
     <Compile Include="NoInternetActivity.cs" />
     <Compile Include="HistoryFragment.cs" />
-    <Compile Include="Profile.cs" />
+    <Compile Include="OperationWithBitmap.cs" />
+    <Compile Include="AdditionalClasses.cs" />
     <Compile Include="ProfileActivity.cs" />
     <Compile Include="Resources\Resource.Designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -232,6 +233,10 @@
     </AndroidResource>
     <AndroidResource Include="Resources\layout-port\history_list_item.axml" />
     <AndroidResource Include="Resources\layout-land\NoInternet.axml">
+      <SubType>Designer</SubType>
+    </AndroidResource>
+    <AndroidResource Include="Resources\layout-land\history_list_item.axml" />
+    <AndroidResource Include="Resources\layout-land\History.axml">
       <SubType>Designer</SubType>
     </AndroidResource>
   </ItemGroup>
@@ -442,6 +447,9 @@
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\drawable\Indicator.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\layout-land\HistoryFragment.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

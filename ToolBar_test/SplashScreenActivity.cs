@@ -52,7 +52,7 @@ namespace Merit_Money
                     if (LoggedIn)
                     {
                         Profile p = await MeritMoneyBrain.GetProfile();
-                        ProfileDatabase db = new ProfileDatabase(context.GetString(Resource.String.ProfileDBFilename));
+                        ProfileDatabase db = new ProfileDatabase();
                         db.Update(p);
                     }
                     context.StartActivity(new Intent(Application.Context, typeof(MainActivity)));

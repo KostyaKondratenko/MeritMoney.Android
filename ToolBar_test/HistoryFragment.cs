@@ -16,9 +16,9 @@ namespace Merit_Money
     [Activity(Label = "HistoryFragment")]
     public class HistoryFragment : Android.Support.V4.App.Fragment
     {
-        History HistoryList;
+        HistoryList HistoryList;
 
-        public HistoryFragment(History HistoryList)
+        public HistoryFragment(HistoryList HistoryList)
         {
             this.HistoryList = HistoryList;
         }
@@ -30,8 +30,11 @@ namespace Merit_Money
             var HistoryView = view.FindViewById<RecyclerView>(Resource.Id.HistoryList);
             var RecyclerViewManager = new LinearLayoutManager(this.Context);
             HistoryView.SetLayoutManager(RecyclerViewManager);
-            var RecyclerViewAdapter = new PersonalHistoryAdapter(HistoryList, this.Context);
+            var RecyclerViewAdapter = new HistoryAdapter(HistoryList, this.Context);
             HistoryView.SetAdapter(RecyclerViewAdapter);
+
+            foreach (HistoryListItem item in HistoryList)
+                new CacheHistoryListItemImage(RecyclerViewAdapter, Application.Context).Execute(item);
 
             return view;
         }

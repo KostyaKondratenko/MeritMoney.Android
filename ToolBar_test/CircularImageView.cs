@@ -39,7 +39,7 @@ namespace Merit_Money
         protected override void OnDraw(Canvas canvas)
         {
             Path clipPath = new Path();
-            RectF rect = new RectF(5, 5, this.Width-5, this.Height-5);
+            RectF rect = new RectF(0, 0, this.Width, this.Height);
             clipPath.AddRoundRect(rect, radius, radius, Path.Direction.Cw);
             canvas.ClipPath(clipPath);
             base.OnDraw(canvas);

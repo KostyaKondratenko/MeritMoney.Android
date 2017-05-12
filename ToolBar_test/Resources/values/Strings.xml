@@ -8,6 +8,7 @@
   <string name="ThanksButton">Say Thanks!</string>
   <string name="ApplicationInfo">Application info</string>
   <string name="SendPoints">Send Points</string>
+  <string name="LoadMore">Load more</string>
   <string name="EmailNotificationText">Email Notifications</string>
   <string name="ServerClientID">473081959863-i0d76a14rrm4a4q7lau05dvu77e3rq52.apps.googleusercontent.com</string>
                      <!--KEYS-->
@@ -23,13 +24,16 @@
   <string name="WebHookNotification">webhookNotification</string>
   <string name="CurrentAccessToken">AccessToken</string>
   <string name="LogIn">LOG_IN</string>
+  <string name="ModifyDate">modifyBefore</string>
   
   <!--History-->
   <string name="Personal">Personal</string>
   <string name="Company">Company</string>
 
-  <!--Profile Database-->
+  <!--Database-->
   <string name="ProfileDBFilename">profile.db</string>
   <string name="UsersDBFilename">users.db</string>
+  <string name="PersonalHistoryDBFilename">personalHistory.db</string>
+  <string name="CompanyHistoryDBFilename">companyHistory.db</string>
 </resources>
 
