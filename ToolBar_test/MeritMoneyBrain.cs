@@ -216,12 +216,10 @@ namespace Merit_Money
                 // Create an HTTP web request using the URL:
                 string url = MeritMoneyApiUrl + "logout";
                 HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create(new Uri(url));
-                request.ContentType = "application/json";
+                request.ContentType = "application/x-www-form-urlencoded";
                 request.Headers.Add("Access-Token", CurrentAccessToken);
-                //request.ContentLength = UTF8Encoding.Default.GetBytes(CurrentAccessToken).Length;
+                request.ContentLength = 0;
                 request.Method = "POST";
-
-                JsonValue jsonDoc;
 
                 // Send the request to the server and wait for the response:
                 using (WebResponse response = await request.GetResponseAsync())
@@ -230,15 +228,13 @@ namespace Merit_Money
                     using (Stream stream = response.GetResponseStream())
                     {
                         // Use this stream to build a JSON document object:
-                        jsonDoc = await Task.Run(() => JsonObject.Load(stream));
 
-                        if (string.IsNullOrWhiteSpace(jsonDoc.ToString()))
+                        if (response.ContentLength == 0)
                         {
                             Console.Out.WriteLine("Response contained empty body...");
                         }
                         else
                         {
-                            Console.Out.WriteLine("Response Body: \r\n {0}", jsonDoc.ToString());
                             Console.Out.WriteLine("LOGGED OUT");
                         }
 
@@ -262,7 +258,7 @@ namespace Merit_Money
             }
         }
 
-        public static async Task<List<UserListItem>> GetListOfUsers(String modifyBefore)
+        public static async Task<List<UserListItem>> GetListOfUsers(String modifyAfter)
         {
             List<UserListItem> ListOfUsers = new List<UserListItem>();
             ProfileDatabase db = new ProfileDatabase();
@@ -274,13 +270,14 @@ namespace Merit_Money
             {
                 // Create an HTTP web request using the URL:
                 string url = MeritMoneyApiUrl + "users";
+
+                if (modifyAfter != String.Empty)
+                    url += "?modifyAfter=" + modifyAfter;
+
                 HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create(new Uri(url));
                 request.ContentType = "application/json";
                 request.Headers.Add("Access-Token", CurrentAccessToken);
                 request.Method = "GET";
-
-                if (modifyBefore != String.Empty)
-                    url += "?modifyBefore=" + modifyBefore;
 
                 JsonValue jsonDoc;
                 // Send the request to the server and wait for the response:
@@ -302,8 +299,6 @@ namespace Merit_Money
                             JSONArray array = new JSONArray(jsonDoc.ToString());
                             Android.Graphics.Bitmap img = Android.Graphics.BitmapFactory.DecodeResource(Application.Context.Resources, Resource.Drawable.ic_noavatar);
 
-                            long maxTimeStamp = 0;
-
                             for (int i = 0; i < array.Length(); i++)
                             {
                                 JSONObject jsonobject = array.GetJSONObject(i);
@@ -311,19 +306,16 @@ namespace Merit_Money
                                 String ID = jsonobject.GetString("ID");
                                 String email = jsonobject.GetString("email");
                                 String imUrl = jsonobject.GetString("imageUrl");
-                                long editTimeStamp = jsonobject.GetLong("editTimestamp");
-                                if (maxTimeStamp < editTimeStamp)
-                                    maxTimeStamp = editTimeStamp;
 
                                 if (ID != currentID && ID != AdministratorID)
                                     ListOfUsers.Add(new UserListItem(ID, name, email, imUrl, img));
                             }
 
-                            maxTimeStamp += 1;
+                            Int64 currentUtcTime = (Int64)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
 
                             ISharedPreferences info = Application.Context.GetSharedPreferences(Application.Context.GetString(Resource.String.ApplicationInfo), FileCreationMode.Private);
                             ISharedPreferencesEditor edit = info.Edit();
-                            edit.PutString(Application.Context.GetString(Resource.String.ModifyDate), maxTimeStamp.ToString());
+                            edit.PutString(Application.Context.GetString(Resource.String.ModifyDate), currentUtcTime.ToString());
                             edit.Apply();
                         }
                     }

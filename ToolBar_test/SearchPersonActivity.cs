@@ -51,7 +51,7 @@ namespace Merit_Money
 
             ProgressDialog progressDialog = ProgressDialog.Show(this, "", "Loading, please wait...", true);
 
-            List<UserListItem> tmp = await MeritMoneyBrain.GetListOfUsers(modifyBefore: Date);
+            List<UserListItem> tmp = await MeritMoneyBrain.GetListOfUsers(modifyAfter: Date);
             if (await db.IsExist())
                 await db.Merge(tmp);
             else

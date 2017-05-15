@@ -420,7 +420,7 @@
     <AndroidResource Include="Resources\menu\profile_top_menu.xml" />
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\layout-port\HistoryFragment.xml" />
+    <AndroidResource Include="Resources\layout-port\HistoryFragment.axml" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\drawable-xhdpi\ic_search_white.png" />

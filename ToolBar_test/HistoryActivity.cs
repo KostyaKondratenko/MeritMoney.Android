@@ -25,12 +25,6 @@ namespace Merit_Money
         private SupportViewPager ViewPager;
         private ViewPagerAdapter ViewPagerAdapter;
 
-        private HistoryList PersonalHistoryList;
-        private HistoryList CompanyHistoryList;
-
-        private int Offset = 0;
-        private const int BatchSize = 10;
-
         protected override async void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
@@ -47,36 +41,37 @@ namespace Merit_Money
 
             ProgressDialog progressDialog = ProgressDialog.Show(this, "", "Loading list of users, please wait.", true);
 
-            UsersDatabase db = new UsersDatabase();
-
-            ISharedPreferences info = Application.Context.GetSharedPreferences(Application.Context.GetString(Resource.String.ApplicationInfo), FileCreationMode.Private);
-            String Date = info.GetString(Application.Context.GetString(Resource.String.ModifyDate), String.Empty);
-
-            List<UserListItem> tmp = await MeritMoneyBrain.GetListOfUsers(modifyBefore: Date);
-            if (await db.IsExist())
-                await db.Merge(tmp);
-            else
+            if (NetworkStatus.State != NetworkState.Disconnected)
             {
-                await db.CreateDatabase();
-                await db.Insert(tmp);
+                UsersDatabase db = new UsersDatabase();
+
+                ISharedPreferences info = Application.Context.GetSharedPreferences(Application.Context.GetString(Resource.String.ApplicationInfo), FileCreationMode.Private);
+                String Date = info.GetString(Application.Context.GetString(Resource.String.ModifyDate), String.Empty);
+
+                List<UserListItem> tmp = await MeritMoneyBrain.GetListOfUsers(modifyAfter: Date);
+                if (await db.IsExist())
+                    await db.Merge(tmp);
+                else
+                {
+                    await db.CreateDatabase();
+                    await db.Insert(tmp);
+                }
             }
 
-            progressDialog.SetMessage("Loading history, please wait.");
-
-            PersonalHistoryList = await MeritMoneyBrain.GetHistory(Offset, BatchSize, HistoryType.Personal);
-            CompanyHistoryList = await MeritMoneyBrain.GetHistory(Offset, BatchSize, HistoryType.Company);
+            progressDialog.Dismiss();
 
             ViewPagerAdapter = new ViewPagerAdapter(SupportFragmentManager);
-            ViewPagerAdapter.AddFragments(new HistoryFragment(PersonalHistoryList), new Java.Lang.String("Personal"));
-            ViewPagerAdapter.AddFragments(new HistoryFragment(CompanyHistoryList), new Java.Lang.String("Company"));
+            ViewPagerAdapter.AddFragments(new HistoryFragment(HistoryType.Personal,
+                NetworkStatus),
+                new Java.Lang.String("Personal"));
+            ViewPagerAdapter.AddFragments(new HistoryFragment(HistoryType.Company,
+                NetworkStatus),
+                new Java.Lang.String("Company"));
             ViewPager.Adapter = ViewPagerAdapter;
 
             TabLayout.SetupWithViewPager(ViewPager);
 
-            progressDialog.Dismiss();
-
             var onScrollListener = new XamarinRecyclerViewOnScrollListener(new LinearLayoutManager(this));
-
 
         }
     }
@@ -190,7 +185,6 @@ namespace Merit_Money
             TextView itemDate = item.FindViewById<TextView>(Resource.Id.historyDate);
             TextView itemMessage = item.FindViewById<TextView>(Resource.Id.historyName);
             TextView itemComment = item.FindViewById<TextView>(Resource.Id.historyReason);
-            //AVATAR
             CircularImageView itemAvatar = item.FindViewById<CircularImageView>(Resource.Id.searchAvatar);
             ImageView itemIndicator = item.FindViewById<ImageView>(Resource.Id.history_indicator);
 

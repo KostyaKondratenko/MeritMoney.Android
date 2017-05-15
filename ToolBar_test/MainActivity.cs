@@ -157,7 +157,21 @@ namespace Merit_Money
             switch (e.Item.ItemId)
             {
                 case Resource.Id.menu_logout:
+
+                    ProgressDialog dialog = ProgressDialog.Show(this, "", "Logging out...");
+
                     await MeritMoneyBrain.LogOut();
+
+                    ProfileDatabase pdb = new ProfileDatabase();
+                    pdb.DeleteDatabase();
+
+                    UsersDatabase udb = new UsersDatabase();
+                    await udb.DeleteDatabase();
+
+                    dialog.Dismiss();
+
+                    Intent LogInIntent = new Intent(this, typeof(LogInActivity));
+                    this.StartActivityForResult(LogInIntent, LOG_IN_REQUEST);
                     break;
             }
         }
