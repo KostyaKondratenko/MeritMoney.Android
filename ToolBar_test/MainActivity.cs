@@ -168,6 +168,11 @@ namespace Merit_Money
                     UsersDatabase udb = new UsersDatabase();
                     await udb.DeleteDatabase();
 
+                    ISharedPreferences info = Application.Context.GetSharedPreferences(Application.Context.GetString(Resource.String.ApplicationInfo), FileCreationMode.Private);
+                    ISharedPreferencesEditor editor = info.Edit();
+                    editor.Clear();
+                    editor.Apply();
+
                     dialog.Dismiss();
 
                     Intent LogInIntent = new Intent(this, typeof(LogInActivity));
