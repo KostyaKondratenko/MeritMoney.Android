@@ -29,7 +29,6 @@
                 android:id="@id/history_indicator"
                 android:layout_width="7dp"
                 android:layout_height="7dp"
-                android:background="@drawable/imageView_frame"
                 android:src="@drawable/Indicator" />
         </LinearLayout>
         <Merit_Money.CircularImageView

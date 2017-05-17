@@ -24,21 +24,23 @@ namespace Merit_Money
         private TextView NoInternetText;
         private NetworkStatusMonitor Network;
 
-        private HistoryList HistoryList;
+        private HistoryList historyList;
         private HistoryType type;
 
         private RecyclerView HistoryView;
         private RecyclerView.Adapter RecyclerViewAdapter;
 
-        private int Offset = 0; 
+        private int Offset = 0;
         private const int BatchSize = 10;
+        private ScrollListener mScrollListener;
+        private LinearLayoutManager RecyclerViewManager;
 
         public HistoryFragment(HistoryType type, NetworkStatusMonitor Network)
         {
             this.type = type;
             this.Network = Network;
 
-            HistoryList = new HistoryList(type);
+            historyList = new HistoryList(type);
         }
 
         public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -70,7 +72,7 @@ namespace Merit_Money
 
             if (Network.State != NetworkState.Disconnected)
             {
-                HistoryList = await MeritMoneyBrain.GetHistory(Offset, BatchSize, type);
+                historyList = await MeritMoneyBrain.GetHistory(Offset, BatchSize, type);
                 LoadingPanel.Visibility = ViewStates.Gone;
             }
             else
@@ -79,12 +81,15 @@ namespace Merit_Money
                 NoInternetText.Visibility = ViewStates.Visible;
             }
 
-            var RecyclerViewManager = new LinearLayoutManager(this.Context);
+            RecyclerViewManager = new LinearLayoutManager(this.Context);
             HistoryView.SetLayoutManager(RecyclerViewManager);
-            RecyclerViewAdapter = new HistoryAdapter(HistoryList, this.Context);
+            RecyclerViewAdapter = new HistoryAdapter(historyList, this.Context);
             HistoryView.SetAdapter(RecyclerViewAdapter);
 
-            foreach (HistoryListItem item in HistoryList)
+            mScrollListener = new ScrollListener(RecyclerViewManager, historyList, type);
+            HistoryView.AddOnScrollListener(mScrollListener);
+
+            foreach (HistoryListItem item in historyList)
                 new CacheHistoryListItemImage(RecyclerViewAdapter, Application.Context).Execute(item);
         }
 
@@ -94,12 +99,15 @@ namespace Merit_Money
             {
                 Offset = 0;
 
-                HistoryList = await MeritMoneyBrain.GetHistory(Offset, BatchSize, type);
+                historyList.Clear();
+                historyList = await MeritMoneyBrain.GetHistory(Offset, BatchSize, type);
 
-                RecyclerViewAdapter = new HistoryAdapter(HistoryList, this.Context);
+                RecyclerViewAdapter = new HistoryAdapter(historyList, this.Context);
                 HistoryView.SetAdapter(RecyclerViewAdapter);
+                mScrollListener = new ScrollListener(RecyclerViewManager, historyList, type);
+                HistoryView.AddOnScrollListener(mScrollListener);
 
-                foreach (HistoryListItem item in HistoryList)
+                foreach (HistoryListItem item in historyList)
                     new CacheHistoryListItemImage(RecyclerViewAdapter, Application.Context).Execute(item);
             }
             else
@@ -108,6 +116,40 @@ namespace Merit_Money
             }
 
             Refresh.Refreshing = false;
+        }
+
+        public class ScrollListener : EndlessRecyclerViewScrollListener
+        {
+            private HistoryList history;
+            private HistoryType type;
+
+            public ScrollListener(LinearLayoutManager manager, HistoryList list, HistoryType type)
+                : base(manager)
+            {
+                this.history = list;
+                this.type = type;
+            }
+
+            public override async void onLoadMore(int page, RecyclerView view)
+            {
+                if (history.hasMore)
+                {
+                    HistoryList listItem = await MeritMoneyBrain.GetHistory(page * BatchSize, BatchSize, type);
+
+                    foreach (HistoryListItem item in listItem)
+                        new CacheHistoryListItemImage(view.GetAdapter(), Application.Context).Execute(item);
+
+                    var previousPosition = history.Count();
+                    var itemsAdded = listItem.Count();
+
+                    history.AddList(listItem);
+                    history.hasMore = listItem.hasMore;
+
+                    view.GetAdapter().NotifyItemRangeInserted(previousPosition, itemsAdded);
+
+
+                }
+            }
         }
     }
 }

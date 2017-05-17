@@ -337,7 +337,7 @@ namespace Merit_Money
             return ListOfUsers;
         }
 
-        public static async Task DistributePoints(String points, String userId, String message)
+        public static async Task<Profile> DistributePoints(String points, String userId, String message)
         {
             try
             {
@@ -384,6 +384,10 @@ namespace Merit_Money
                         //return jsonDoc;
                     }
                 }
+                profile = new Profile(jsonDoc["ID"], jsonDoc["name"],
+                  jsonDoc["email"], jsonDoc["imageUrl"],
+                 jsonDoc["balance"], jsonDoc["rewards"],
+                 jsonDoc["distribute"], jsonDoc["emailNotification"]);
             }
             catch (WebException exception)
             {
@@ -395,6 +399,7 @@ namespace Merit_Money
                     Console.WriteLine(responseText);
                 }
             }
+            return profile;
         }
 
         public static async Task<HistoryList> GetHistory(int offset, int batchSize, HistoryType type)

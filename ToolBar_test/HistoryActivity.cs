@@ -50,7 +50,9 @@ namespace Merit_Money
 
                 List<UserListItem> tmp = await MeritMoneyBrain.GetListOfUsers(modifyAfter: Date);
                 if (await db.IsExist())
-                    await db.Merge(tmp);
+                {
+                    await db.Update(tmp);
+                }
                 else
                 {
                     await db.CreateDatabase();
@@ -70,36 +72,6 @@ namespace Merit_Money
             ViewPager.Adapter = ViewPagerAdapter;
 
             TabLayout.SetupWithViewPager(ViewPager);
-
-            var onScrollListener = new XamarinRecyclerViewOnScrollListener(new LinearLayoutManager(this));
-
-        }
-    }
-
-    public class XamarinRecyclerViewOnScrollListener : RecyclerView.OnScrollListener
-    {
-        public delegate void LoadMoreEventHandler(object sender, EventArgs e);
-        public event LoadMoreEventHandler LoadMoreEvent;
-
-        private LinearLayoutManager LayoutManager;
-
-        public XamarinRecyclerViewOnScrollListener(LinearLayoutManager layoutManager)
-        {
-            LayoutManager = layoutManager;
-        }
-
-        public override void OnScrolled(RecyclerView recyclerView, int dx, int dy)
-        {
-            base.OnScrolled(recyclerView, dx, dy);
-
-            var visibleItemCount = recyclerView.ChildCount;
-            var totalItemCount = recyclerView.GetAdapter().ItemCount;
-            var pastVisiblesItems = LayoutManager.FindFirstVisibleItemPosition();
-
-            if ((visibleItemCount + pastVisiblesItems) >= totalItemCount)
-            {
-                LoadMoreEvent(this, null);
-            }
         }
     }
 
@@ -139,10 +111,23 @@ namespace Merit_Money
         private HistoryList History;
         private Context context;
 
+        private const int VIEW_TYPE_ITEM = 0;
+        private const int VIEW_TYPE_LOADING = 1;
+
         public HistoryAdapter(HistoryList history, Context context)
         {
             this.History = history;
             this.context = context;
+        }
+
+        private class LoadingViewHolder : RecyclerView.ViewHolder
+        {
+            public ProgressBar ProgressBar;
+
+            public LoadingViewHolder(View view) : base(view)
+            {
+                ProgressBar = (ProgressBar)view.FindViewById(Resource.Id.progressBar2);
+            }
         }
 
         public class HistoryViewHolder : RecyclerView.ViewHolder
@@ -161,44 +146,64 @@ namespace Merit_Money
                 MainView = view;
                 this.History = history;
                 this.context = context;
+
+                TextView itemDate = view.FindViewById<TextView>(Resource.Id.historyDate);
+                TextView itemMessage = view.FindViewById<TextView>(Resource.Id.historyName);
+                TextView itemComment = view.FindViewById<TextView>(Resource.Id.historyReason);
+                CircularImageView itemAvatar = view.FindViewById<CircularImageView>(Resource.Id.searchAvatar);
+                ImageView itemIndicator = view.FindViewById<ImageView>(Resource.Id.history_indicator);
+
+                itemIndicator.Visibility = ViewStates.Invisible;
+
+                date = itemDate;
+                message = itemMessage;
+                Avatar = itemAvatar;
+                Indicator = itemIndicator;
+                comment = itemComment;
             }
         }
 
         public override int ItemCount
         {
-            get { return History.Count(); }
+            get { return History == null ? 0 : History.Count() +1; }
         }
 
         public override void OnBindViewHolder(RecyclerView.ViewHolder holder, int position)
+        { 
+            if (holder is HistoryViewHolder) {
+                HistoryViewHolder Holder = holder as HistoryViewHolder;
+                Holder.Avatar.SetImageBitmap(History[position].image);
+                Holder.comment.Text = History[position].comment;
+                Holder.message.Text = OrganizeMessageString(History[position]);
+                Holder.date.Text = FromUnixTime(Convert.ToInt64(History[position].date));
+            } else if (holder is LoadingViewHolder) {
+                LoadingViewHolder LoadingViewHolder = holder as LoadingViewHolder;
+                if (History.hasMore)
+                    LoadingViewHolder.ProgressBar.Visibility = ViewStates.Visible;
+                else
+                    LoadingViewHolder.ProgressBar.Visibility = ViewStates.Gone;
+            }
+        }
+
+        public override int GetItemViewType(int position)
         {
-            HistoryViewHolder Holder = holder as HistoryViewHolder;
-            Holder.Avatar.SetImageBitmap(History[position].image);
-            Holder.comment.Text = History[position].comment;
-            Holder.message.Text = OrganizeMessageString(History[position]);
-            Holder.date.Text = FromUnixTime(Convert.ToInt64(History[position].date));
+            return History[position] == null ? VIEW_TYPE_LOADING : VIEW_TYPE_ITEM;
         }
 
         public override RecyclerView.ViewHolder OnCreateViewHolder(ViewGroup parent, int viewType)
         {
-            View item = LayoutInflater.From(parent.Context).Inflate(Resource.Layout.history_list_item, parent, false);
-
-            TextView itemDate = item.FindViewById<TextView>(Resource.Id.historyDate);
-            TextView itemMessage = item.FindViewById<TextView>(Resource.Id.historyName);
-            TextView itemComment = item.FindViewById<TextView>(Resource.Id.historyReason);
-            CircularImageView itemAvatar = item.FindViewById<CircularImageView>(Resource.Id.searchAvatar);
-            ImageView itemIndicator = item.FindViewById<ImageView>(Resource.Id.history_indicator);
-
-            itemIndicator.Visibility = ViewStates.Invisible;
-
-            HistoryViewHolder view = new HistoryViewHolder(item, context, History)
+            if (viewType == VIEW_TYPE_ITEM)
             {
-                date = itemDate,
-                message = itemMessage,
-                Avatar = itemAvatar,
-                Indicator = itemIndicator,
-                comment = itemComment
-            };
-            return view;
+                View item = LayoutInflater.From(parent.Context).Inflate(Resource.Layout.history_list_item, parent, false);
+                return new HistoryViewHolder(item, context, History);
+            }
+            else if (viewType == VIEW_TYPE_LOADING)
+            {
+                View item = LayoutInflater.From(parent.Context).Inflate(Resource.Drawable.progress_bar, parent, false);
+                return new LoadingViewHolder(item);
+            }
+
+            return null;
         }
 
         private String OrganizeMessageString(HistoryListItem value)

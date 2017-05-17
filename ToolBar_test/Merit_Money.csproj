@@ -165,6 +165,7 @@
     <Compile Include="CacheImage.cs" />
     <Compile Include="CircularImageView.cs" />
     <Compile Include="Database.cs" />
+    <Compile Include="EndlessRecyclerViewScrollListener.cs" />
     <Compile Include="EnumOfActivities.cs" />
     <Compile Include="HistoryActivity.cs" />
     <Compile Include="LogInActivity.cs" />
@@ -235,7 +236,9 @@
     <AndroidResource Include="Resources\layout-land\NoInternet.axml">
       <SubType>Designer</SubType>
     </AndroidResource>
-    <AndroidResource Include="Resources\layout-land\history_list_item.axml" />
+    <AndroidResource Include="Resources\layout-land\history_list_item.axml">
+      <SubType>Designer</SubType>
+    </AndroidResource>
     <AndroidResource Include="Resources\layout-land\History.axml">
       <SubType>Designer</SubType>
     </AndroidResource>
@@ -420,7 +423,9 @@
     <AndroidResource Include="Resources\menu\profile_top_menu.xml" />
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\layout-port\HistoryFragment.axml" />
+    <AndroidResource Include="Resources\layout-port\HistoryFragment.axml">
+      <SubType>Designer</SubType>
+    </AndroidResource>
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\drawable-xhdpi\ic_search_white.png" />
@@ -450,6 +455,9 @@
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\layout-land\HistoryFragment.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable\progress_bar.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

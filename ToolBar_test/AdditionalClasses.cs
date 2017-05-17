@@ -115,6 +115,18 @@ namespace Merit_Money
             this.type = type;
         }
 
+        public void Clear()
+        {
+            ListOfHistory.Clear();
+            hasMore = false;
+        }
+
+        public void AddList(HistoryList list)
+        {
+            ListOfHistory.AddRange(list);
+            hasMore = list.hasMore;
+        }
+
         public void Add(HistoryListItem value)
         {
             ListOfHistory.Add(value);
@@ -139,7 +151,15 @@ namespace Merit_Money
         {
             get
             {
-                return ListOfHistory[key];
+                try
+                {
+                    return ListOfHistory[key];
+                }
+                catch (ArgumentOutOfRangeException)
+                {
+                    return null;
+                }
+
             }
         }
     }
