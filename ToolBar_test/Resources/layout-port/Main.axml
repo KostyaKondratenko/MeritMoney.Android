@@ -27,15 +27,29 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/TopHorizontalLayout">
-              <Merit_Money.CircularImageView
-                  android:id="@+id/UserAvatar"
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
-                    android:background="@drawable/imageView_frame"
-                    android:src="@drawable/ic_noavatar"
+                <FrameLayout
+                    android:minWidth="25px"
+                    android:minHeight="25px"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
                     android:layout_marginTop="20dp"
-                    android:layout_marginBottom="10dp" />
+                    android:layout_marginBottom="10dp">
+                    <Merit_Money.CircularImageView
+                        android:id="@+id/UserAvatar"
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:background="@drawable/imageView_frame" />
+                    <TextView
+                        android:text="UU"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:id="@+id/Initials"
+                        android:layout_gravity="center"
+                        android:textSize="40dp"
+                        android:textColor="@color/bright_foreground_material_dark" />
+                </FrameLayout>
                 <LinearLayout
                     android:orientation="vertical"
                     android:minWidth="25px"

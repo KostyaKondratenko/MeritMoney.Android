@@ -22,7 +22,7 @@ namespace Merit_Money
             byte[] bitmapData;
             using (var stream = new System.IO.MemoryStream())
             {
-                bitmap.Compress(Bitmap.CompressFormat.Png, 80, stream);
+                bitmap.Compress(Bitmap.CompressFormat.Png, 100, stream);
                 bitmapData = stream.ToArray();
             }
             return bitmapData;
@@ -133,7 +133,27 @@ namespace Merit_Money
             return bitmap;
         }
 
-        public static Bitmap GetFromUrl(string url)
+        public static bool isDefault(Bitmap curBitmap)
+        {
+            Bitmap Default = BitmapFactory.DecodeResource(Application.Context.Resources, Resource.Drawable.ic_noavatar);
+
+            if (Default.Width != curBitmap.Width
+                || Default.Height != curBitmap.Height)
+                return false;
+
+            byte[] cur = ConvertToByteArray(curBitmap);
+            byte[] def = ConvertToByteArray(Default);
+
+            return cur.SequenceEqual(def);
+        }
+
+        public static bool isDefault(String url)
+        {
+            Bitmap image = GetFromUrl(url);
+            return isDefault(image);
+        }
+
+        public static Bitmap GetFromUrl(String url)
         {
             Bitmap imageBitmap = null;
 

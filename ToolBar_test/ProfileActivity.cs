@@ -31,6 +31,7 @@ namespace Merit_Money
         private CircularImageView UserAvatar;
         private TextView UserEmail;
         private Switch NotificationSwitch;
+        private TextView Initials;
 
         private bool nameWasChanged = false;
         private bool SwitchWasChanged = false;
@@ -56,6 +57,7 @@ namespace Merit_Money
             UserAvatar = FindViewById<CircularImageView>(Resource.Id.UserAvatar);
             UserName = FindViewById<TextView>(Resource.Id.ProfileUserName);
             UserEmail = FindViewById<TextView>(Resource.Id.ProfileUserEmail);
+            Initials = FindViewById<TextView>(Resource.Id.Initials);
 
             InitializeProfile();
 
@@ -87,7 +89,7 @@ namespace Merit_Money
             UserEmail.Text = p.email;
             NotificationSwitch.Checked = p.emailNotificaion;
 
-            new CacheUserAvatar(UserAvatar, Application.Context).Execute(p.imageUri, p.ID);
+            new CacheUserAvatar(UserAvatar, Initials, Application.Context).Execute(p);
         }
 
         private void SetSwitchState()

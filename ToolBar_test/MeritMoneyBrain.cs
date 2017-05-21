@@ -617,13 +617,5 @@ namespace Merit_Money
                     break;
             }
         }
-
-        private static DateTime FromUnixTime(String unixTime)
-        {
-            var epoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
-            try { epoch = epoch.AddSeconds(Convert.ToUInt64(unixTime)); }
-            catch (OverflowException e) { Console.Out.WriteLine(e.Message); }
-            return epoch;
-        }
     }
 }

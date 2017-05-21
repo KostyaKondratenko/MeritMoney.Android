@@ -101,41 +101,51 @@ namespace Merit_Money
 
     }
 
-    public class CacheUserAvatar : AsyncTask<String, Java.Lang.Void, Bitmap>
+    public class CacheUserAvatar : AsyncTask<Profile, Java.Lang.Void, Bitmap>
     {
         private CircularImageView image;
         private Context context;
+        private TextView initials;
 
-        public CacheUserAvatar(CircularImageView image, Context context)
+        public CacheUserAvatar(CircularImageView image,TextView initials, Context context)
         {
             this.image = image;
             this.context = context;
+            this.initials = initials;
         }
 
-        protected override Android.Graphics.Bitmap RunInBackground(params String[] @params)
+        protected override Android.Graphics.Bitmap RunInBackground(params Profile[] @params)
         {
-            String imageUrl = @params[0];
-            String userId = @params[1];
+            String imageUrl = @params[0].imageUri;
+            String userId = @params[0].ID;
             Bitmap image = null;
+            bool AvatarIsDefault = @params[0].AvatarIsDefault;
 
             if (imageUrl == null)
-            {
                 return null;
-            }
 
             try
             {
-                byte[] data = OperationWithBitmap.Retrieve(context, userId);
-
-                if (data == null)
+                if (!AvatarIsDefault)
                 {
-                    image = OperationWithBitmap.GetFromUrl(imageUrl);
-                    var bitmapData = OperationWithBitmap.ConvertToByteArray(image);
-                    OperationWithBitmap.Cache(context, bitmapData, userId);
+                    byte[] data = OperationWithBitmap.Retrieve(context, userId);
+                    initials.Visibility = ViewStates.Gone;
+
+                    if (data == null)
+                    {
+                        image = OperationWithBitmap.GetFromUrl(imageUrl);
+                        var bitmapData = OperationWithBitmap.ConvertToByteArray(image);
+                        OperationWithBitmap.Cache(context, bitmapData, userId);
+                    }
+                    else
+                    {
+                        image = OperationWithBitmap.ConvertFromByteArray(data);
+                    }
                 }
                 else
                 {
-                    image = OperationWithBitmap.ConvertFromByteArray(data);
+                    initials.Text = AdditionalFunctions.DefineInitials(@params[0].name);
+                    return null;
                 }
             }
             catch (Exception e) { Console.Out.WriteLine(e.Message); }
@@ -151,7 +161,8 @@ namespace Merit_Money
             }
             else
             {
-                image.SetImageResource(Resource.Drawable.ic_noavatar);
+                //image.SetImageResource(Resource.Drawable.ic_noavatar);
+                //VISIBLE LABLE WITH INITIALS (KK)
             }
 
             base.OnPostExecute(result);

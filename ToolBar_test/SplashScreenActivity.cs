@@ -52,6 +52,7 @@ namespace Merit_Money
                     if (LoggedIn)
                     {
                         Profile p = await MeritMoneyBrain.GetProfile();
+                        p.AvatarIsDefault= OperationWithBitmap.isDefault(p.imageUri);
                         ProfileDatabase db = new ProfileDatabase();
                         db.Update(p);
                     }

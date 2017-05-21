@@ -20,8 +20,7 @@ namespace Merit_Money
         public String ID { get; set; }
         public String name { get; set; }
         public String email { get; set; }
-        //[Ignore]
-        //public Android.Graphics.Bitmap image { get; set; }
+        public bool AvatarIsDefault { get; set; }
         public String imageUri { get; set; }
         public int balance { get; set; }
         public int rewards { get; set; }
@@ -38,7 +37,7 @@ namespace Merit_Money
             rewards = 0;
             distribute = 0;
             emailNotificaion = false;
-            //image = null;
+            AvatarIsDefault = false;
         }
 
         public Profile(string id, string name, string email, string url, int b, int r, int d, bool emailNot)
@@ -51,6 +50,7 @@ namespace Merit_Money
             rewards = r;
             distribute = d;
             emailNotificaion = emailNot;
+            AvatarIsDefault = false;
         }
 
         public static implicit operator Profile(List<Profile> v)

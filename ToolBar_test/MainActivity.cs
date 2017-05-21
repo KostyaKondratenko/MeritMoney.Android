@@ -32,6 +32,7 @@ namespace Merit_Money
         private TextView Rewards;
         private TextView Distribute;
         private CircularImageView UserAvatar;
+        private TextView Initials;
 
         private TextView ABPointstext;
         private TextView RPointstext;
@@ -56,6 +57,7 @@ namespace Merit_Money
             Rewards = FindViewById<TextView>(Resource.Id.Rpoints);
             Distribute = FindViewById<TextView>(Resource.Id.CDpoints);
             RefreshInfo = FindViewById<SwipeRefreshLayout>(Resource.Id.activity_main_swipe_refresh_layout);
+            Initials = FindViewById<TextView>(Resource.Id.Initials);
 
             ABPointstext = FindViewById<TextView>(Resource.Id.ABpointsText);
             RPointstext = FindViewById<TextView>(Resource.Id.RpointsText);
@@ -107,6 +109,7 @@ namespace Merit_Money
             if (NetworkStatus.State != NetworkState.Disconnected)
             {
                 Profile profile = await MeritMoneyBrain.GetProfile();
+                await new CheckWhetherAvatarIsDefault(profile).Execute().GetAsync();
                 ProfileDatabase db = new ProfileDatabase();
                 db.Update(profile);
                 InitializeProfile();
@@ -149,7 +152,7 @@ namespace Merit_Money
             Rewards.Text = p.rewards.ToString();
             Distribute.Text = p.distribute.ToString();
 
-            new CacheUserAvatar(UserAvatar, Application.Context).Execute(p.imageUri, p.ID);
+            new CacheUserAvatar(UserAvatar, Initials, Application.Context).Execute(p);
         }
 
         private async void MainToolbar_MenuItemClick(object sender, SupportToolBar.MenuItemClickEventArgs e)
@@ -209,6 +212,23 @@ namespace Merit_Money
             }
             catch (OverflowException e) { Console.Out.WriteLine(e.Message); }
 
+        }
+
+        private class CheckWhetherAvatarIsDefault : AsyncTask<Java.Lang.Void, Java.Lang.Void, Java.Lang.Void>
+        {
+            private Profile profile;
+
+            public CheckWhetherAvatarIsDefault(Profile profile)
+            {
+                this.profile = profile;
+            }
+
+            protected override Java.Lang.Void RunInBackground(params Java.Lang.Void[] @params)
+            {
+                profile.AvatarIsDefault = OperationWithBitmap.isDefault(profile.imageUri);
+
+                return null;
+            }
         }
 
         public void OnClick(IDialogInterface dialog, int which)

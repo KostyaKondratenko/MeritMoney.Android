@@ -96,9 +96,9 @@ namespace Merit_Money
                 Intent returnIntent = new Intent();
                 returnIntent.PutExtra(GetString(Resource.String.LogIn), true);
                 SetResult(Result.Ok, returnIntent);
-                SaveData(profile);
-                Finish();
+                await new SaveData().Execute(profile).GetAsync();
                 progressDialog.Dismiss();
+                Finish();
                 //updateUI(true);
             }
             else
@@ -106,26 +106,6 @@ namespace Merit_Money
                 // Signed out, show unauthenticated UI.
                 //updateUI(false);
             }
-        }
-
-        private void SaveData(Profile profile)
-        {
-            ISharedPreferences info = Application.Context.GetSharedPreferences(GetString(Resource.String.ApplicationInfo), FileCreationMode.Private);
-            ISharedPreferencesEditor edit = info.Edit();
-            //edit.PutString(GetString(Resource.String.ID), profile.ID);
-            //edit.PutString(GetString(Resource.String.UserName), profile.name);
-            //edit.PutString(GetString(Resource.String.UserEmail), profile.email);
-            //edit.PutString(GetString(Resource.String.UserAvatar), profile.imageUri);
-            //edit.PutInt(GetString(Resource.String.BalancePoints), profile.balance);
-            //edit.PutInt(GetString(Resource.String.RewardsPoints), profile.rewards);
-            //edit.PutInt(GetString(Resource.String.DistributePoints), profile.distribute);
-            //edit.PutBoolean(GetString(Resource.String.EmailNotification), profile.emailNotificaion);
-            edit.PutString(GetString(Resource.String.CurrentAccessToken), MeritMoneyBrain.CurrentAccessToken);
-            edit.Apply();
-
-            ProfileDatabase db = new ProfileDatabase();
-            db.CreateDatabase();
-            db.Insert(profile);
         }
 
         public void OnConnectionFailed(ConnectionResult result)
@@ -150,5 +130,25 @@ namespace Merit_Money
         }
 
         public override void OnBackPressed() { }
+
+        private class SaveData : AsyncTask<Profile, Java.Lang.Void, Java.Lang.Void>
+        {
+            protected override Java.Lang.Void RunInBackground(params Profile[] @params)
+            {
+                Profile profile = @params[0];
+                ISharedPreferences info = Application.Context.GetSharedPreferences(Application.Context.GetString(Resource.String.ApplicationInfo), FileCreationMode.Private);
+                ISharedPreferencesEditor edit = info.Edit();
+                edit.PutString(Application.Context.GetString(Resource.String.CurrentAccessToken), MeritMoneyBrain.CurrentAccessToken);
+                edit.Apply();
+
+                profile.AvatarIsDefault = OperationWithBitmap.isDefault(profile.imageUri);
+
+                ProfileDatabase db = new ProfileDatabase();
+                db.CreateDatabase();
+                db.Insert(profile);
+
+                return null;
+            }
+        }
     }
 }

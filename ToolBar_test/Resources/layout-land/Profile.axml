@@ -21,15 +21,29 @@
             android:id="@+id/UserInfoLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-          <Merit_Money.CircularImageView
-              android:layout_width="120dp"
-                android:layout_height="120dp"
-                android:background="@drawable/imageView_frame"
-                android:src="@drawable/ic_noavatar"
-                android:id="@id/UserAvatar"
+            <FrameLayout
+                android:minWidth="25px"
+                android:minHeight="25px"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_marginBottom="20dp"
                 android:layout_marginLeft="20dp"
-                android:layout_marginTop="20dp" />
+                android:layout_marginTop="20dp">
+                <Merit_Money.CircularImageView
+                    android:layout_width="120dp"
+                    android:layout_height="120dp"
+                    android:background="@drawable/imageView_frame"
+                    android:id="@id/UserAvatar" />
+                <TextView
+                    android:text="UU"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:id="@id/Initials"
+                    android:textSize="60dp"
+                    android:textColor="@color/bright_foreground_material_dark"
+                    android:layout_gravity="center" />
+            </FrameLayout>
             <LinearLayout
                 android:orientation="vertical"
                 android:minWidth="25px"
@@ -57,7 +71,7 @@
                         android:paddingBottom="10dp"
                         android:maxLines="1"
                         android:scrollHorizontally="true"
-                        android:ellipsize="end"/>
+                        android:ellipsize="end" />
                     <EditText
                         android:inputType="textPersonName"
                         android:layout_width="match_parent"
@@ -78,7 +92,7 @@
                     android:layout_weight="1"
                     android:maxLines="1"
                     android:scrollHorizontally="true"
-                    android:ellipsize="end"/>
+                    android:ellipsize="end" />
             </LinearLayout>
         </LinearLayout>
         <LinearLayout

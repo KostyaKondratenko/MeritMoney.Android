@@ -36,7 +36,7 @@
             android:id="@+id/searchAvatar"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:src="@drawable/ic_noavatar"
+            android:background="@drawable/imageView_frame"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="10dp"
             android:layout_marginRight="13dp" />

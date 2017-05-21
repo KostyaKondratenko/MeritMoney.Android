@@ -17,6 +17,7 @@ namespace Merit_Money
     public class CircularImageView : ImageView
     {
         public static float radius = 200.0f;
+        public bool isDefault = false;
 
         public CircularImageView(Context context)
             : base(context)
