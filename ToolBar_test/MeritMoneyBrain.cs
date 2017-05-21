@@ -87,6 +87,10 @@ namespace Merit_Money
                     Console.WriteLine(responseText);
                 }
             }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
         }
 
         public static async Task SingInWithGoogle(String token)
@@ -145,7 +149,12 @@ namespace Merit_Money
                 {
                     responseText = reader.ReadToEnd();
                     Console.WriteLine(responseText);
+                    await ProcessingError(responseText);
                 }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
             }
         }
 
@@ -200,6 +209,7 @@ namespace Merit_Money
                 {
                     responseText = reader.ReadToEnd();
                     Console.WriteLine(responseText);
+                    await ProcessingError(responseText);
                 }
             }
             catch (Exception e)
@@ -250,6 +260,7 @@ namespace Merit_Money
                 {
                     responseText = reader.ReadToEnd();
                     Console.WriteLine(responseText);
+                    await ProcessingError(responseText);
                 }
             }
             catch (Exception e)
@@ -328,6 +339,7 @@ namespace Merit_Money
                 {
                     responseText = reader.ReadToEnd();
                     Console.WriteLine(responseText);
+                    await ProcessingError(responseText);
                 }
             }
             catch (Exception e)
@@ -397,7 +409,12 @@ namespace Merit_Money
                 {
                     responseText = reader.ReadToEnd();
                     Console.WriteLine(responseText);
+                    await ProcessingError(responseText);
                 }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
             }
             return profile;
         }
@@ -468,6 +485,7 @@ namespace Merit_Money
                 {
                     responseText = reader.ReadToEnd();
                     Console.WriteLine(responseText);
+                    await ProcessingError(responseText);
                 }
             }
             catch (Exception e)
@@ -546,9 +564,58 @@ namespace Merit_Money
                 {
                     responseText = reader.ReadToEnd();
                     Console.WriteLine(responseText);
+                    await ProcessingError(responseText);
                 }
             }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
             return profile;
+        }
+
+        private static async Task ProcessingError(String error)
+        {
+            JsonValue jsonDoc = JsonValue.Parse(error);
+            String curError = jsonDoc["error"];
+            switch (curError)
+            {
+                case "BadInputParameters":
+                    Toast.MakeText(Application.Context,
+                        "Some required parameters are missing or have incorrect data type.",
+                        ToastLength.Short).Show();
+                    break;
+                case "InsufficientAmount":
+                    break;
+                case "BadTokenID":
+                    break;
+                case "BadAccessToken":
+                    Toast.MakeText(Application.Context,
+                        "Access token invalid or malformed.",
+                        ToastLength.Short).Show();
+                    await Task.Delay(3000);
+                    await LogOut();
+                    break;
+                case "AccessDenied":
+                    Toast.MakeText(Application.Context,
+                        "You are not allowed to use the app. Please try login under another account.",
+                        ToastLength.Long).Show();
+                    break;
+                case "DatabaseError":
+                    Toast.MakeText(Application.Context,
+                        "Merit Money database error.",
+                        ToastLength.Long).Show();
+                    ISharedPreferences info = Application.Context.GetSharedPreferences(Application.Context.GetString(Resource.String.ApplicationInfo), FileCreationMode.Private);
+                    ISharedPreferencesEditor edit = info.Edit();
+                    edit.Remove(Application.Context.GetString(Resource.String.ModifyDate));
+                    edit.Apply();
+                    break;
+                case "InternalError":
+                    Toast.MakeText(Application.Context,
+                        "Merit Money Internal server error occured.",
+                        ToastLength.Long).Show();
+                    break;
+            }
         }
 
         private static DateTime FromUnixTime(String unixTime)

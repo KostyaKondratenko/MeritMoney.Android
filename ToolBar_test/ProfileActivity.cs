@@ -36,6 +36,7 @@ namespace Merit_Money
         private bool SwitchWasChanged = false;
         private String SaveName = String.Empty;
         private bool SaveSwitchState = false;
+        private bool ImagePickerWasPressed = false;
 
         public static readonly int PickImageId = 1000;
 
@@ -97,8 +98,9 @@ namespace Merit_Money
 
         private void UserAvatar_Click(object sender, EventArgs e)
         {
-            if (isEditing)
+            if (isEditing && !ImagePickerWasPressed)
             {
+                ImagePickerWasPressed = true;
                 HideKeyboard(EditName);
                 Intent = new Intent();
                 Intent.SetType("image/*");
@@ -109,6 +111,8 @@ namespace Merit_Money
 
         private async void MainToolbar_MenuItemClick(object sender, SupportToolBar.MenuItemClickEventArgs e)
         {
+            ImagePickerWasPressed = false;
+
             switch (e.Item.ItemId)
             {
                 case Resource.Id.menu_edit:
@@ -142,7 +146,7 @@ namespace Merit_Money
                         else
                         {
                             Android.Support.V7.App.AlertDialog.Builder dialog = new Android.Support.V7.App.AlertDialog.Builder(this);
-                            dialog.SetMessage("There is no Internet connection.");
+                            dialog.SetMessage(GetString(Resource.String.NoInternet));
                             dialog.SetCancelable(true);
                             dialog.SetPositiveButton("OK", this);
                             dialog.Create().Show();
@@ -202,6 +206,7 @@ namespace Merit_Money
             {
                 Android.Net.Uri uri = data.Data;
                 UserAvatar.SetImageURI(uri);
+                ImagePickerWasPressed = false;
             }
         }
 

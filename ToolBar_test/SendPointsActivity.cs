@@ -143,7 +143,7 @@ namespace Merit_Money
             }
             else
             {
-                Toast.MakeText(this, "There is no Internet connection.", ToastLength.Short).Show();
+                Toast.MakeText(this, GetString(Resource.String.NoInternet), ToastLength.Short).Show();
             }
         }
 

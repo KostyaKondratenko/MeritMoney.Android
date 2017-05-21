@@ -14,7 +14,8 @@ using SupportToolBar = Android.Support.V7.Widget.Toolbar;
 namespace Merit_Money
 {
     [Activity(Label = "NoInternetActivity")]
-    public class NoInternetActivity : BaseBottomBarActivity
+    public class NoInternetActivity : BaseBottomBarActivity,
+        IDialogInterfaceOnClickListener
     {
         private Button TryAgainButton;
         private SupportToolBar MainToolbar;
@@ -26,6 +27,11 @@ namespace Merit_Money
             base.OnCreate(savedInstanceState);
 
             SetContentView(Resource.Layout.NoInternet);
+
+            Android.Support.V7.App.AlertDialog.Builder dialog = new Android.Support.V7.App.AlertDialog.Builder(this);
+            dialog.SetMessage(GetString(Resource.String.NoInternet));
+            dialog.SetNeutralButton("OK", this);
+            dialog.Create().Show();
 
             MainToolbar = FindViewById<SupportToolBar>(Resource.Id.toolbar);
             TryAgainButton = FindViewById<Button>(Resource.Id.RetryButton);
@@ -57,12 +63,22 @@ namespace Merit_Money
             {
                 Intent intent = new Intent(this, typeof(MainActivity));
                 StartActivity(intent);
+                Finish();
             }
             else
             {
                 LoadingPanel.Visibility = ViewStates.Invisible;
                 NoInternetText.Visibility = ViewStates.Visible;
             }
+        }
+
+        public void OnClick(IDialogInterface dialog, int which)
+        {
+            switch (which) {
+                case (int)DialogButtonType.Neutral:
+                    dialog.Dismiss();
+                    break;
+        }
         }
     }
 }

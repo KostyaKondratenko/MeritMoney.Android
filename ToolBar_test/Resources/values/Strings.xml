@@ -11,6 +11,8 @@
   <string name="LoadMore">Load more</string>
   <string name="EmailNotificationText">Email Notifications</string>
   <string name="ServerClientID">473081959863-i0d76a14rrm4a4q7lau05dvu77e3rq52.apps.googleusercontent.com</string>
+  <string name="NoInternet">The internet connection appears to be offline</string>
+  
                      <!--KEYS-->
   <!--Profile-->
   <string name="ID">ID</string>

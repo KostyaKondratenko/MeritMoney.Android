@@ -99,11 +99,10 @@ namespace Merit_Money
             {
                 Offset = 0;
 
-                historyList.Clear();
                 historyList = await MeritMoneyBrain.GetHistory(Offset, BatchSize, type);
 
                 RecyclerViewAdapter = new HistoryAdapter(historyList, this.Context);
-                HistoryView.SetAdapter(RecyclerViewAdapter);
+                HistoryView.SwapAdapter(RecyclerViewAdapter, true);
                 mScrollListener = new ScrollListener(RecyclerViewManager, historyList, type);
                 HistoryView.AddOnScrollListener(mScrollListener);
 
@@ -112,7 +111,7 @@ namespace Merit_Money
             }
             else
             {
-                Toast.MakeText(this.Context, "There is no Internet connection.", ToastLength.Short).Show();
+                Toast.MakeText(this.Context, GetString(Resource.String.NoInternet), ToastLength.Short).Show();
             }
 
             Refresh.Refreshing = false;
@@ -146,8 +145,6 @@ namespace Merit_Money
                     history.hasMore = listItem.hasMore;
 
                     view.GetAdapter().NotifyItemRangeInserted(previousPosition, itemsAdded);
-
-
                 }
             }
         }
