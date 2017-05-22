@@ -57,7 +57,8 @@
                             p1:layout_height="match_parent"
                             p1:id="@id/Initials"
                             p1:textSize="60dp"
-                            p1:layout_gravity="center" />
+                            p1:layout_gravity="center"
+                            p1:textColor="@color/bright_foreground_material_dark" />
                     </FrameLayout>
                     <LinearLayout
                         p1:orientation="vertical"

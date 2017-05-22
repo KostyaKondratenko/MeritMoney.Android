@@ -308,7 +308,6 @@ namespace Merit_Money
                         {
                             Console.Out.WriteLine("Response Body: \r\n {0}", jsonDoc.ToString());
                             JSONArray array = new JSONArray(jsonDoc.ToString());
-                            Android.Graphics.Bitmap img = Android.Graphics.BitmapFactory.DecodeResource(Application.Context.Resources, Resource.Drawable.ic_noavatar);
 
                             for (int i = 0; i < array.Length(); i++)
                             {
@@ -319,9 +318,9 @@ namespace Merit_Money
                                 String imUrl = jsonobject.GetString("imageUrl");
 
                                 if (ID != currentID && ID != AdministratorID)
-                                    ListOfUsers.Add(new UserListItem(ID, name, email, imUrl, img));
+                                    ListOfUsers.Add(new UserListItem(ID, name, email, imUrl, null));
                             }
-
+                             
                             Int64 currentUtcTime = (Int64)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
 
                             ISharedPreferences info = Application.Context.GetSharedPreferences(Application.Context.GetString(Resource.String.ApplicationInfo), FileCreationMode.Private);
@@ -459,8 +458,6 @@ namespace Merit_Money
 
                             HistoryList.hasMore = hasMore;
 
-                            Android.Graphics.Bitmap img = Android.Graphics.BitmapFactory.DecodeResource(Application.Context.Resources, Resource.Drawable.ic_noavatar);
-
                             JSONArray array = new JSONArray(jsonDoc.ToString());
                             for (int i = 0; i < array.Length(); i++)
                             {
@@ -472,7 +469,7 @@ namespace Merit_Money
                                 String message = jsonobject.GetString("message");
                                 String comment = jsonobject.GetString("comment");
 
-                                HistoryList.Add(new HistoryListItem(ID, toUserID, fromUserID, date, message, comment, img));
+                                HistoryList.Add(new HistoryListItem(ID, toUserID, fromUserID, date, message, comment, null));
                             }
                         }
                     }

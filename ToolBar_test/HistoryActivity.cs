@@ -136,6 +136,7 @@ namespace Merit_Money
             public TextView message { get; set; }
             public TextView comment { get; set; }
             public TextView date { get; set; }
+            public TextView initials { get; set; }
             public CircularImageView Avatar { get; set; }
             public ImageView Indicator { get; set; }
             public HistoryList History;
@@ -152,6 +153,7 @@ namespace Merit_Money
                 TextView itemComment = view.FindViewById<TextView>(Resource.Id.historyReason);
                 CircularImageView itemAvatar = view.FindViewById<CircularImageView>(Resource.Id.searchAvatar);
                 ImageView itemIndicator = view.FindViewById<ImageView>(Resource.Id.history_indicator);
+                TextView itemInit = view.FindViewById<TextView>(Resource.Id.Initials);
 
                 itemIndicator.Visibility = ViewStates.Invisible;
 
@@ -160,21 +162,24 @@ namespace Merit_Money
                 Avatar = itemAvatar;
                 Indicator = itemIndicator;
                 comment = itemComment;
+                initials = itemInit;
             }
         }
 
         public override int ItemCount
         {
-            get { return History == null ? 0 : History.Count() +1; }
+            get { return History == null ? 0 : History.Count() + 1; }
         }
 
         public override void OnBindViewHolder(RecyclerView.ViewHolder holder, int position)
         { 
             if (holder is HistoryViewHolder) {
+                String name = DefineSenderName(History[position].fromUserID);
                 HistoryViewHolder Holder = holder as HistoryViewHolder;
                 Holder.Avatar.SetImageBitmap(History[position].image);
                 Holder.comment.Text = History[position].comment;
-                Holder.message.Text = OrganizeMessageString(History[position]);
+                Holder.initials.Text = AdditionalFunctions.DefineInitials(name);
+                Holder.message.Text = OrganizeMessageString(History[position], name);
                 Holder.date.Text = FromUnixTime(Convert.ToInt64(History[position].date));
             } else if (holder is LoadingViewHolder) {
                 LoadingViewHolder LoadingViewHolder = holder as LoadingViewHolder;
@@ -206,13 +211,13 @@ namespace Merit_Money
             return null;
         }
 
-        private String OrganizeMessageString(HistoryListItem value)
+        private String OrganizeMessageString(HistoryListItem value,String name)
         {
             String result = String.Empty;
 
             if (value.message.Contains("sent"))
             {
-                result = DefineSenderName(value.fromUserID) + " " + value.message;
+                result = name + " " + value.message;
             }
             else
             {

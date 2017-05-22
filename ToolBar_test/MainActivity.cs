@@ -113,12 +113,12 @@ namespace Merit_Money
                 ProfileDatabase db = new ProfileDatabase();
                 db.Update(profile);
                 InitializeProfile();
-                RefreshInfo.Refreshing = false;
             }
             else
             {
                 Toast.MakeText(this, GetString(Resource.String.NoInternet), ToastLength.Short).Show();
             }
+            RefreshInfo.Refreshing = false;
         }
 
         protected override void OnActivityResult(int requestCode, [GeneratedEnum] Result resultCode, Intent data)
@@ -151,6 +151,7 @@ namespace Merit_Money
             Balance.Text = p.balance.ToString();
             Rewards.Text = p.rewards.ToString();
             Distribute.Text = p.distribute.ToString();
+            Initials.Text = AdditionalFunctions.DefineInitials(p.name);
 
             new CacheUserAvatar(UserAvatar, Initials, Application.Context).Execute(p);
         }

@@ -172,6 +172,7 @@ namespace Merit_Money
         public String email { get; set; }
         [Ignore]
         public Android.Graphics.Bitmap image { get; set; }
+        public bool AvatarIsDefault { get; set; }
         public String url { get; set; }
 
         public UserListItem()
@@ -181,6 +182,7 @@ namespace Merit_Money
             email= String.Empty;
             image = null;
             url= String.Empty;
+            AvatarIsDefault = false;
         }
 
         public UserListItem(String ID, String name, String email,String url, Android.Graphics.Bitmap image)
@@ -190,6 +192,7 @@ namespace Merit_Money
             this.email = email;
             this.image = image;
             this.url = url;
+            AvatarIsDefault = false;
         }
     }
 }

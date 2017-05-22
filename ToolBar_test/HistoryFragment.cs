@@ -23,6 +23,7 @@ namespace Merit_Money
         private View LoadingPanel;
         private TextView NoInternetText;
         private NetworkStatusMonitor Network;
+        private TextView Initials;
 
         private HistoryList historyList;
         private HistoryType type;
@@ -51,6 +52,7 @@ namespace Merit_Money
             HistoryView = view.FindViewById<RecyclerView>(Resource.Id.HistoryList);
             LoadingPanel = view.FindViewById<View>(Resource.Id.loadingPanel);
             NoInternetText = view.FindViewById<TextView>(Resource.Id.NoInternetText);
+            Initials = view.FindViewById<TextView>(Resource.Id.Initials);
 
             NoInternetText.Visibility = ViewStates.Invisible;
 
@@ -86,11 +88,11 @@ namespace Merit_Money
             RecyclerViewAdapter = new HistoryAdapter(historyList, this.Context);
             HistoryView.SetAdapter(RecyclerViewAdapter);
 
-            mScrollListener = new ScrollListener(RecyclerViewManager, historyList, type);
+            mScrollListener = new ScrollListener(RecyclerViewManager, historyList, Initials, type);
             HistoryView.AddOnScrollListener(mScrollListener);
 
             foreach (HistoryListItem item in historyList)
-                new CacheHistoryListItemImage(RecyclerViewAdapter, Application.Context).Execute(item);
+                new CacheListItemImage(RecyclerViewAdapter,Initials, Application.Context).Execute(item);
         }
 
         private async void History_Refresh(object sender, EventArgs e)
@@ -103,11 +105,12 @@ namespace Merit_Money
 
                 RecyclerViewAdapter = new HistoryAdapter(historyList, this.Context);
                 HistoryView.SwapAdapter(RecyclerViewAdapter, true);
-                mScrollListener = new ScrollListener(RecyclerViewManager, historyList, type);
+                mScrollListener = new ScrollListener(RecyclerViewManager, historyList, Initials, type);
                 HistoryView.AddOnScrollListener(mScrollListener);
 
                 foreach (HistoryListItem item in historyList)
-                    new CacheHistoryListItemImage(RecyclerViewAdapter, Application.Context).Execute(item);
+                    new CacheListItemImage(RecyclerViewAdapter, Initials, Application.Context).Execute(item);
+                
             }
             else
             {
@@ -121,12 +124,14 @@ namespace Merit_Money
         {
             private HistoryList history;
             private HistoryType type;
+            private TextView Initials;
 
-            public ScrollListener(LinearLayoutManager manager, HistoryList list, HistoryType type)
+            public ScrollListener(LinearLayoutManager manager, HistoryList list,TextView Initials, HistoryType type)
                 : base(manager)
             {
                 this.history = list;
                 this.type = type;
+                this.Initials = Initials;
             }
 
             public override async void onLoadMore(int page, RecyclerView view)
@@ -135,9 +140,10 @@ namespace Merit_Money
                 {
                     HistoryList listItem = await MeritMoneyBrain.GetHistory(page * BatchSize, BatchSize, type);
 
+                    UsersDatabase db = new UsersDatabase();
                     foreach (HistoryListItem item in listItem)
-                        new CacheHistoryListItemImage(view.GetAdapter(), Application.Context).Execute(item);
-
+                        new CacheListItemImage(view.GetAdapter(), Initials, Application.Context).Execute(item);
+                    
                     var previousPosition = history.Count();
                     var itemsAdded = listItem.Count();
 

@@ -88,6 +88,7 @@ namespace Merit_Money
             UserName.Text = p.name;
             UserEmail.Text = p.email;
             NotificationSwitch.Checked = p.emailNotificaion;
+            Initials.Text = AdditionalFunctions.DefineInitials(p.name);
 
             new CacheUserAvatar(UserAvatar, Initials, Application.Context).Execute(p);
         }
@@ -191,12 +192,14 @@ namespace Merit_Money
             if (SwitchWasChanged && !nameWasChanged)
             {
                 Profile p = await MeritMoneyBrain.updateProfile(String.Empty, SwitchWasChanged, NotificationSwitch.Checked);
+                p.AvatarIsDefault = OperationWithBitmap.isDefault(p.imageUri);
                 ProfileDatabase db = new ProfileDatabase();
                 db.Update(p);
             }
             if (nameWasChanged)
             {
                 Profile p = await MeritMoneyBrain.updateProfile(UserName.Text, SwitchWasChanged, NotificationSwitch.Checked);
+                p.AvatarIsDefault = OperationWithBitmap.isDefault(p.imageUri);
                 ProfileDatabase db = new ProfileDatabase();
                 db.Update(p);
             }

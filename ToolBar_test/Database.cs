@@ -164,6 +164,21 @@ namespace Merit_Money
             }
         }
 
+        public void UpdateAvatarState(UserListItem user)
+        {
+            try
+            {
+                var db = new SQLiteConnection(dbPath);
+                String StrVal = user.AvatarIsDefault ? "1" : "0";
+
+                db.Execute("UPDATE UserListItem SET AvatarIsDefault = ? WHERE ID = ?", StrVal, user.ID);
+            }
+            catch (SQLiteException ex)
+            {
+                Console.Out.WriteLine(ex.Message);
+            }
+        }
+
         public async Task<bool> Update(List<UserListItem> values)
         {
             try
@@ -212,10 +227,9 @@ namespace Merit_Money
             try
             {
                 var db = new SQLiteAsyncConnection(dbPath);
+                var count = await db.ExecuteScalarAsync<int>("SELECT Count(*) FROM sqlite_master WHERE type = 'table' AND name = UserListItem");
 
-                var count = await db.ExecuteScalarAsync<int>("SELECT Count(*) FROM UserListItem");
-
-                return true;
+                return count == 0 ? false : true;
             }
             catch (SQLiteException ex)
             {

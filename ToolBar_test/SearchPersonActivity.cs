@@ -29,6 +29,7 @@ namespace Merit_Money
         private SupportRecyclerView.LayoutManager RecyclerViewManager;
         private UsersAdapter RecyclerViewAdapter;
         private List<UserListItem> SearchUsersList;
+        private TextView Initials;
 
         protected override async void OnCreate(Bundle savedInstanceState)
         {
@@ -37,6 +38,7 @@ namespace Merit_Money
             SetContentView(Resource.Layout.SearchPerson);
             ToolBar = FindViewById<SupportToolBar>(Resource.Id.toolbar);
             SearchUserView = FindViewById<SupportRecyclerView>(Resource.Id.searchUserList);
+            Initials = FindViewById<TextView>(Resource.Id.Initials);
 
             SetSupportActionBar(ToolBar);
             SupportActionBar.Title = "Select Person";
@@ -64,7 +66,6 @@ namespace Merit_Money
 
             progressDialog.Dismiss();
 
-
             RecyclerViewManager = new LinearLayoutManager(this);
             SearchUserView.SetLayoutManager(RecyclerViewManager);
             RecyclerViewAdapter = new UsersAdapter(SearchUsersList, this);
@@ -72,8 +73,10 @@ namespace Merit_Money
 
 
             foreach (UserListItem user in SearchUsersList)
-                new CacheUserListItemImage(RecyclerViewAdapter, Application.Context).Execute(user);
-
+            {
+                Initials.Text = AdditionalFunctions.DefineInitials(user.name);
+                new CacheListItemImage(RecyclerViewAdapter, Initials, Application.Context).Execute(user);
+            }
             ToolBar.MenuItemClick += ToolBar_MenuItemClick;
         }
 
@@ -107,8 +110,10 @@ namespace Merit_Money
                         SearchUserView.SetAdapter(RecyclerViewAdapter);
 
                         foreach (UserListItem user in SearchUsersList)
-                            new CacheUserListItemImage(RecyclerViewAdapter, Application.Context).Execute(user);
-
+                        {
+                            Initials.Text = AdditionalFunctions.DefineInitials(user.name);
+                            new CacheListItemImage(RecyclerViewAdapter, Initials, Application.Context).Execute(user);
+                        }
                         progressDialog.Dismiss();
                         break;
                 }

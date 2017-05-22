@@ -243,6 +243,9 @@
     <AndroidResource Include="Resources\layout-land\History.axml">
       <SubType>Designer</SubType>
     </AndroidResource>
+    <AndroidResource Include="Resources\layout-land\HistoryFragment.axml">
+      <SubType>Designer</SubType>
+    </AndroidResource>
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\layout-port\Main.axml">
@@ -315,11 +318,6 @@
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\drawable\line_style.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\layout-port\list_item.xml">
-      <SubType>Designer</SubType>
-    </AndroidResource>
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\layout-land\toolbar.xml">
@@ -453,9 +451,6 @@
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\drawable\Indicator.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\layout-land\HistoryFragment.xml" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\drawable\progress_bar.xml" />
