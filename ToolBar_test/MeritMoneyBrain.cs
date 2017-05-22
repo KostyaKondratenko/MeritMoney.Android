@@ -471,6 +471,13 @@ namespace Merit_Money
 
                                 HistoryList.Add(new HistoryListItem(ID, toUserID, fromUserID, date, message, comment, null));
                             }
+
+                            Int64 currentUtcTime = (Int64)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
+
+                            ISharedPreferences info = Application.Context.GetSharedPreferences(Application.Context.GetString(Resource.String.ApplicationInfo), FileCreationMode.Private);
+                            ISharedPreferencesEditor edit = info.Edit();
+                            edit.PutString(Application.Context.GetString(Resource.String.HistoryLoadedDate), currentUtcTime.ToString());
+                            edit.Apply();
                         }
                     }
                 }

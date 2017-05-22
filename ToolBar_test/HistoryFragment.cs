@@ -11,7 +11,6 @@ using Android.Views;
 using Android.Widget;
 using Android.Support.V7.Widget;
 using Android.Support.V4.Widget;
-using Java.Lang;
 using System.Threading.Tasks;
 
 namespace Merit_Money
@@ -27,6 +26,7 @@ namespace Merit_Money
 
         private HistoryList historyList;
         private HistoryType type;
+        private String LastHistoryItemDate;
 
         private RecyclerView HistoryView;
         private RecyclerView.Adapter RecyclerViewAdapter;
@@ -36,10 +36,11 @@ namespace Merit_Money
         private ScrollListener mScrollListener;
         private LinearLayoutManager RecyclerViewManager;
 
-        public HistoryFragment(HistoryType type, NetworkStatusMonitor Network)
+        public HistoryFragment(HistoryType type,String LastHistoryItemDate, NetworkStatusMonitor Network)
         {
             this.type = type;
             this.Network = Network;
+            this.LastHistoryItemDate = LastHistoryItemDate;
 
             historyList = new HistoryList(type);
         }
@@ -85,7 +86,7 @@ namespace Merit_Money
 
             RecyclerViewManager = new LinearLayoutManager(this.Context);
             HistoryView.SetLayoutManager(RecyclerViewManager);
-            RecyclerViewAdapter = new HistoryAdapter(historyList, this.Context);
+            RecyclerViewAdapter = new HistoryAdapter(historyList, this.Context, LastHistoryItemDate);
             HistoryView.SetAdapter(RecyclerViewAdapter);
 
             mScrollListener = new ScrollListener(RecyclerViewManager, historyList, Initials, type);
@@ -103,8 +104,11 @@ namespace Merit_Money
 
                 historyList = await MeritMoneyBrain.GetHistory(Offset, BatchSize, type);
 
-                RecyclerViewAdapter = new HistoryAdapter(historyList, this.Context);
-                HistoryView.SwapAdapter(RecyclerViewAdapter, true);
+                ISharedPreferences info = Application.Context.GetSharedPreferences(GetString(Resource.String.ApplicationInfo), FileCreationMode.Private);
+                LastHistoryItemDate = info.GetString(GetString(Resource.String.HistoryLoadedDate), "0");
+
+                RecyclerViewAdapter = new HistoryAdapter(historyList, this.Context, LastHistoryItemDate);
+                HistoryView.SetAdapter(RecyclerViewAdapter);//SWAP?
                 mScrollListener = new ScrollListener(RecyclerViewManager, historyList, Initials, type);
                 HistoryView.AddOnScrollListener(mScrollListener);
 

@@ -3504,11 +3504,11 @@ namespace Merit_Money
 			// aapt resource value: 0x7f07003b
 			public const int BalanceText = 2131165243;
 			
-			// aapt resource value: 0x7f070052
-			public const int Company = 2131165266;
+			// aapt resource value: 0x7f070053
+			public const int Company = 2131165267;
 			
-			// aapt resource value: 0x7f070056
-			public const int CompanyHistoryDBFilename = 2131165270;
+			// aapt resource value: 0x7f070057
+			public const int CompanyHistoryDBFilename = 2131165271;
 			
 			// aapt resource value: 0x7f07004e
 			public const int CurrentAccessToken = 2131165262;
@@ -3525,6 +3525,9 @@ namespace Merit_Money
 			// aapt resource value: 0x7f070042
 			public const int EmailNotificationText = 2131165250;
 			
+			// aapt resource value: 0x7f070051
+			public const int HistoryLoadedDate = 2131165265;
+			
 			// aapt resource value: 0x7f070045
 			public const int ID = 2131165253;
 			
@@ -3540,14 +3543,14 @@ namespace Merit_Money
 			// aapt resource value: 0x7f070044
 			public const int NoInternet = 2131165252;
 			
-			// aapt resource value: 0x7f070051
-			public const int Personal = 2131165265;
+			// aapt resource value: 0x7f070052
+			public const int Personal = 2131165266;
 			
-			// aapt resource value: 0x7f070055
-			public const int PersonalHistoryDBFilename = 2131165269;
+			// aapt resource value: 0x7f070056
+			public const int PersonalHistoryDBFilename = 2131165270;
 			
-			// aapt resource value: 0x7f070053
-			public const int ProfileDBFilename = 2131165267;
+			// aapt resource value: 0x7f070054
+			public const int ProfileDBFilename = 2131165268;
 			
 			// aapt resource value: 0x7f07004a
 			public const int RewardsPoints = 2131165258;
@@ -3573,8 +3576,8 @@ namespace Merit_Money
 			// aapt resource value: 0x7f070046
 			public const int UserName = 2131165254;
 			
-			// aapt resource value: 0x7f070054
-			public const int UsersDBFilename = 2131165268;
+			// aapt resource value: 0x7f070055
+			public const int UsersDBFilename = 2131165269;
 			
 			// aapt resource value: 0x7f07004d
 			public const int WebHookNotification = 2131165261;

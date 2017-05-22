@@ -38,6 +38,7 @@ namespace Merit_Money
             ViewPager = FindViewById<SupportViewPager>(Resource.Id.viewPager);
 
             MainToolbar.Title = "History";
+            String LastHistoryItemDate = String.Empty;
 
             ProgressDialog progressDialog = ProgressDialog.Show(this, "", "Loading list of users, please wait.", true);
 
@@ -47,6 +48,7 @@ namespace Merit_Money
 
                 ISharedPreferences info = Application.Context.GetSharedPreferences(Application.Context.GetString(Resource.String.ApplicationInfo), FileCreationMode.Private);
                 String Date = info.GetString(Application.Context.GetString(Resource.String.ModifyDate), String.Empty);
+                LastHistoryItemDate = info.GetString(Application.Context.GetString(Resource.String.HistoryLoadedDate), "0");
 
                 List<UserListItem> tmp = await MeritMoneyBrain.GetListOfUsers(modifyAfter: Date);
                 if (await db.IsExist())
@@ -63,10 +65,12 @@ namespace Merit_Money
             progressDialog.Dismiss();
 
             ViewPagerAdapter = new ViewPagerAdapter(SupportFragmentManager);
-            ViewPagerAdapter.AddFragments(new HistoryFragment(HistoryType.Personal,
+            ViewPagerAdapter.AddFragments(new HistoryFragment(HistoryType.Personal, 
+                LastHistoryItemDate,
                 NetworkStatus),
                 new Java.Lang.String("Personal"));
-            ViewPagerAdapter.AddFragments(new HistoryFragment(HistoryType.Company,
+            ViewPagerAdapter.AddFragments(new HistoryFragment(HistoryType.Company, 
+                LastHistoryItemDate,
                 NetworkStatus),
                 new Java.Lang.String("Company"));
             ViewPager.Adapter = ViewPagerAdapter;
@@ -110,14 +114,16 @@ namespace Merit_Money
     {
         private HistoryList History;
         private Context context;
+        private String LastDate;
 
         private const int VIEW_TYPE_ITEM = 0;
         private const int VIEW_TYPE_LOADING = 1;
 
-        public HistoryAdapter(HistoryList history, Context context)
+        public HistoryAdapter(HistoryList history, Context context, String LastDate)
         {
             this.History = history;
             this.context = context;
+            this.LastDate = LastDate;
         }
 
         private class LoadingViewHolder : RecyclerView.ViewHolder
@@ -141,12 +147,14 @@ namespace Merit_Money
             public ImageView Indicator { get; set; }
             public HistoryList History;
             public Context context;
+            public String LastDate;
 
-            public HistoryViewHolder(View view, Context context, HistoryList history) : base(view)
+            public HistoryViewHolder(View view, Context context, HistoryList history, String LastDate) : base(view)
             {
                 MainView = view;
                 this.History = history;
                 this.context = context;
+                this.LastDate = LastDate;
 
                 TextView itemDate = view.FindViewById<TextView>(Resource.Id.historyDate);
                 TextView itemMessage = view.FindViewById<TextView>(Resource.Id.historyName);
@@ -175,12 +183,20 @@ namespace Merit_Money
         { 
             if (holder is HistoryViewHolder) {
                 String name = DefineSenderName(History[position].fromUserID);
+
                 HistoryViewHolder Holder = holder as HistoryViewHolder;
+
                 Holder.Avatar.SetImageBitmap(History[position].image);
                 Holder.comment.Text = History[position].comment;
                 Holder.initials.Text = AdditionalFunctions.DefineInitials(name);
                 Holder.message.Text = OrganizeMessageString(History[position], name);
                 Holder.date.Text = FromUnixTime(Convert.ToInt64(History[position].date));
+
+                if(Convert.ToInt64(Holder.LastDate) < Convert.ToInt64(History[position].date))
+                    Holder.Indicator.Visibility = ViewStates.Visible;
+                else
+                    Holder.Indicator.Visibility = ViewStates.Invisible;
+
             } else if (holder is LoadingViewHolder) {
                 LoadingViewHolder LoadingViewHolder = holder as LoadingViewHolder;
                 if (History.hasMore)
@@ -200,7 +216,7 @@ namespace Merit_Money
             if (viewType == VIEW_TYPE_ITEM)
             {
                 View item = LayoutInflater.From(parent.Context).Inflate(Resource.Layout.history_list_item, parent, false);
-                return new HistoryViewHolder(item, context, History);
+                return new HistoryViewHolder(item, context, History, LastDate);
             }
             else if (viewType == VIEW_TYPE_LOADING)
             {

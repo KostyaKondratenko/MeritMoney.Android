@@ -27,6 +27,7 @@
   <string name="CurrentAccessToken">AccessToken</string>
   <string name="LogIn">LOG_IN</string>
   <string name="ModifyDate">modifyBefore</string>
+  <string name="HistoryLoadedDate">historyDate</string>
   
   <!--History-->
   <string name="Personal">Personal</string>
