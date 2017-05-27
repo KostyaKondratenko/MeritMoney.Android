@@ -150,7 +150,6 @@ namespace Merit_Money
                     var itemsAdded = listItem.Count();
 
                     history.AddList(listItem);
-                    history.hasMore = listItem.hasMore;
 
                     view.GetAdapter().NotifyItemRangeInserted(previousPosition + 1, itemsAdded);
 

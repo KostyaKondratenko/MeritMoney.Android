@@ -47,7 +47,7 @@ namespace Merit_Money
 
             MainToolbar.SetLogo(Resource.Drawable.ic_cloud_queue_white_24dp);
             MainToolbar.Title = "Merit Money";
-            MainToolbar.TitleMarginStart = base.ConvertDpToPx(40);
+            MainToolbar.TitleMarginStart = AdditionalFunctions.ConvertDpToPx(40);
 
             TryAgainButton.Click += TryAgainButton_Click;
         }

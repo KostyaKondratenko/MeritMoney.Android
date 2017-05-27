@@ -61,7 +61,6 @@ namespace Merit_Money
 
         public static byte[] Retrieve(Context context, String name)
         {
-
             Java.IO.File cacheDir = context.CacheDir;
             Java.IO.File file = new Java.IO.File(cacheDir, name);
 

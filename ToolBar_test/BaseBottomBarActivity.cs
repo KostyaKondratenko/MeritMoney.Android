@@ -45,15 +45,9 @@ namespace Merit_Money
             NetworkStatus.Stop();
         }
 
-        protected int ConvertDpToPx(int padding_in_dp)
-        {
-            float scale = Resources.DisplayMetrics.Density;
-            return (int)(padding_in_dp * scale + 0.5f);
-        }
-
         private int GetBottomHeightInPx()
         {
-            return ConvertDpToPx(BottomHeightInDps);
+            return AdditionalFunctions.ConvertDpToPx(BottomHeightInDps);
         }
 
         protected void CombineWith(FrameLayout MainLayout,
@@ -67,7 +61,7 @@ namespace Merit_Money
             RelativeLayout bottom = (RelativeLayout)LayoutInflater.Inflate(
                 Resource.Layout.bottom_bar, null);
 
-            main.SetPadding(0, 0, 0, ConvertDpToPx(BottomHeightInDps));
+            main.SetPadding(0, 0, 0, AdditionalFunctions.ConvertDpToPx(BottomHeightInDps));
 
             MainLayout.AddView(main, RelativeLayout.LayoutParams.MatchParent,
               RelativeLayout.LayoutParams.MatchParent);

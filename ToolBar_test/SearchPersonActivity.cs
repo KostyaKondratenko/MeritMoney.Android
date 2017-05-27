@@ -17,6 +17,7 @@ using Android.Support.V7.Widget;
 using Android.Text;
 using System.Threading;
 using Android.Views.InputMethods;
+using Android.Graphics;
 
 namespace Merit_Money
 {
@@ -253,8 +254,14 @@ namespace Merit_Money
             ListViewHolder Holder = holder as ListViewHolder;
             Holder.Name.Text = MeritMoneyUsers[position].name;
             Holder.Email.Text = MeritMoneyUsers[position].email;
+
+            Bitmap avatar = AdditionalFunctions.DrawTextToBitmap(
+                AdditionalFunctions.DefineInitials(MeritMoneyUsers[position].name),
+                AdditionalFunctions.ConvertDpToPx(35));
+
+            MeritMoneyUsers[position].image = avatar;
+
             Holder.Avatar.SetImageBitmap(MeritMoneyUsers[position].image);
-            Holder.Initials.Text = AdditionalFunctions.DefineInitials(Holder.Name.Text);
 
             if (!MeritMoneyUsers[position].AvatarIsDefault)
                 Holder.Initials.Visibility = ViewStates.Invisible;
