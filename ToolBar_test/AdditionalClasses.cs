@@ -189,7 +189,7 @@ namespace Merit_Money
             email= String.Empty;
             image = null;
             url= String.Empty;
-            AvatarIsDefault = false;
+            AvatarIsDefault = true;
         }
 
         public UserListItem(String ID, String name, String email,String url, Android.Graphics.Bitmap image)
@@ -199,7 +199,7 @@ namespace Merit_Money
             this.email = email;
             this.image = image;
             this.url = url;
-            AvatarIsDefault = false;
+            AvatarIsDefault = true;
         }
     }
 }

@@ -14,6 +14,7 @@ using SupportTabLayout = Android.Support.Design.Widget.TabLayout;
 using SupportViewPager = Android.Support.V4.View.ViewPager;
 using Android.Support.V4.App;
 using Android.Support.V7.Widget;
+using Android.Graphics;
 
 namespace Merit_Money
 {
@@ -128,6 +129,7 @@ namespace Merit_Money
 
         private const int VIEW_TYPE_ITEM = 0;
         private const int VIEW_TYPE_LOADING = 1;
+        private const int AvatarSize = 50;
 
         public HistoryAdapter(HistoryList history, Context context, String LastDate, 
             List<UserListItem> Users)
@@ -195,7 +197,6 @@ namespace Merit_Money
             public TextView message { get; set; }
             public TextView comment { get; set; }
             public TextView date { get; set; }
-            public TextView initials { get; set; }
             public CircularImageView Avatar { get; set; }
             public ImageView Indicator { get; set; }
             public HistoryList History;
@@ -214,17 +215,14 @@ namespace Merit_Money
                 TextView itemComment = view.FindViewById<TextView>(Resource.Id.historyReason);
                 CircularImageView itemAvatar = view.FindViewById<CircularImageView>(Resource.Id.searchAvatar);
                 ImageView itemIndicator = view.FindViewById<ImageView>(Resource.Id.history_indicator);
-                TextView itemInit = view.FindViewById<TextView>(Resource.Id.Initials);
 
                 itemIndicator.Visibility = ViewStates.Invisible;
-                itemInit.Visibility = ViewStates.Visible;
 
                 date = itemDate;
                 message = itemMessage;
                 Avatar = itemAvatar;
                 Indicator = itemIndicator;
                 comment = itemComment;
-                initials = itemInit;
             }
         }
 
@@ -240,14 +238,22 @@ namespace Merit_Money
 
                 Holder.Avatar.SetImageBitmap(History[position].image);
                 Holder.comment.Text = History[position].comment;
-                Holder.initials.Text = AdditionalFunctions.DefineInitials(DefineSenderName(History[position].fromUserID));
                 Holder.message.Text = OrganizeMessageString(History[position], DefineSenderName(History[position].fromUserID));
                 Holder.date.Text = FromUnixTime(Convert.ToInt64(History[position].date));
 
-                if (!AvatarIsDefault(History[position].fromUserID))
-                    Holder.initials.Visibility = ViewStates.Invisible;
-                else
-                    Holder.initials.Visibility = ViewStates.Visible;
+                //if (AvatarIsDefault(History[position].fromUserID))
+                //{
+                //    Bitmap bitmap = Bitmap.CreateBitmap(AdditionalFunctions.ConvertDpToPx(AvatarSize),
+                //    AdditionalFunctions.ConvertDpToPx(AvatarSize), Bitmap.Config.Argb8888);
+
+                //    Bitmap avatar = AdditionalFunctions.DrawTextToBitmap(bitmap,
+                //         AdditionalFunctions.DefineInitials(DefineSenderName(History[position].fromUserID)),
+                //         AdditionalFunctions.ConvertDpToPx(AvatarSize / 2));
+
+                //    History[position].image = avatar;
+                //}
+
+                Holder.Avatar.SetImageBitmap(History[position].image);
 
                 if (Convert.ToInt64(Holder.LastDate) < Convert.ToInt64(History[position].date))
                     Holder.Indicator.Visibility = ViewStates.Visible;

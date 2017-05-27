@@ -8,8 +8,8 @@
       app:actionViewClass="android.support.v7.widget.SearchView"
       app:showAsAction="always|collapseActionView">
   </item>
-<item
+  <!--item
      android:id="@+id/menu_refresh"
      android:showAsAction="never"
-     android:title="Refresh" />
+     android:title="Refresh" /-->
 </menu>

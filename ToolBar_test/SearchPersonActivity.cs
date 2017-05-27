@@ -73,13 +73,13 @@ namespace Merit_Money
             for(int i = 0; i < SearchUsersList.Count;i++)
                 new CacheListItemImage(RecyclerViewAdapter, i, Application.Context).Execute(SearchUsersList[i]);
 
-            ToolBar.MenuItemClick += ToolBar_MenuItemClick;
+            //ToolBar.MenuItemClick += ToolBar_MenuItemClick;
         }
 
         protected override void OnDestroy()
         {
             base.OnDestroy();
-            ToolBar.MenuItemClick -= ToolBar_MenuItemClick;
+            //ToolBar.MenuItemClick -= ToolBar_MenuItemClick;
             GC.Collect();
         }
 
@@ -88,31 +88,34 @@ namespace Merit_Money
             Finish();
         }
 
-        private async void ToolBar_MenuItemClick(object sender, SupportToolBar.MenuItemClickEventArgs e)
-        {
-            if (NetworkStatus.State != NetworkState.Disconnected)
-            {
-                switch (e.Item.ItemId)
-                {
-                    case Resource.Id.menu_refresh:
-                        ProgressDialog progressDialog = ProgressDialog.Show(this, "", "Loading, please wait", true);
+        //private async void ToolBar_MenuItemClick(object sender, SupportToolBar.MenuItemClickEventArgs e)
+        //{
+        //    if (NetworkStatus.State != NetworkState.Disconnected)
+        //    {
+        //        switch (e.Item.ItemId)
+        //        {
+        //            //case Resource.Id.menu_refresh:
+        //            //    ProgressDialog progressDialog = ProgressDialog.Show(this, "", "Loading, please wait", true);
 
-                        SearchUsersList = await MeritMoneyBrain.GetListOfUsers(String.Empty);
+        //            //    SearchUsersList = await MeritMoneyBrain.GetListOfUsers(String.Empty);
 
-                        UsersDatabase db = new UsersDatabase();
-                        db.Update(SearchUsersList);
+        //            //    UsersDatabase db = new UsersDatabase();
+        //            //    db.Update(SearchUsersList);
 
-                        RecyclerViewAdapter.AddNewList(SearchUsersList);
+        //            //    RecyclerViewAdapter.AddNewList(SearchUsersList);
 
-                        progressDialog.Dismiss();
-                        break;
-                }
-            }
-            else
-            {
-                Toast.MakeText(this, GetString(Resource.String.NoInternet), ToastLength.Short).Show();
-            }
-        }
+        //            //    for (int i = 0; i < SearchUsersList.Count(); i++)
+        //            //        new CacheListItemImage(RecyclerViewAdapter, i, Application.Context).Execute(SearchUsersList[i]);
+
+        //            //    progressDialog.Dismiss();
+        //            //    break;
+        //        }
+        //    }
+        //    else
+        //    {
+        //        Toast.MakeText(this, GetString(Resource.String.NoInternet), ToastLength.Short).Show();
+        //    }
+        //}
 
         public override bool OnCreateOptionsMenu(IMenu menu)
         {
@@ -166,6 +169,7 @@ namespace Merit_Money
         private List<UserListItem> MeritMoneyUsers;
         private SearchPersonActivity activity;
         private String curUserId;
+        private const int AvatarSize = 70;
 
         public UsersAdapter(List<UserListItem> users, SearchPersonActivity activity)
         {
@@ -208,9 +212,6 @@ namespace Merit_Money
             MeritMoneyUsers.Clear();
             MeritMoneyUsers.AddRange(list);
             NotifyDataSetChanged();
-
-            for (int i = 0; i < list.Count(); i++)
-                new CacheListItemImage(this, i, Application.Context).Execute(MeritMoneyUsers[i]);
         }
 
         public class ListViewHolder : RecyclerView.ViewHolder, View.IOnClickListener
@@ -218,7 +219,6 @@ namespace Merit_Money
             public View MainView { get; set; }
             public TextView Name { get; set; }
             public TextView Email { get; set; }
-            public TextView Initials { get; set; }
             public CircularImageView Avatar { get; set; }
             public List<UserListItem> users;
             public SearchPersonActivity activity;
@@ -255,18 +255,19 @@ namespace Merit_Money
             Holder.Name.Text = MeritMoneyUsers[position].name;
             Holder.Email.Text = MeritMoneyUsers[position].email;
 
-            Bitmap avatar = AdditionalFunctions.DrawTextToBitmap(
-                AdditionalFunctions.DefineInitials(MeritMoneyUsers[position].name),
-                AdditionalFunctions.ConvertDpToPx(35));
+            //if (MeritMoneyUsers[position].AvatarIsDefault)
+            //{
+            //Bitmap bitmap = Bitmap.CreateBitmap(AdditionalFunctions.ConvertDpToPx(AvatarSize),
+            //AdditionalFunctions.ConvertDpToPx(AvatarSize), Bitmap.Config.Argb8888);
 
-            MeritMoneyUsers[position].image = avatar;
+            //Bitmap avatar = AdditionalFunctions.DrawTextToBitmap(bitmap,
+            //    AdditionalFunctions.DefineInitials(MeritMoneyUsers[position].name),
+            //    AdditionalFunctions.ConvertDpToPx(AvatarSize / 3));
+
+            //MeritMoneyUsers[position].image = avatar;
+            //}
 
             Holder.Avatar.SetImageBitmap(MeritMoneyUsers[position].image);
-
-            if (!MeritMoneyUsers[position].AvatarIsDefault)
-                Holder.Initials.Visibility = ViewStates.Invisible;
-            else
-                Holder.Initials.Visibility = ViewStates.Visible;
         }
 
         public override SupportRecyclerView.ViewHolder OnCreateViewHolder(ViewGroup parent, int viewType)
@@ -278,7 +279,7 @@ namespace Merit_Money
             CircularImageView itemAvatar = item.FindViewById<CircularImageView>(Resource.Id.searchAvatar);
             TextView itemInitials = item.FindViewById<TextView>(Resource.Id.Initials);
 
-            ListViewHolder view = new ListViewHolder(item, activity, MeritMoneyUsers) { Name = itemName, Email = itemEmail, Avatar = itemAvatar, Initials = itemInitials };
+            ListViewHolder view = new ListViewHolder(item, activity, MeritMoneyUsers) { Name = itemName, Email = itemEmail, Avatar = itemAvatar};
             return view;
         }
     }

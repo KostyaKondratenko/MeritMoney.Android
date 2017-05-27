@@ -73,7 +73,6 @@ namespace Merit_Money
         {
             base.OnPause();
             Refresh.Refresh -= History_Refresh;
-            RecyclerViewAdapter.Keep(BatchSize);
             GC.Collect();
         }
 
@@ -150,6 +149,7 @@ namespace Merit_Money
                     var itemsAdded = listItem.Count();
 
                     history.AddList(listItem);
+                    history.hasMore = listItem.hasMore;
 
                     view.GetAdapter().NotifyItemRangeInserted(previousPosition + 1, itemsAdded);
 

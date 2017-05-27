@@ -45,16 +45,6 @@
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:background="@drawable/imageview_frame" />
-            <TextView
-                android:text="UU"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:id="@id/Initials"
-                android:textSize="25dp"
-                android:textColor="@color/bright_foreground_material_dark"
-                android:layout_gravity="center"
-                android:gravity="center" />
         </FrameLayout>
     </LinearLayout>
     <LinearLayout

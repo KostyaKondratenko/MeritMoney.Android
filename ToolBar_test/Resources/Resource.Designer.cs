@@ -2122,26 +2122,26 @@ namespace Merit_Money
 			// aapt resource value: 0x7f020053
 			public const int avd_hide_password = 2130837587;
 			
-			// aapt resource value: 0x7f020097
-			public const int avd_hide_password_1 = 2130837655;
-			
 			// aapt resource value: 0x7f020098
-			public const int avd_hide_password_2 = 2130837656;
+			public const int avd_hide_password_1 = 2130837656;
 			
 			// aapt resource value: 0x7f020099
-			public const int avd_hide_password_3 = 2130837657;
+			public const int avd_hide_password_2 = 2130837657;
+			
+			// aapt resource value: 0x7f02009a
+			public const int avd_hide_password_3 = 2130837658;
 			
 			// aapt resource value: 0x7f020054
 			public const int avd_show_password = 2130837588;
 			
-			// aapt resource value: 0x7f02009a
-			public const int avd_show_password_1 = 2130837658;
-			
 			// aapt resource value: 0x7f02009b
-			public const int avd_show_password_2 = 2130837659;
+			public const int avd_show_password_1 = 2130837659;
 			
 			// aapt resource value: 0x7f02009c
-			public const int avd_show_password_3 = 2130837660;
+			public const int avd_show_password_2 = 2130837660;
+			
+			// aapt resource value: 0x7f02009d
+			public const int avd_show_password_3 = 2130837661;
 			
 			// aapt resource value: 0x7f020055
 			public const int blueRect_style = 2130837589;
@@ -2243,103 +2243,106 @@ namespace Merit_Money
 			public const int design_snackbar_background = 2130837621;
 			
 			// aapt resource value: 0x7f020076
-			public const int ic_account_circle_black_24dp = 2130837622;
+			public const int gray = 2130837622;
 			
 			// aapt resource value: 0x7f020077
-			public const int ic_clear_white_24dp = 2130837623;
+			public const int ic_account_circle_black_24dp = 2130837623;
 			
 			// aapt resource value: 0x7f020078
-			public const int ic_cloud_queue_white_24dp = 2130837624;
+			public const int ic_clear_white_24dp = 2130837624;
 			
 			// aapt resource value: 0x7f020079
-			public const int ic_description_black_24dp = 2130837625;
+			public const int ic_cloud_queue_white_24dp = 2130837625;
 			
 			// aapt resource value: 0x7f02007a
-			public const int ic_home_black_24dp = 2130837626;
+			public const int ic_description_black_24dp = 2130837626;
 			
 			// aapt resource value: 0x7f02007b
-			public const int ic_input_white_24dp = 2130837627;
+			public const int ic_home_black_24dp = 2130837627;
 			
 			// aapt resource value: 0x7f02007c
-			public const int ic_noavatar = 2130837628;
+			public const int ic_input_white_24dp = 2130837628;
 			
 			// aapt resource value: 0x7f02007d
-			public const int ic_plusone_medium_off_client = 2130837629;
+			public const int ic_noavatar = 2130837629;
 			
 			// aapt resource value: 0x7f02007e
-			public const int ic_plusone_small_off_client = 2130837630;
+			public const int ic_plusone_medium_off_client = 2130837630;
 			
 			// aapt resource value: 0x7f02007f
-			public const int ic_plusone_standard_off_client = 2130837631;
+			public const int ic_plusone_small_off_client = 2130837631;
 			
 			// aapt resource value: 0x7f020080
-			public const int ic_plusone_tall_off_client = 2130837632;
+			public const int ic_plusone_standard_off_client = 2130837632;
 			
 			// aapt resource value: 0x7f020081
-			public const int ic_search_white = 2130837633;
+			public const int ic_plusone_tall_off_client = 2130837633;
 			
 			// aapt resource value: 0x7f020082
-			public const int imageView_frame = 2130837634;
+			public const int ic_search_white = 2130837634;
 			
 			// aapt resource value: 0x7f020083
-			public const int Indicator = 2130837635;
+			public const int imageView_frame = 2130837635;
 			
 			// aapt resource value: 0x7f020084
-			public const int line_style = 2130837636;
+			public const int Indicator = 2130837636;
 			
 			// aapt resource value: 0x7f020085
-			public const int LogInMeritMoney = 2130837637;
+			public const int line_style = 2130837637;
 			
 			// aapt resource value: 0x7f020086
-			public const int navigation_empty_icon = 2130837638;
+			public const int LogInMeritMoney = 2130837638;
 			
 			// aapt resource value: 0x7f020087
-			public const int notification_action_background = 2130837639;
+			public const int navigation_empty_icon = 2130837639;
 			
 			// aapt resource value: 0x7f020088
-			public const int notification_bg = 2130837640;
+			public const int notification_action_background = 2130837640;
 			
 			// aapt resource value: 0x7f020089
-			public const int notification_bg_low = 2130837641;
+			public const int notification_bg = 2130837641;
 			
 			// aapt resource value: 0x7f02008a
-			public const int notification_bg_low_normal = 2130837642;
+			public const int notification_bg_low = 2130837642;
 			
 			// aapt resource value: 0x7f02008b
-			public const int notification_bg_low_pressed = 2130837643;
+			public const int notification_bg_low_normal = 2130837643;
 			
 			// aapt resource value: 0x7f02008c
-			public const int notification_bg_normal = 2130837644;
+			public const int notification_bg_low_pressed = 2130837644;
 			
 			// aapt resource value: 0x7f02008d
-			public const int notification_bg_normal_pressed = 2130837645;
+			public const int notification_bg_normal = 2130837645;
 			
 			// aapt resource value: 0x7f02008e
-			public const int notification_icon_background = 2130837646;
-			
-			// aapt resource value: 0x7f020095
-			public const int notification_template_icon_bg = 2130837653;
-			
-			// aapt resource value: 0x7f020096
-			public const int notification_template_icon_low_bg = 2130837654;
+			public const int notification_bg_normal_pressed = 2130837646;
 			
 			// aapt resource value: 0x7f02008f
-			public const int notification_tile_bg = 2130837647;
+			public const int notification_icon_background = 2130837647;
+			
+			// aapt resource value: 0x7f020096
+			public const int notification_template_icon_bg = 2130837654;
+			
+			// aapt resource value: 0x7f020097
+			public const int notification_template_icon_low_bg = 2130837655;
 			
 			// aapt resource value: 0x7f020090
-			public const int notify_panel_notification_icon_bg = 2130837648;
+			public const int notification_tile_bg = 2130837648;
 			
 			// aapt resource value: 0x7f020091
-			public const int pointsText_style = 2130837649;
+			public const int notify_panel_notification_icon_bg = 2130837649;
 			
 			// aapt resource value: 0x7f020092
-			public const int progress_bar = 2130837650;
+			public const int pointsText_style = 2130837650;
 			
 			// aapt resource value: 0x7f020093
-			public const int search_cursor_color = 2130837651;
+			public const int progress_bar = 2130837651;
 			
 			// aapt resource value: 0x7f020094
-			public const int search_item_selector = 2130837652;
+			public const int search_cursor_color = 2130837652;
+			
+			// aapt resource value: 0x7f020095
+			public const int search_item_selector = 2130837653;
 			
 			static Drawable()
 			{
@@ -2423,14 +2426,14 @@ namespace Merit_Money
 			// aapt resource value: 0x7f0a00ec
 			public const int EmailNotificationsText = 2131362028;
 			
-			// aapt resource value: 0x7f0a0098
-			public const int HistoryList = 2131361944;
+			// aapt resource value: 0x7f0a0097
+			public const int HistoryList = 2131361943;
 			
 			// aapt resource value: 0x7f0a00a2
 			public const int HorizontalLayoutForRewards = 2131361954;
 			
-			// aapt resource value: 0x7f0a008f
-			public const int Initials = 2131361935;
+			// aapt resource value: 0x7f0a009e
+			public const int Initials = 2131361950;
 			
 			// aapt resource value: 0x7f0a009f
 			public const int LayoutForUserName = 2131361951;
@@ -2447,17 +2450,17 @@ namespace Merit_Money
 			// aapt resource value: 0x7f0a00b2
 			public const int LineSpace = 2131361970;
 			
-			// aapt resource value: 0x7f0a009a
-			public const int LogInButton = 2131361946;
-			
 			// aapt resource value: 0x7f0a0099
-			public const int Logo = 2131361945;
+			public const int LogInButton = 2131361945;
 			
-			// aapt resource value: 0x7f0a009c
-			public const int MainLayout = 2131361948;
+			// aapt resource value: 0x7f0a0098
+			public const int Logo = 2131361944;
 			
-			// aapt resource value: 0x7f0a0095
-			public const int NoInternetText = 2131361941;
+			// aapt resource value: 0x7f0a009b
+			public const int MainLayout = 2131361947;
+			
+			// aapt resource value: 0x7f0a0094
+			public const int NoInternetText = 2131361940;
 			
 			// aapt resource value: 0x7f0a00eb
 			public const int NotificationsLayout = 2131362027;
@@ -2576,11 +2579,11 @@ namespace Merit_Money
 			// aapt resource value: 0x7f0a00ef
 			public const int SwitchStateText = 2131362031;
 			
-			// aapt resource value: 0x7f0a009d
-			public const int TopHorizontalLayout = 2131361949;
+			// aapt resource value: 0x7f0a009c
+			public const int TopHorizontalLayout = 2131361948;
 			
-			// aapt resource value: 0x7f0a009e
-			public const int UserAvatar = 2131361950;
+			// aapt resource value: 0x7f0a009d
+			public const int UserAvatar = 2131361949;
 			
 			// aapt resource value: 0x7f0a00a1
 			public const int UserEmail = 2131361953;
@@ -2657,8 +2660,8 @@ namespace Merit_Money
 			// aapt resource value: 0x7f0a004b
 			public const int activity_chooser_view_content = 2131361867;
 			
-			// aapt resource value: 0x7f0a009b
-			public const int activity_main_swipe_refresh_layout = 2131361947;
+			// aapt resource value: 0x7f0a009a
+			public const int activity_main_swipe_refresh_layout = 2131361946;
 			
 			// aapt resource value: 0x7f0a0021
 			public const int add = 2131361825;
@@ -2807,26 +2810,26 @@ namespace Merit_Money
 			// aapt resource value: 0x7f0a00ed
 			public const int frameLayout1 = 2131362029;
 			
-			// aapt resource value: 0x7f0a0093
-			public const int frameLayout2 = 2131361939;
+			// aapt resource value: 0x7f0a0092
+			public const int frameLayout2 = 2131361938;
 			
 			// aapt resource value: 0x7f0a00e7
 			public const int frameLayout3 = 2131362023;
 			
-			// aapt resource value: 0x7f0a0091
-			public const int historyDate = 2131361937;
-			
 			// aapt resource value: 0x7f0a0090
-			public const int historyName = 2131361936;
+			public const int historyDate = 2131361936;
 			
-			// aapt resource value: 0x7f0a0092
-			public const int historyReason = 2131361938;
+			// aapt resource value: 0x7f0a008f
+			public const int historyName = 2131361935;
+			
+			// aapt resource value: 0x7f0a0091
+			public const int historyReason = 2131361937;
 			
 			// aapt resource value: 0x7f0a008d
 			public const int history_indicator = 2131361933;
 			
-			// aapt resource value: 0x7f0a0094
-			public const int history_swipe_refresh_layout = 2131361940;
+			// aapt resource value: 0x7f0a0093
+			public const int history_swipe_refresh_layout = 2131361939;
 			
 			// aapt resource value: 0x7f0a0005
 			public const int home = 2131361797;
@@ -2897,8 +2900,8 @@ namespace Merit_Money
 			// aapt resource value: 0x7f0a004f
 			public const int list_item = 2131361871;
 			
-			// aapt resource value: 0x7f0a0096
-			public const int loadingPanel = 2131361942;
+			// aapt resource value: 0x7f0a0095
+			public const int loadingPanel = 2131361941;
 			
 			// aapt resource value: 0x7f0a010a
 			public const int masked = 2131362058;
@@ -2909,11 +2912,8 @@ namespace Merit_Money
 			// aapt resource value: 0x7f0a010f
 			public const int menu_edit = 2131362063;
 			
-			// aapt resource value: 0x7f0a0112
-			public const int menu_logout = 2131362066;
-			
 			// aapt resource value: 0x7f0a0111
-			public const int menu_refresh = 2131362065;
+			public const int menu_logout = 2131362065;
 			
 			// aapt resource value: 0x7f0a002a
 			public const int middle = 2131361834;
@@ -2954,8 +2954,8 @@ namespace Merit_Money
 			// aapt resource value: 0x7f0a003f
 			public const int pin = 2131361855;
 			
-			// aapt resource value: 0x7f0a0097
-			public const int progressBar1 = 2131361943;
+			// aapt resource value: 0x7f0a0096
+			public const int progressBar1 = 2131361942;
 			
 			// aapt resource value: 0x7f0a010b
 			public const int progressBar2 = 2131362059;

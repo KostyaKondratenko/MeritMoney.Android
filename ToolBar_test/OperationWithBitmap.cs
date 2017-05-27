@@ -146,6 +146,15 @@ namespace Merit_Money
             return cur.SequenceEqual(def);
         }
 
+        public static bool isDefault(byte[] curImage)
+        {
+            Bitmap Default = BitmapFactory.DecodeResource(Application.Context.Resources, Resource.Drawable.ic_noavatar);
+
+            byte[] def = ConvertToByteArray(Default);
+
+            return curImage.SequenceEqual(def);
+        }
+
         public static bool isDefault(String url)
         {
             Bitmap image = GetFromUrl(url);

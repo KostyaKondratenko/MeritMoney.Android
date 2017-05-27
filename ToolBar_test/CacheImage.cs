@@ -81,28 +81,23 @@ namespace Merit_Money
 
                 try
                 {
-                    byte[] data = OperationWithBitmap.Retrieve(context, historyItem.ID);
+                    byte[] data = OperationWithBitmap.Retrieve(context, user.ID);
 
-                    if (!user.AvatarIsDefault)
+                    if (data == null)
                     {
-                        if (data == null)
-                        {
-                            Bitmap curImage = OperationWithBitmap.GetFromUrl(user.url);
-                            if (!OperationWithBitmap.isDefault(curImage))
-                            {
-                                historyItem.image = curImage;
-                                var bitmapData = OperationWithBitmap.ConvertToByteArray(historyItem.image);
-                                OperationWithBitmap.Cache(context, bitmapData, historyItem.ID);
-                            }
-                            else
-                            {
-                                db.UpdateAvatarState(user);
-                            }
-                        }
-                        else
-                        {
-                            historyItem.image = OperationWithBitmap.ConvertFromByteArray(data);
-                        }
+                        Bitmap curImage = OperationWithBitmap.GetFromUrl(user.url);
+                        //user.AvatarIsDefault = OperationWithBitmap.isDefault(curImage);
+                        //if (!user.AvatarIsDefault)
+                        //{
+                            historyItem.image = curImage;
+                        //}
+                        var bitmapData = OperationWithBitmap.ConvertToByteArray(historyItem.image);
+                        OperationWithBitmap.Cache(context, bitmapData, historyItem.ID);
+                    }
+                    else
+                    {
+                        //if (!user.AvatarIsDefault)
+                           historyItem.image = OperationWithBitmap.ConvertFromByteArray(data);
                     }
                 }
                 catch (Exception e) { Console.Out.WriteLine(e.Message); }
@@ -113,31 +108,25 @@ namespace Merit_Money
                 bool AvatarIsDefault = user.AvatarIsDefault;
                 try
                 {
-                    if (!AvatarIsDefault)
-                    {
-                        byte[] data = OperationWithBitmap.Retrieve(context, user.ID);
+                    byte[] data = OperationWithBitmap.Retrieve(context, user.ID);
 
-                        if (data == null)
-                        {
-                            Bitmap curImage = OperationWithBitmap.GetFromUrl(user.url);
-                            user.AvatarIsDefault = OperationWithBitmap.isDefault(curImage);
-                            if (!user.AvatarIsDefault)
-                            {
-                                user.image = curImage;
-                                var bitmapData = OperationWithBitmap.ConvertToByteArray(user.image);
-                                OperationWithBitmap.Cache(context, bitmapData, user.ID);
-                            }
-                            else
-                            {
-                                UsersDatabase db = new UsersDatabase();
-                                db.UpdateAvatarState(user);
-                            }
-                        }
-                        else
-                        {
-                            user.image = OperationWithBitmap.ConvertFromByteArray(data);
-                        }
+                    if (data == null)
+                    {
+                        Bitmap curImage = OperationWithBitmap.GetFromUrl(user.url);
+                        //user.AvatarIsDefault = OperationWithBitmap.isDefault(curImage);
+                        //if (!user.AvatarIsDefault)
+                        //{
+                            user.image = curImage;
+                        //    UsersDatabase db = new UsersDatabase();
+                        //    db.UpdateAvatarState(user);
+                        //}
+                        var bitmapData = OperationWithBitmap.ConvertToByteArray(user.image);
+                        OperationWithBitmap.Cache(context, bitmapData, user.ID);
                     }
+                    else
+                        //if (!user.AvatarIsDefault)
+                        user.image = OperationWithBitmap.ConvertFromByteArray(data); 
+
                 }
                 catch (Exception e) { Console.Out.WriteLine(e.Message); }
             }
@@ -224,25 +213,17 @@ namespace Merit_Money
 
             try
             {
-                if (!AvatarIsDefault)
-                {
-                    byte[] data = OperationWithBitmap.Retrieve(context, userId);
+                byte[] data = OperationWithBitmap.Retrieve(context, userId);
 
-                    if (data == null)
-                    {
-                        image = OperationWithBitmap.GetFromUrl(imageUrl);
-                        var bitmapData = OperationWithBitmap.ConvertToByteArray(image);
-                        OperationWithBitmap.Cache(context, bitmapData, userId);
-                    }
-                    else
-                    {
-                        image = OperationWithBitmap.ConvertFromByteArray(data);
-                    }
+                if (data == null)
+                {
+                    image = OperationWithBitmap.GetFromUrl(imageUrl);
+                    var bitmapData = OperationWithBitmap.ConvertToByteArray(image);
+                    OperationWithBitmap.Cache(context, bitmapData, userId);
                 }
                 else
                 {
-                    initials.Text = AdditionalFunctions.DefineInitials(@params[0].name);
-                    return null;
+                    image = OperationWithBitmap.ConvertFromByteArray(data);
                 }
             }
             catch (Exception e) { Console.Out.WriteLine(e.Message); }
