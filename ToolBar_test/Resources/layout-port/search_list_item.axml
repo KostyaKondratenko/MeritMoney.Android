@@ -15,15 +15,31 @@
         android:minWidth="25px"
         android:minHeight="25px"
         android:id="@+id/linearLayout1">
-        <Merit_Money.CircularImageView
-            android:id="@+id/searchAvatar"
-            android:layout_width="70dp"
-            android:layout_height="70dp"
-            android:background="@drawable/imageView_frame"
-            android:layout_marginLeft="20dp"
-            android:layout_marginTop="10dp"
+        <FrameLayout
+            android:minWidth="25px"
+            android:minHeight="25px"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
-            android:layout_marginRight="20dp" />
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginLeft="20dp">
+            <Merit_Money.CircularImageView
+                android:id="@+id/searchAvatar"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:background="@drawable/imageView_frame" />
+            <TextView
+                android:text="UU"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:id="@+id/Initials"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:textSize="35dp"
+                android:textColor="@color/bright_foreground_material_dark"
+                android:layout_gravity="center"
+                android:gravity="center" />
+        </FrameLayout>
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
@@ -59,5 +75,4 @@
             android:scrollHorizontally="true"
             android:ellipsize="end" />
     </LinearLayout>
-<!-- Property Change Conflict | source:land, id:__root__ | clickable=true -->
 </LinearLayout>

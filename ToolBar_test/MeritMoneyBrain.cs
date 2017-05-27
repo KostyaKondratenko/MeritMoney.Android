@@ -272,9 +272,6 @@ namespace Merit_Money
         public static async Task<List<UserListItem>> GetListOfUsers(String modifyAfter)
         {
             List<UserListItem> ListOfUsers = new List<UserListItem>();
-            ProfileDatabase db = new ProfileDatabase();
-            Profile p = db.GetProfile();
-            String currentID = p.ID;
             String AdministratorID = "0000";
 
             try
@@ -317,7 +314,7 @@ namespace Merit_Money
                                 String email = jsonobject.GetString("email");
                                 String imUrl = jsonobject.GetString("imageUrl");
 
-                                if (ID != currentID && ID != AdministratorID)
+                                if (ID != AdministratorID)
                                     ListOfUsers.Add(new UserListItem(ID, name, email, imUrl, null));
                             }
                              
@@ -515,7 +512,7 @@ namespace Merit_Money
                     string jsonData = "{";
                     if (name != String.Empty)
                     {
-                        jsonData += "\"name:\":\"" + name + "\"";
+                        jsonData += "\"name\":\"" + name + "\"";
                     }
                     if (name != String.Empty && emailNotificationWasChanged) { jsonData += ","; }
                     if (emailNotificationWasChanged)
@@ -598,7 +595,10 @@ namespace Merit_Money
                         "Access token invalid or malformed.",
                         ToastLength.Short).Show();
                     await Task.Delay(3000);
-                    await LogOut();
+                    ISharedPreferences i= Application.Context.GetSharedPreferences(Application.Context.GetString(Resource.String.ApplicationInfo), FileCreationMode.Private);
+                    ISharedPreferencesEditor e = i.Edit();
+                    e.Clear();
+                    e.Apply();
                     break;
                 case "AccessDenied":
                     Toast.MakeText(Application.Context,

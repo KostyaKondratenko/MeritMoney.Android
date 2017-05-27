@@ -121,6 +121,13 @@ namespace Merit_Money
             hasMore = false;
         }
 
+        public void KeepItemsInMemory(int count)
+        {
+            List<HistoryListItem> tmp = ListOfHistory.GetRange(0, count);
+            ListOfHistory.Clear();
+            ListOfHistory = tmp;
+        }
+
         public void AddList(HistoryList list)
         {
             ListOfHistory.AddRange(list);

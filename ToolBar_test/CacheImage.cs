@@ -62,13 +62,13 @@ namespace Merit_Money
     {
         private RecyclerView.Adapter adapter;
         private Context context;
-        private TextView initials;
+        private int numberInList;
 
-        public CacheListItemImage(RecyclerView.Adapter adapter,TextView initials, Context context)
+        public CacheListItemImage(RecyclerView.Adapter adapter,int numberInList, Context context)
         {
             this.adapter = adapter;
             this.context = context;
-            this.initials = initials;
+            this.numberInList = numberInList;
         }
 
         protected override Java.Lang.Void RunInBackground(params object[] @params)
@@ -91,7 +91,6 @@ namespace Merit_Money
                             if (!OperationWithBitmap.isDefault(curImage))
                             {
                                 historyItem.image = curImage;
-                                initials.Visibility = ViewStates.Gone;
                                 var bitmapData = OperationWithBitmap.ConvertToByteArray(historyItem.image);
                                 OperationWithBitmap.Cache(context, bitmapData, historyItem.ID);
                             }
@@ -125,7 +124,6 @@ namespace Merit_Money
                             if (!user.AvatarIsDefault)
                             {
                                 user.image = curImage;
-                                initials.Visibility = ViewStates.Gone;
                                 var bitmapData = OperationWithBitmap.ConvertToByteArray(user.image);
                                 OperationWithBitmap.Cache(context, bitmapData, user.ID);
                             }
@@ -152,7 +150,7 @@ namespace Merit_Money
 
         protected override void OnPostExecute(Java.Lang.Void result)
         {
-            adapter.NotifyDataSetChanged();
+            adapter.NotifyItemChanged(numberInList);
             base.OnPostExecute(result);
         }
 

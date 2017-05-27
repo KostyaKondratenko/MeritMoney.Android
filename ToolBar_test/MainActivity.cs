@@ -170,7 +170,7 @@ namespace Merit_Money
                     pdb.DeleteDatabase();
 
                     UsersDatabase udb = new UsersDatabase();
-                    await udb.DeleteDatabase();
+                    udb.DeleteDatabase();
 
                     ISharedPreferences info = Application.Context.GetSharedPreferences(Application.Context.GetString(Resource.String.ApplicationInfo), FileCreationMode.Private);
                     ISharedPreferencesEditor editor = info.Edit();

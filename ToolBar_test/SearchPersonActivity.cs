@@ -29,7 +29,6 @@ namespace Merit_Money
         private SupportRecyclerView.LayoutManager RecyclerViewManager;
         private UsersAdapter RecyclerViewAdapter;
         private List<UserListItem> SearchUsersList;
-        private TextView Initials;
 
         protected override async void OnCreate(Bundle savedInstanceState)
         {
@@ -38,7 +37,6 @@ namespace Merit_Money
             SetContentView(Resource.Layout.SearchPerson);
             ToolBar = FindViewById<SupportToolBar>(Resource.Id.toolbar);
             SearchUserView = FindViewById<SupportRecyclerView>(Resource.Id.searchUserList);
-            Initials = FindViewById<TextView>(Resource.Id.Initials);
 
             SetSupportActionBar(ToolBar);
             SupportActionBar.Title = "Select Person";
@@ -54,15 +52,15 @@ namespace Merit_Money
             ProgressDialog progressDialog = ProgressDialog.Show(this, "", "Loading, please wait...", true);
 
             List<UserListItem> tmp = await MeritMoneyBrain.GetListOfUsers(modifyAfter: Date);
-            if (await db.IsExist())
-                await db.Merge(tmp);
+            if (db.IsExist())
+                db.Merge(tmp);
             else
             {
-                await db.CreateDatabase();
-                await db.Insert(tmp);
+                db.CreateDatabase();
+                db.Insert(tmp);
             }
 
-            SearchUsersList = await db.GetUsers();
+            SearchUsersList = db.GetUsers();
 
             progressDialog.Dismiss();
 
@@ -71,12 +69,9 @@ namespace Merit_Money
             RecyclerViewAdapter = new UsersAdapter(SearchUsersList, this);
             SearchUserView.SetAdapter(RecyclerViewAdapter);
 
+            for(int i = 0; i < SearchUsersList.Count;i++)
+                new CacheListItemImage(RecyclerViewAdapter, i, Application.Context).Execute(SearchUsersList[i]);
 
-            foreach (UserListItem user in SearchUsersList)
-            {
-                Initials.Text = AdditionalFunctions.DefineInitials(user.name);
-                new CacheListItemImage(RecyclerViewAdapter, Initials, Application.Context).Execute(user);
-            }
             ToolBar.MenuItemClick += ToolBar_MenuItemClick;
         }
 
@@ -104,16 +99,10 @@ namespace Merit_Money
                         SearchUsersList = await MeritMoneyBrain.GetListOfUsers(String.Empty);
 
                         UsersDatabase db = new UsersDatabase();
-                        await db.Update(SearchUsersList);
+                        db.Update(SearchUsersList);
 
-                        RecyclerViewAdapter = new UsersAdapter(SearchUsersList, this);
-                        SearchUserView.SetAdapter(RecyclerViewAdapter);
+                        RecyclerViewAdapter.AddNewList(SearchUsersList);
 
-                        foreach (UserListItem user in SearchUsersList)
-                        {
-                            Initials.Text = AdditionalFunctions.DefineInitials(user.name);
-                            new CacheListItemImage(RecyclerViewAdapter, Initials, Application.Context).Execute(user);
-                        }
                         progressDialog.Dismiss();
                         break;
                 }
@@ -175,11 +164,52 @@ namespace Merit_Money
     {
         private List<UserListItem> MeritMoneyUsers;
         private SearchPersonActivity activity;
+        private String curUserId;
 
         public UsersAdapter(List<UserListItem> users, SearchPersonActivity activity)
         {
             MeritMoneyUsers = users;
             this.activity = activity;
+
+            ProfileDatabase db = new ProfileDatabase();
+            curUserId = db.GetProfile().ID;
+            for (int i = 0; i < MeritMoneyUsers.Count; i++)
+                if (MeritMoneyUsers[i].ID == curUserId)
+                    MeritMoneyUsers.RemoveAt(i);
+        }
+
+        public void AddList(List<UserListItem> list)
+        {
+            ProfileDatabase pdb = new ProfileDatabase();
+            String curId = pdb.GetProfile().ID;
+
+            for (int i = 0; i < list.Count; i++)
+                if (curId == list[i].ID)
+                    list.RemoveAt(i);
+
+            int startingPos = MeritMoneyUsers.Count();
+            MeritMoneyUsers.AddRange(list);
+            NotifyItemRangeInserted(startingPos, list.Count());
+
+            for (int i = startingPos; i < startingPos + list.Count(); i++)
+                new CacheListItemImage(this, i, Application.Context).Execute(MeritMoneyUsers[i]);
+        }
+
+        public void AddNewList(List<UserListItem> list)
+        {
+            ProfileDatabase pdb = new ProfileDatabase();
+            String curId = pdb.GetProfile().ID;
+
+            for (int i = 0; i < list.Count; i++)
+                if (curId == list[i].ID)
+                    list.RemoveAt(i);
+
+            MeritMoneyUsers.Clear();
+            MeritMoneyUsers.AddRange(list);
+            NotifyDataSetChanged();
+
+            for (int i = 0; i < list.Count(); i++)
+                new CacheListItemImage(this, i, Application.Context).Execute(MeritMoneyUsers[i]);
         }
 
         public class ListViewHolder : RecyclerView.ViewHolder, View.IOnClickListener
@@ -187,6 +217,7 @@ namespace Merit_Money
             public View MainView { get; set; }
             public TextView Name { get; set; }
             public TextView Email { get; set; }
+            public TextView Initials { get; set; }
             public CircularImageView Avatar { get; set; }
             public List<UserListItem> users;
             public SearchPersonActivity activity;
@@ -223,6 +254,12 @@ namespace Merit_Money
             Holder.Name.Text = MeritMoneyUsers[position].name;
             Holder.Email.Text = MeritMoneyUsers[position].email;
             Holder.Avatar.SetImageBitmap(MeritMoneyUsers[position].image);
+            Holder.Initials.Text = AdditionalFunctions.DefineInitials(Holder.Name.Text);
+
+            if (!MeritMoneyUsers[position].AvatarIsDefault)
+                Holder.Initials.Visibility = ViewStates.Invisible;
+            else
+                Holder.Initials.Visibility = ViewStates.Visible;
         }
 
         public override SupportRecyclerView.ViewHolder OnCreateViewHolder(ViewGroup parent, int viewType)
@@ -232,8 +269,9 @@ namespace Merit_Money
             TextView itemName = item.FindViewById<TextView>(Resource.Id.searchName);
             TextView itemEmail = item.FindViewById<TextView>(Resource.Id.searchEmail);
             CircularImageView itemAvatar = item.FindViewById<CircularImageView>(Resource.Id.searchAvatar);
+            TextView itemInitials = item.FindViewById<TextView>(Resource.Id.Initials);
 
-            ListViewHolder view = new ListViewHolder(item, activity, MeritMoneyUsers) { Name = itemName, Email = itemEmail, Avatar = itemAvatar };
+            ListViewHolder view = new ListViewHolder(item, activity, MeritMoneyUsers) { Name = itemName, Email = itemEmail, Avatar = itemAvatar, Initials = itemInitials };
             return view;
         }
     }

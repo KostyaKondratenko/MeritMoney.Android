@@ -17,7 +17,7 @@ using Android.Support.V7.Widget;
 
 namespace Merit_Money
 {
-    [Activity(Label = "HistoryActivity")]
+    [Activity(Label = "HistoryActivity", ScreenOrientation = Android.Content.PM.ScreenOrientation.Portrait)]
     public class HistoryActivity : BaseBottomBarActivity
     {
         private SupportToolBar MainToolbar;
@@ -51,27 +51,35 @@ namespace Merit_Money
                 LastHistoryItemDate = info.GetString(Application.Context.GetString(Resource.String.HistoryLoadedDate), "0");
 
                 List<UserListItem> tmp = await MeritMoneyBrain.GetListOfUsers(modifyAfter: Date);
-                if (await db.IsExist())
+                if (db.IsExist())
                 {
-                    await db.Update(tmp);
+                    db.Update(tmp);
                 }
                 else
                 {
-                    await db.CreateDatabase();
-                    await db.Insert(tmp);
+                    db.CreateDatabase();
+                    db.Insert(tmp);
                 }
+            }else
+            {
+                StartActivity(new Intent(this, typeof(NoInternetActivity)));
             }
 
             progressDialog.Dismiss();
 
+            var db2 = new UsersDatabase();
+            var Users = db2.GetUsers();
+
             ViewPagerAdapter = new ViewPagerAdapter(SupportFragmentManager);
             ViewPagerAdapter.AddFragments(new HistoryFragment(HistoryType.Personal, 
                 LastHistoryItemDate,
-                NetworkStatus),
+                NetworkStatus,
+                Users),
                 new Java.Lang.String("Personal"));
             ViewPagerAdapter.AddFragments(new HistoryFragment(HistoryType.Company, 
                 LastHistoryItemDate,
-                NetworkStatus),
+                NetworkStatus,
+                Users),
                 new Java.Lang.String("Company"));
             ViewPager.Adapter = ViewPagerAdapter;
 
@@ -115,15 +123,60 @@ namespace Merit_Money
         private HistoryList History;
         private Context context;
         private String LastDate;
+        private Dictionary<String, String> ID_Name;
+        private Dictionary<String, bool> ID_ImageIsDefault;
 
         private const int VIEW_TYPE_ITEM = 0;
         private const int VIEW_TYPE_LOADING = 1;
 
-        public HistoryAdapter(HistoryList history, Context context, String LastDate)
+        public HistoryAdapter(HistoryList history, Context context, String LastDate, 
+            List<UserListItem> Users)
         {
             this.History = history;
             this.context = context;
             this.LastDate = LastDate;
+
+            ID_Name = new Dictionary<string, string>();
+            ID_ImageIsDefault = new Dictionary<string, bool>();
+
+            foreach (UserListItem user in Users)
+            {
+                ID_Name.Add(user.ID, user.name);
+                ID_ImageIsDefault.Add(user.ID, user.AvatarIsDefault);
+            }
+        }
+
+        public int HistoryListCount()
+        {
+            return History.Count();
+        }
+
+        public void AddList(HistoryList list)
+        {
+            int startingPos = History.Count();
+            History.AddList(list);
+            NotifyItemRangeInserted(startingPos, list.Count());
+
+            for (int i = startingPos; i < startingPos + list.Count(); i++)
+                new CacheListItemImage(this, i, Application.Context).Execute(History[i]);
+        }
+
+        public void AddNewList(HistoryList list, String Date)
+        {
+            History.Clear();
+            History.AddList(list);
+            this.LastDate = Date;
+            NotifyDataSetChanged();
+
+            for (int i = 0; i < list.Count(); i++)
+                new CacheListItemImage(this, i, Application.Context).Execute(History[i]);
+        }
+
+        public void Keep(int numberOfItems)
+        {
+            int size = History.Count();
+            History.KeepItemsInMemory(numberOfItems);
+            this.NotifyItemRangeRemoved(numberOfItems, size);
         }
 
         private class LoadingViewHolder : RecyclerView.ViewHolder
@@ -164,6 +217,7 @@ namespace Merit_Money
                 TextView itemInit = view.FindViewById<TextView>(Resource.Id.Initials);
 
                 itemIndicator.Visibility = ViewStates.Invisible;
+                itemInit.Visibility = ViewStates.Visible;
 
                 date = itemDate;
                 message = itemMessage;
@@ -182,17 +236,20 @@ namespace Merit_Money
         public override void OnBindViewHolder(RecyclerView.ViewHolder holder, int position)
         { 
             if (holder is HistoryViewHolder) {
-                String name = DefineSenderName(History[position].fromUserID);
-
                 HistoryViewHolder Holder = holder as HistoryViewHolder;
 
                 Holder.Avatar.SetImageBitmap(History[position].image);
                 Holder.comment.Text = History[position].comment;
-                Holder.initials.Text = AdditionalFunctions.DefineInitials(name);
-                Holder.message.Text = OrganizeMessageString(History[position], name);
+                Holder.initials.Text = AdditionalFunctions.DefineInitials(DefineSenderName(History[position].fromUserID));
+                Holder.message.Text = OrganizeMessageString(History[position], DefineSenderName(History[position].fromUserID));
                 Holder.date.Text = FromUnixTime(Convert.ToInt64(History[position].date));
 
-                if(Convert.ToInt64(Holder.LastDate) < Convert.ToInt64(History[position].date))
+                if (!AvatarIsDefault(History[position].fromUserID))
+                    Holder.initials.Visibility = ViewStates.Invisible;
+                else
+                    Holder.initials.Visibility = ViewStates.Visible;
+
+                if (Convert.ToInt64(Holder.LastDate) < Convert.ToInt64(History[position].date))
                     Holder.Indicator.Visibility = ViewStates.Visible;
                 else
                     Holder.Indicator.Visibility = ViewStates.Invisible;
@@ -227,7 +284,7 @@ namespace Merit_Money
             return null;
         }
 
-        private String OrganizeMessageString(HistoryListItem value,String name)
+        private String OrganizeMessageString(HistoryListItem value, String name)
         {
             String result = String.Empty;
 
@@ -245,8 +302,18 @@ namespace Merit_Money
 
         private String DefineSenderName(String ID)
         {
-            UsersDatabase db = new UsersDatabase();
-            return db.GetUserByID(ID).name;
+            String name = String.Empty;
+            if(ID_Name.TryGetValue(ID, out name))
+                return name;
+            return "Unknown";
+        }
+
+        private bool AvatarIsDefault(String ID)
+        {
+            bool res = false;
+            if (ID_ImageIsDefault.TryGetValue(ID, out res))
+                return res;
+            return true;
         }
 
         private String FromUnixTime(long unixTime)

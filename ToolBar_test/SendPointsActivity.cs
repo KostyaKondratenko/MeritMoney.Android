@@ -177,10 +177,13 @@ namespace Merit_Money
                     NumberOfPoints.Text = String.Empty;
                     String notes = Notes.Text;
 
-                    await MeritMoneyBrain.DistributePoints(number, userIDtoDistribute, notes);
-                    
-                    Profile profile = await MeritMoneyBrain.GetProfile();
-                    new UpdateProfileData(this, progressDialog, number, name).Execute(profile);
+                    Profile p = await MeritMoneyBrain.DistributePoints(number, userIDtoDistribute, notes);
+
+                    p.AvatarIsDefault = OperationWithBitmap.isDefault(p.imageUri);
+                    ProfileDatabase db = new ProfileDatabase();
+                    db.Update(p);
+
+                    new UpdateProfileData(this, progressDialog, number, name).Execute(p);
                     break;
             }
         }

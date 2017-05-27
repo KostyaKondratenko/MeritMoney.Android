@@ -200,6 +200,7 @@ namespace Merit_Money
             {
                 Profile p = await MeritMoneyBrain.updateProfile(UserName.Text, SwitchWasChanged, NotificationSwitch.Checked);
                 p.AvatarIsDefault = OperationWithBitmap.isDefault(p.imageUri);
+                Initials.Text = AdditionalFunctions.DefineInitials(UserName.Text);
                 ProfileDatabase db = new ProfileDatabase();
                 db.Update(p);
             }
