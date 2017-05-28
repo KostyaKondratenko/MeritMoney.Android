@@ -277,7 +277,6 @@ namespace Merit_Money
             TextView itemName = item.FindViewById<TextView>(Resource.Id.searchName);
             TextView itemEmail = item.FindViewById<TextView>(Resource.Id.searchEmail);
             CircularImageView itemAvatar = item.FindViewById<CircularImageView>(Resource.Id.searchAvatar);
-            TextView itemInitials = item.FindViewById<TextView>(Resource.Id.Initials);
 
             ListViewHolder view = new ListViewHolder(item, activity, MeritMoneyUsers) { Name = itemName, Email = itemEmail, Avatar = itemAvatar};
             return view;

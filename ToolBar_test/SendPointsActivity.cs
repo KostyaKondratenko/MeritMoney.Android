@@ -169,6 +169,18 @@ namespace Merit_Money
                     SendPointsButton.Enabled = false;
                     break;
                 case (int)DialogButtonType.Positive:
+                    try
+                    {
+                        ProfileDatabase pdb = new ProfileDatabase();
+                        if (Convert.ToInt64(NumberOfPoints.Text) > pdb.GetProfile().distribute)
+                        {
+                            Toast.MakeText(this, "Unavailible points amount.", ToastLength.Short).Show();
+                            break;
+                        }
+
+                    }
+                    catch (Exception) { Toast.MakeText(this, "Too many points to send.", ToastLength.Short).Show(); break; }
+
                     ProgressDialog progressDialog = ProgressDialog.Show(this, "", "Sending points...", true);
 
                     String name = userNameToDistribute.Text;

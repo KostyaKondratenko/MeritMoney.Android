@@ -20,6 +20,8 @@ using Org.Apache.Http.Impl.Client;
 using Org.Apache.Http.Client;
 using Org.Apache.Http.Client.Methods;
 using Android.Graphics;
+using Org.Apache.Http;
+using System.Net.Http;
 
 namespace Merit_Money
 {
@@ -317,7 +319,7 @@ namespace Merit_Money
                                 if (ID != AdministratorID)
                                     ListOfUsers.Add(new UserListItem(ID, name, email, imUrl, null));
                             }
-                             
+
                             Int64 currentUtcTime = (Int64)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
 
                             ISharedPreferences info = Application.Context.GetSharedPreferences(Application.Context.GetString(Resource.String.ApplicationInfo), FileCreationMode.Private);
@@ -573,6 +575,115 @@ namespace Merit_Money
                 Console.WriteLine(e.Message);
             }
             return profile;
+        }
+
+        public static async Task<String> UploadImage(Bitmap image)
+        { 
+            string boundary = "----------------------------" + DateTime.Now.Ticks.ToString("x");
+
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(await GetUploadUrl());
+            request.ContentType = "multipart/form-data; boundary=" +
+                                    boundary;
+            request.Method = "POST";
+            request.KeepAlive = true;
+            request.Headers.Add("Access-Token", CurrentAccessToken);
+
+            Stream memStream = new System.IO.MemoryStream();
+
+            var boundarybytes = System.Text.Encoding.ASCII.GetBytes("\r\n--" +
+                                                                    boundary + "\r\n");
+            var endBoundaryBytes = System.Text.Encoding.ASCII.GetBytes("\r\n--" +
+                                                                        boundary + "--");
+
+            string formdataTemplate = "\r\n--" + boundary +
+                                        "\r\nContent-Disposition: form-data; name=\"{0}\";\r\n\r\n{1}";
+
+            string headerTemplate =
+                "Content-Disposition: form-data; name=\"{0}\"; filename=\"{1}\"\r\n" +
+                "Content-Type: application/octet-stream\r\n\r\n";
+
+            byte[] file = OperationWithBitmap.ConvertToByteArray(image);
+         
+            memStream.Write(boundarybytes, 0, boundarybytes.Length);
+            var header = string.Format(headerTemplate, "uplTheFile", file);
+            var headerbytes = System.Text.Encoding.UTF8.GetBytes(header);
+
+            memStream.Write(headerbytes, 0, headerbytes.Length);
+            memStream.Write(file, 0, file.Length);
+            memStream.Write(endBoundaryBytes, 0, endBoundaryBytes.Length);
+
+            request.ContentLength = memStream.Length;
+
+            using (Stream requestStream = request.GetRequestStream())
+            {
+                memStream.Position = 0;
+                byte[] tempBuffer = new byte[memStream.Length];
+                memStream.Read(tempBuffer, 0, tempBuffer.Length);
+                memStream.Close();
+                requestStream.Write(tempBuffer, 0, tempBuffer.Length);
+            }
+
+            JsonValue jsonDoc;
+
+            using (var response = request.GetResponse())
+            {
+                using (Stream stream = response.GetResponseStream())
+                {
+                    jsonDoc = await Task.Run(() => JsonValue.Load(stream));
+                }
+            }
+            return jsonDoc["imageUrl"];
+        }
+
+        private static async Task<String> GetUploadUrl()
+        {
+            try
+            {
+                // Create an HTTP web request using the URL:
+                string url = MeritMoneyApiUrl + "getUploadUrl";
+
+                HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create(new Uri(url));
+                request.ContentType = "application/json";
+                request.Headers.Add("Access-Token", CurrentAccessToken);
+                request.Method = "GET";
+
+                JsonValue jsonDoc;
+                // Send the request to the server and wait for the response:
+                using (WebResponse response = await request.GetResponseAsync())
+                {
+                    // Get a stream representation of the HTTP web response:
+                    using (Stream stream = response.GetResponseStream())
+                    {
+                        // Use this stream to build a JSON document object:
+                        jsonDoc = await Task.Run(() => JsonValue.Load(stream));
+
+                        if (string.IsNullOrWhiteSpace(jsonDoc.ToString()))
+                        {
+                            Console.Out.WriteLine("Response contained empty body...");
+                        }
+                        else
+                        {
+                            Console.Out.WriteLine("Response Body: \r\n {0}", jsonDoc.ToString());
+                            return jsonDoc["url"];
+                        }
+                    }
+                }
+            }
+            catch (WebException exception)
+            {
+                string responseText;
+                using (var reader = new StreamReader(exception.Response.GetResponseStream()))
+                {
+                    responseText = reader.ReadToEnd();
+                    Console.WriteLine(responseText);
+                    await ProcessingError(responseText);
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+            return String.Empty;
         }
 
         private static async Task ProcessingError(String error)

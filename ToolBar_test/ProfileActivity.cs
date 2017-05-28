@@ -14,6 +14,7 @@ using SupportToolBar = Android.Support.V7.Widget.Toolbar;
 using System.Threading;
 using Android.Graphics;
 using System.Threading.Tasks;
+using System.IO;
 
 namespace Merit_Money
 {
@@ -31,15 +32,18 @@ namespace Merit_Money
         private CircularImageView UserAvatar;
         private TextView UserEmail;
         private Switch NotificationSwitch;
-        private TextView Initials;
 
         private bool nameWasChanged = false;
         private bool SwitchWasChanged = false;
+        private bool AvatarWasChanged = false;
+
         private String SaveName = String.Empty;
+
         private bool SaveSwitchState = false;
         private bool ImagePickerWasPressed = false;
 
         public static readonly int PickImageId = 1000;
+        public static readonly int RequestCropImage = 12;
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
@@ -57,7 +61,6 @@ namespace Merit_Money
             UserAvatar = FindViewById<CircularImageView>(Resource.Id.UserAvatar);
             UserName = FindViewById<TextView>(Resource.Id.ProfileUserName);
             UserEmail = FindViewById<TextView>(Resource.Id.ProfileUserEmail);
-            Initials = FindViewById<TextView>(Resource.Id.Initials);
 
             InitializeProfile();
 
@@ -88,9 +91,8 @@ namespace Merit_Money
             UserName.Text = p.name;
             UserEmail.Text = p.email;
             NotificationSwitch.Checked = p.emailNotificaion;
-            Initials.Text = AdditionalFunctions.DefineInitials(p.name);
 
-            new CacheUserAvatar(UserAvatar, Initials, Application.Context).Execute(p);
+            new CacheUserAvatar(UserAvatar, Application.Context).Execute(p);
         }
 
         private void SetSwitchState()
@@ -189,6 +191,12 @@ namespace Merit_Money
             else
                 nameWasChanged = false;
 
+            if (AvatarWasChanged)
+            {
+                new UploadAvatarOnServer(UserAvatar).Execute().Get();
+                AvatarWasChanged = false;
+            }
+
             if (SwitchWasChanged && !nameWasChanged)
             {
                 Profile p = await MeritMoneyBrain.updateProfile(String.Empty, SwitchWasChanged, NotificationSwitch.Checked);
@@ -199,8 +207,6 @@ namespace Merit_Money
             if (nameWasChanged)
             {
                 Profile p = await MeritMoneyBrain.updateProfile(UserName.Text, SwitchWasChanged, NotificationSwitch.Checked);
-                p.AvatarIsDefault = OperationWithBitmap.isDefault(p.imageUri);
-                Initials.Text = AdditionalFunctions.DefineInitials(UserName.Text);
                 ProfileDatabase db = new ProfileDatabase();
                 db.Update(p);
             }
@@ -211,9 +217,46 @@ namespace Merit_Money
             if ((requestCode == PickImageId) && (resultCode == Result.Ok) && (data != null))
             {
                 Android.Net.Uri uri = data.Data;
-                UserAvatar.SetImageURI(uri);
+                ImageCrop(uri);
                 ImagePickerWasPressed = false;
             }
+
+            if (requestCode == RequestCropImage) {
+                Bundle extras = data.Extras;
+                if (extras != null)
+                {
+                    Bitmap photo = extras.GetParcelable("data") as Bitmap;
+                    using (MemoryStream stream = new MemoryStream())
+                    {
+                        photo.Compress(Bitmap.CompressFormat.Jpeg, 75, stream);
+                    }
+                    UserAvatar.SetImageBitmap(photo);
+                    AvatarWasChanged = true;
+                }
+            }
+            
+        }
+
+        public void ImageCrop(Android.Net.Uri uri)
+        {
+            try
+            {
+                var CropIntent = new Intent("com.android.camera.action.CROP");
+
+                CropIntent.SetDataAndType(uri, "image/*");
+
+                CropIntent.PutExtra("crop", "true");
+                CropIntent.PutExtra("outputX", 180);
+                CropIntent.PutExtra("outputY", 180);
+                CropIntent.PutExtra("aspectX", 1);
+                CropIntent.PutExtra("aspectY", 1);
+                CropIntent.PutExtra("scaleUpIfNeeded", true);
+                CropIntent.PutExtra("return-data", true);
+
+                StartActivityForResult(CropIntent, RequestCropImage);
+
+            }
+            catch (ActivityNotFoundException) { }
         }
 
         public override bool OnCreateOptionsMenu(IMenu menu)
@@ -238,6 +281,45 @@ namespace Merit_Money
         public void OnCancel(IDialogInterface dialog)
         {
             ShowKeyboard(EditName);
+        }
+
+        private class UploadAvatarOnServer : AsyncTask<Java.Lang.Void, Java.Lang.Void, Task<Bitmap>>
+        {
+            private CircularImageView image;
+            private String UserId;
+            private ProfileDatabase db = new ProfileDatabase();
+            private String url;
+
+            public UploadAvatarOnServer(CircularImageView image)
+            {
+                this.image = image;
+                UserId = db.GetProfile().ID;
+            }
+
+            protected override void OnPreExecute()
+            {
+                base.OnPreExecute();
+                OperationWithBitmap.Delete(Application.Context, UserId);
+            }
+
+            protected override async Task<Bitmap> RunInBackground(params Java.Lang.Void[] @params)
+            {
+                Android.Graphics.Drawables.BitmapDrawable drawable =
+                    (Android.Graphics.Drawables.BitmapDrawable)image.Drawable;
+                Bitmap bitmap = drawable.Bitmap;
+                url = await MeritMoneyBrain.UploadImage(bitmap);
+
+                return bitmap;
+            }
+
+            protected override void OnPostExecute(Task<Bitmap> result)
+            {
+                byte[] bitmapData = OperationWithBitmap.ConvertToByteArray(result.Result);
+                db.UpdateAvatarUrl(New: url, at: UserId);
+                OperationWithBitmap.Cache(Application.Context, bitmapData, UserId);
+             
+                base.OnPostExecute(result);
+            }
         }
     }
 }

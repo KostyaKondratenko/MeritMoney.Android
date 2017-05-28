@@ -192,13 +192,11 @@ namespace Merit_Money
     {
         private CircularImageView image;
         private Context context;
-        private TextView initials;
 
-        public CacheUserAvatar(CircularImageView image,TextView initials, Context context)
+        public CacheUserAvatar(CircularImageView image, Context context)
         {
             this.image = image;
             this.context = context;
-            this.initials = initials;
         }
 
         protected override Android.Graphics.Bitmap RunInBackground(params Profile[] @params)
@@ -233,17 +231,7 @@ namespace Merit_Money
 
         protected override void OnPostExecute(Bitmap result)
         {
-            if (result != null)
-            {
-                initials.Visibility = ViewStates.Gone;
-                image.SetImageBitmap(result);
-            }
-            else
-            {
-                //image.SetImageResource(Resource.Drawable.ic_noavatar);
-                //VISIBLE LABLE WITH INITIALS (KK)
-            }
-
+            image.SetImageBitmap(result);
             base.OnPostExecute(result);
         }
     }

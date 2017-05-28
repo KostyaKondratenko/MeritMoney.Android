@@ -34,15 +34,6 @@
                     android:layout_height="120dp"
                     android:background="@drawable/imageView_frame"
                     android:id="@id/UserAvatar" />
-                <TextView
-                    android:text="UU"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:id="@+id/Initials"
-                    android:layout_gravity="center"
-                    android:textSize="60dp"
-                    android:textColor="@color/bright_foreground_material_dark" />
             </FrameLayout>
             <LinearLayout
                 android:orientation="vertical"

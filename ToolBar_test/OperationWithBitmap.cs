@@ -83,6 +83,14 @@ namespace Merit_Money
             return data;
         }
 
+        public static void Delete(Context context, String name)
+        {
+            Java.IO.File cacheDir = context.CacheDir;
+            Java.IO.File file = new Java.IO.File(cacheDir, name);
+
+            file.Delete();
+        }
+
         private static void CleanDir(Java.IO.File dir, long bytes)
         {
 

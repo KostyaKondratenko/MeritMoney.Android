@@ -78,6 +78,21 @@ namespace Merit_Money
             }
         }
 
+        public void UpdateAvatarUrl(String New, String at)
+        {
+            try
+            {
+                using (var db = new SQLiteConnection(dbPath))
+                {
+                    db.Execute("UPDATE Profile SET imageUri = ? WHERE ID = ?", New, at);
+                }
+            }
+            catch (SQLiteException ex)
+            {
+                Console.Out.WriteLine(ex.Message);
+            }
+        }
+
         public Profile GetProfile()
         {
             Profile result = new Profile();
